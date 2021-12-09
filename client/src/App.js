@@ -1,17 +1,11 @@
-import Landpage from "./pages/Landpage";
-import Signin from "./pages/auth/Signin";
-import Signup from "./pages/auth/Signup";
-
-import { Route, Routes } from "react-router-dom";
+import Navbar from './components/Navbar';
+import Landpage from './pages/Landpage';
 
 const App = () => {
   return (
     <>
-      <Routes>
-        <Route exact path={"/"} element={<Landpage />} />
-        <Route exact path={"/signin"} element={<Signin />} />
-        <Route exact path={"/signup"} element={<Signup />} />
-      </Routes>
+      <Navbar />
+      <Landpage />
     </>
   );
 };
