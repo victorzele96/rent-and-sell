@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import RightDrawer from './RightDrawer';
 
@@ -79,8 +80,8 @@ const Navbar = () => {
             className={classes.logo}
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               display: { sm: 'block' },
               color: "white",
