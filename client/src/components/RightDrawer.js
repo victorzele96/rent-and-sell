@@ -14,7 +14,8 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 
-import classes from './Navbar.module.css';
+import classes from './RightDrawer.module.css';
+import DeployAvatar from './Avatar';
 
 const RightDrawer = () => {
   const [state, setState] = React.useState(false);
@@ -29,29 +30,32 @@ const RightDrawer = () => {
 
   const list = (anchor) => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      sx={{ width: 250 }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {/* avatar */}
+      <List className={classes.avatar}>
+        <ListItem>
+          <ListItemIcon />
+          <DeployAvatar fname="Arie" lname="Fishman" />
+        </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem button>
+        <ListItem button component="a" href="#">
           <ListItemIcon>
             <BookmarkAddIcon />
           </ListItemIcon>
           <ListItemText primary="Favorites" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component="a" href="#">
           <ListItemIcon>
             <ChatIcon />
           </ListItemIcon>
           <ListItemText primary="Chats" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component="a" href="#">
           <ListItemIcon>
             <AddBusinessIcon />
           </ListItemIcon>
