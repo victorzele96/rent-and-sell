@@ -13,6 +13,8 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import classes from './RightDrawer.module.css';
 import DeployAvatar from './Avatar';
@@ -37,8 +39,28 @@ const RightDrawer = () => {
       <List>
         <ListItem >
           <ListItemIcon />
-          <DeployAvatar fname="Arie" lname="Fishman" />
+          <DeployAvatar fname="Dear" lname="Guest" />
         </ListItem>
+        {true ? ( //change to state!!!!
+          <ListItem
+            button
+            component={Link}
+            to="/signin"
+            onClick={toggleDrawer(anchor, false)}
+          >
+            <ListItemIcon>
+              <LoginIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign In" />
+          </ListItem>
+        ) : (
+          <ListItem button component={Link} to="/">
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign Out" />
+          </ListItem>
+        )}
       </List>
       <Divider />
       <div onClick={toggleDrawer(anchor, false)}>

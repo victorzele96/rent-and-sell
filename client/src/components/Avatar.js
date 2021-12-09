@@ -35,7 +35,7 @@ const DeployAvatar = (props) => {
   return (
     <Stack>
       <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(props.fname + " " + props.lname)} />
-      <p><strong> {props.fname + " " + props.lname}</strong></p>
+      <p><strong> {"Welcome " + props.fname + " " + props.lname}</strong></p>
     </Stack>
   );
 };
