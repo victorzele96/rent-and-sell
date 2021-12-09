@@ -23,11 +23,11 @@ const Search = styled('div')(({ theme }) => ({
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
+  // width: '100%',
+  // [theme.breakpoints.up('sm')]: {
+  //   marginLeft: theme.spacing(3),
+  //   width: 'auto',
+  // },
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -79,8 +79,14 @@ const Navbar = () => {
             className={classes.logo}
             variant="h6"
             noWrap
-            component="div"
-            sx={{ display: { sm: 'block' } }}
+            component="a"
+            href="/"
+            sx={{
+              display: { sm: 'block' },
+              color: "white",
+              fontSize: "24px",
+              textDecoration: "none"
+            }}
           >
             RNT
           </Typography>

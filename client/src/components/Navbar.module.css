@@ -1,5 +1,11 @@
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 420px) {
   .search {
-    width: 20ch;
+    width: 22ch;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .search {
+    width: 18ch;
   }
 }
