@@ -33,10 +33,11 @@ const stringAvatar = (name) => {
 
 const DeployAvatar = (props) => {
   return (
-    <Stack>
-      <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(props.fname + " " + props.lname)} />
-      <p><strong> {"Welcome " + props.fname + " " + props.lname}</strong></p>
-    </Stack>
+      <Stack>
+        <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(props.fname + " " + props.lname)} />
+        <p style={{marginBottom: 0, alignSelf: "center"}}><strong> {"Welcome, "}</strong></p>
+        <p style={{margin: 0, alignSelf: "center"}}><strong> {props.fname + " " + props.lname}</strong></p>
+      </Stack>
   );
 };
 
