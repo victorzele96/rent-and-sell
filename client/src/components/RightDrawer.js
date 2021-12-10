@@ -37,9 +37,9 @@ const RightDrawer = () => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <ListItem style={{margin: "auto", display: "inline-block"}} >
+        <ListItem style={{ margin: "auto", display: "inline-block" }} >
           <ListItemIcon />
-          <DeployAvatar fname="Dear" lname="Guest" />
+          <DeployAvatar type="sidebar" fname="Dear" lname="Guest" />
         </ListItem>
         {true ? ( //change to state!!!!
           <ListItem
