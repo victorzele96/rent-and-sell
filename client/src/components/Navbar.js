@@ -59,12 +59,12 @@ const Navbar = (props) => {
   const toggleMapListHanler = () => props.setMapList(prevState => !prevState);
 
   const toggleMapList = props.mapList ? (
-    <TravelExploreIcon
+    <FormatListBulletedIcon
       fontSize="large"
       onClick={toggleMapListHanler}
     />
   ) : (
-    <FormatListBulletedIcon
+    <TravelExploreIcon
       fontSize="large"
       onClick={toggleMapListHanler}
     />
