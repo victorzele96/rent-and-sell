@@ -55,18 +55,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Navbar = () => {
-  const [mapListState, setMapListState] = React.useState(true);
+const Navbar = (props) => {
+  const toggleMapListHanler = () => props.setMapList(prevState => !prevState);
 
-  const toggleMapListHanler = () => setMapListState(prevState => !prevState);
-
-  const toggleMapList = mapListState ? (
-    <TravelExploreIcon
+  const toggleMapList = props.mapList ? (
+    <FormatListBulletedIcon
       fontSize="large"
       onClick={toggleMapListHanler}
     />
   ) : (
-    <FormatListBulletedIcon
+    <TravelExploreIcon
       fontSize="large"
       onClick={toggleMapListHanler}
     />
