@@ -56,8 +56,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = (props) => {
-  // const [mapListState, setMapListState] = React.useState(true);
-
   const toggleMapListHanler = () => props.setMapList(prevState => !prevState);
 
   const toggleMapList = props.mapList ? (
