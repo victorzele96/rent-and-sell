@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import DeployAvatar from '../Avatar';
+
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -6,14 +9,31 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+import LocalParkingIcon from '@mui/icons-material/LocalParking'; //חניה
+import AccessibleIcon from '@mui/icons-material/Accessible'; //נגישות
+import CallIcon from '@mui/icons-material/Call'; //צור קשר
+import EventIcon from '@mui/icons-material/Event'; //תאריך פירסום
+import CheckIcon from '@mui/icons-material/Check'; //ווי
+import ClearIcon from '@mui/icons-material/Clear'; //איקס
+import CommuteIcon from '@mui/icons-material/Commute'; //תחבורה ציבורית
+import ConstructionIcon from '@mui/icons-material/Construction'; //מעוצב או משופץ
+import DomainIcon from '@mui/icons-material/Domain'; //מוסדות מרכזיים
+import FmdGoodIcon from '@mui/icons-material/FmdGood'; //מיקום
+import PetsIcon from '@mui/icons-material/Pets'; //בעל"ח
+import WbIncandescentIcon from '@mui/icons-material/WbIncandescent'; //האם הבית מואר
+import SquareFootIcon from '@mui/icons-material/SquareFoot'; //מ"ר
+import HeightIcon from '@mui/icons-material/Height'; //קומה
+import HotelIcon from '@mui/icons-material/Hotel'; //מס' חדרים
+import SellIcon from '@mui/icons-material/Sell'; //מחירה
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ParkIcon from '@mui/icons-material/Park';
 
 import image from '../../static/images/types-of-homes-hero.png';
 
@@ -39,16 +59,14 @@ const PropertyItem = () => {
     <Card sx={{ maxWidth: 700, marginTop: 10 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
+          <DeployAvatar type="list" fname="arie" lname="fishman" />
         }
         action={
           <IconButton aria-label="settings">
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
+        title="Villa in San Andreas"
         subheader="September 14, 2016"
       />
       <CardMedia //card image
@@ -61,9 +79,7 @@ const PropertyItem = () => {
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+          One of the most impressive villas in Los Santos.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -83,32 +99,26 @@ const PropertyItem = () => {
         </ExpandMore>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
+        <CardContent className={classes["advanced-info"]}>
+          <Typography paragraph letterSpacing={1} fontWeight={"bold"}>More Information:</Typography>
+          <div className={classes.content}>
+            <Typography paragraph><SellIcon />Listing Status: For Sale</Typography>
+            <Typography paragraph><EventIcon />Days on RNS: 3 hours</Typography>
+            <Typography paragraph><AttachMoneyIcon />Price: ₪ 1,750,000</Typography>
+            <Typography paragraph><FmdGoodIcon />Address: 5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States</Typography>
+            <Typography paragraph><ConstructionIcon />Renovated: <ClearIcon /></Typography>
+            <Typography paragraph><HotelIcon />Rooms Number: 3 Rooms</Typography>
+            <Typography paragraph><SquareFootIcon />Room Size: 75 sq m</Typography>
+            <Typography paragraph><HeightIcon />Stories: 2</Typography>
+            <Typography paragraph><LocalParkingIcon />Parking: 1 car</Typography>
+            <Typography paragraph><AccessibleIcon />Accessablity: <CheckIcon /></Typography>
+            <Typography paragraph><WbIncandescentIcon />Natural Illumination: <CheckIcon /></Typography>
+            <Typography paragraph><PetsIcon />Pets: <ClearIcon /></Typography>
+            <Typography paragraph><ParkIcon />Park: <ClearIcon /></Typography>
+            <Typography paragraph><CommuteIcon />Public Transport: <CheckIcon /></Typography>
+            <Typography paragraph><DomainIcon />Public Institutes: <CheckIcon /></Typography>
+            <Typography paragraph><CallIcon />Contact: +97251944245</Typography>
+          </div>
         </CardContent>
       </Collapse>
     </Card>

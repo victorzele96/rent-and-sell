@@ -14,7 +14,7 @@ const stringToColor = (string) => {
   let color = '#';
 
   for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 3)) & 0xff;
+    const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.substr(-2);
   }
   /* eslint-enable no-bitwise */
@@ -31,13 +31,30 @@ const stringAvatar = (name) => {
   };
 };
 
+const sidebarAvatar = (fname, lname) => {
+  return (
+    <>
+      <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(fname + " " + lname)} />
+      <p style={{ marginBottom: 0, alignSelf: "center" }}><strong> {"Welcome, "}</strong></p>
+      <p style={{ margin: 0, alignSelf: "center" }}><strong> {fname + " " + lname}</strong></p>
+    </>
+  );
+};
+
+const listAvatar = (fname, lname) => {
+  return (
+    <>
+      <Avatar aria-label="recipe" {...stringAvatar(fname + " " + lname)} />
+    </>
+  );
+};
+
 const DeployAvatar = (props) => {
   return (
-      <Stack>
-        <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(props.fname + " " + props.lname)} />
-        <p style={{marginBottom: 0, alignSelf: "center"}}><strong> {"Welcome, "}</strong></p>
-        <p style={{margin: 0, alignSelf: "center"}}><strong> {props.fname + " " + props.lname}</strong></p>
-      </Stack>
+    <Stack>
+      {props.type === 'sidebar' && sidebarAvatar(props.fname, props.lname)}
+      {props.type === 'list' && listAvatar(props.fname, props.lname)}
+    </Stack>
   );
 };
 
