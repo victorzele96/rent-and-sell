@@ -1,0 +1,56 @@
+import image from '../../static/images/types-of-homes-hero.png';
+
+const DUMMY_DATA = [
+  {
+    id: "h1",
+    userId: "u1",
+    title: "Villa in San Andreas",
+    description: "One of the most impressive villas in Los Santos.",
+    img: image,
+    listing_status: "sell",
+    post_date: "3 hours",
+    price: "₪ 1,750,000",
+    address: "Address: 5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
+    renovated: true,
+    rooms_num: "3 Rooms",
+    room_size: "75 sq m",
+    house_type: "house",
+    stories: "2",
+    floor: "",
+    parking: "1 car",
+    accessiblity: true,
+    natural_illumination: true,
+    pets: false,
+    park: false,
+    public_transport: true,
+    public_institutes: true,
+    contact: "+97251944245"
+  },
+  {
+    id: "h2",
+    userId: "u2",
+    title: "dsfsdf",
+    description: "1234dsa",
+    img: image,
+    listing_status: "rent",
+    post_date: "3 hours",
+    price: "₪ 2,100",
+    address: "Address: 123 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
+    renovated: true,
+    rooms_num: "3 Rooms",
+    room_size: "75 sq m",
+    house_type: "apartment",
+    stories: "",
+    floor: "1",
+    parking: "no",
+    accessiblity: false,
+    natural_illumination: true,
+    pets: true,
+    park: true,
+    public_transport: true,
+    public_institutes: true,
+    contact: "+9721111111"
+  },
+];
+
+export default DUMMY_DATA;

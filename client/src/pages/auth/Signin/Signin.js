@@ -26,7 +26,7 @@ const Copyright = (props) => {
       {'.'}
     </Typography>
   );
-}
+};
 
 const theme = createTheme();
 
@@ -79,6 +79,7 @@ const SignIn = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

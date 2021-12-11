@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import Paragraph from './Paragraph';
 import DeployAvatar from '../Avatar';
 
 import { styled } from '@mui/material/styles';
@@ -20,8 +21,6 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking'; //חניה
 import AccessibleIcon from '@mui/icons-material/Accessible'; //נגישות
 import CallIcon from '@mui/icons-material/Call'; //צור קשר
 import EventIcon from '@mui/icons-material/Event'; //תאריך פירסום
-import CheckIcon from '@mui/icons-material/Check'; //ווי
-import ClearIcon from '@mui/icons-material/Clear'; //איקס
 import CommuteIcon from '@mui/icons-material/Commute'; //תחבורה ציבורית
 import ConstructionIcon from '@mui/icons-material/Construction'; //מעוצב או משופץ
 import DomainIcon from '@mui/icons-material/Domain'; //מוסדות מרכזיים
@@ -50,7 +49,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const PropertyItem = () => {
+const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => setExpanded(prevState => !prevState);
@@ -66,14 +65,14 @@ const PropertyItem = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Villa in San Andreas"
+        title={props.title}
         subheader="September 14, 2016"
       />
       <CardMedia //card image
         component="img"
         height="auto"
-        paddingTop='56.25%' // 16:9,
-        marginTop='30'
+        // paddingTop='56.25%' // 16:9,
+        // marginTop='30'
         src={image}
         alt="property image"
       />
@@ -103,21 +102,22 @@ const PropertyItem = () => {
           <Typography paragraph letterSpacing={1} fontWeight={"bold"}>More Information:</Typography>
           <div className={classes.content}>
             <Typography paragraph><SellIcon />Listing Status: For Sale</Typography>
-            <Typography paragraph><EventIcon />Days on RNS: 3 hours</Typography>
-            <Typography paragraph><AttachMoneyIcon />Price: ₪ 1,750,000</Typography>
-            <Typography paragraph><FmdGoodIcon />Address: 5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States</Typography>
-            <Typography paragraph><ConstructionIcon />Renovated: <ClearIcon /></Typography>
-            <Typography paragraph><HotelIcon />Rooms Number: 3 Rooms</Typography>
-            <Typography paragraph><SquareFootIcon />Room Size: 75 sq m</Typography>
-            <Typography paragraph><HeightIcon />Stories: 2</Typography>
-            <Typography paragraph><LocalParkingIcon />Parking: 1 car</Typography>
-            <Typography paragraph><AccessibleIcon />Accessablity: <CheckIcon /></Typography>
-            <Typography paragraph><WbIncandescentIcon />Natural Illumination: <CheckIcon /></Typography>
-            <Typography paragraph><PetsIcon />Pets: <ClearIcon /></Typography>
-            <Typography paragraph><ParkIcon />Park: <ClearIcon /></Typography>
-            <Typography paragraph><CommuteIcon />Public Transport: <CheckIcon /></Typography>
-            <Typography paragraph><DomainIcon />Public Institutes: <CheckIcon /></Typography>
-            <Typography paragraph><CallIcon />Contact: +97251944245</Typography>
+            <Paragraph show icon={<FmdGoodIcon />} info="Address:" text="5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States" />
+            <Paragraph show icon={<EventIcon />} info="Days on RNS:" text="3 hours" />
+            <Paragraph show icon={<AttachMoneyIcon />} info="Price:" text="₪ 1,750,000" />
+            <Paragraph show icon={<ConstructionIcon />} info="Renovated:" text="no" />
+            <Paragraph show icon={<HotelIcon />} info="Rooms Number:" text="3 Rooms" />
+            <Paragraph show icon={<SquareFootIcon />} info="Rooms Size:" text="75 sq m" />
+            <Paragraph show icon={<HeightIcon />} info="Stories:" text="2" />
+            <Paragraph show={false} icon={<HeightIcon />} info="Floor:" text="" />
+            <Paragraph show icon={<LocalParkingIcon />} info="Parking:" text="1 car" />
+            <Paragraph show icon={<AccessibleIcon />} info="Accessiblity:" text="yes" />
+            <Paragraph show icon={<WbIncandescentIcon />} info="Natural Illumination:" text="yes" />
+            <Paragraph show icon={<PetsIcon />} info="Pets:" text="no" />
+            <Paragraph show icon={<ParkIcon />} info="Park:" text="no" />
+            <Paragraph show icon={<CommuteIcon />} info="Public Transport:" text="yes" />
+            <Paragraph show icon={<DomainIcon />} info="Public Institutes:" text="yes" />
+            <Paragraph show icon={<CallIcon />} info="Contact:" text="+97251944245" />
           </div>
         </CardContent>
       </Collapse>
