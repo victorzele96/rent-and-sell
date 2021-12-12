@@ -27,7 +27,7 @@ const Copyright = (props) => {
   );
 };
 
-const steps = ['Property Information', 'Property Gallery', 'Review your post'];
+const steps = ['Information', 'Gallery', 'Review'];
 
 const getStepContent = (step) => {
   switch (step) {
@@ -58,8 +58,8 @@ const NewProperty = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, width: 700 }}>
+      <Container component="main" sx={{ mb: 4 }}>
+        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h1" variant="h4" align="center">
             Add Property
           </Typography>
