@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import DeployAvatar from './Avatar';
+
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -16,8 +18,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import classes from './RightDrawer.module.css';
-import DeployAvatar from './Avatar';
+// import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
   const [state, setState] = React.useState(false);
