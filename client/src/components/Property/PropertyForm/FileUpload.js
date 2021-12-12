@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import Dropzone from 'react-dropzone';
 
 import classes from './FileUpload.module.css';
 
