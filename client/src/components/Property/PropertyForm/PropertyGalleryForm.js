@@ -1,13 +1,9 @@
-// import { DropzoneArea } from 'material-ui-dropzone';
+import FileUpload from "./FileUpload";
 
 const PropertyGalleryForm = () => {
   return (
     <>
-      {/* <DropzoneArea
-        acceptedFiles={['image/*']}
-        dropzoneText={"Drag and drop an image here or click"}
-        onChange={(files) => console.log('Files:', files)}
-      /> */}
+      {/* <FileUpload /> */}
     </>
   );
 };

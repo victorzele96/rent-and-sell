@@ -14,21 +14,22 @@ import ParkIcon from '@mui/icons-material/Park';
 import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
 import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
+import LocalParkingIcon from '@mui/icons-material/LocalParking';
 
 const PropertyInfoForm = () => {
   const [propertyType, setPropertyType] = useState('');
-  const [renovated, setRenovated] = useState('');
-  const [parking, setParking] = useState('');
-  const [accessibility, setAccessibility] = useState('');
-  const [illumination, setIllumination] = useState('');
-  const [pets, setPets] = useState('');
-  const [park, setPark] = useState('');
-  const [transport, setTransport] = useState('');
-  const [institutes, setInstitutes] = useState('');
+  const [renovated, setRenovated] = useState(false);
+  const [parking, setParking] = useState(false);
+  const [accessibility, setAccessibility] = useState(false);
+  const [illumination, setIllumination] = useState(false);
+  const [pets, setPets] = useState(false);
+  const [park, setPark] = useState(false);
+  const [transport, setTransport] = useState(false);
+  const [institutes, setInstitutes] = useState(false);
 
   const propertyTypeChangeHandler = (event) => setPropertyType(event.target.value);
   const renovatedChangeHandler = () => setRenovated(prevState => !prevState);
-  const parkingChangeHandler = (event) => setParking(event.target.value);
+  const parkingChangeHandler = (event) => setParking(prevState => !prevState);
   const accessibilityChangeHandler = () => setAccessibility(prevState => !prevState);
   const illuminationChangeHandler = () => setIllumination(prevState => !prevState);
   const petsChangeHandler = () => setPets(prevState => !prevState);
@@ -156,20 +157,16 @@ const PropertyInfoForm = () => {
         </Grid>
         <Grid item xs={12} />
         <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Parking</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={parking}
-              label="parking"
-              onChange={parkingChangeHandler}
-            >
-              <MenuItem value={0}>None</MenuItem>
-              <MenuItem value={1}>One Car</MenuItem>
-              <MenuItem value={2}>Two Cars</MenuItem>
-            </Select>
-          </FormControl>
+          <ToggleButton
+            color="primary"
+            value="parking"
+            selected={parking}
+            fullWidth
+            onChange={parkingChangeHandler}
+          >
+            <LocalParkingIcon sx={{ mr: 2 }} />
+            Parking
+          </ToggleButton>
         </Grid>
         <Grid item xs={12} sm={6}>
           <ToggleButton
