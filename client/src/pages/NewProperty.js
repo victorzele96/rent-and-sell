@@ -7,25 +7,11 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PropertyInfoForm from '../components/Property/PropertyForm/PropertyInfoForm';
 import PropertyGalleryForm from '../components/Property/PropertyForm/PropertyGalleryForm';
 import PropertyReview from '../components/Property/PropertyForm/PropertyReview';
-
-const Copyright = (props) => {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://github.com/victorzele96/rent-and-sell">
-        Rent-n-Sell
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-};
 
 const steps = ['Information', 'Gallery', 'Review'];
 
@@ -104,7 +90,6 @@ const NewProperty = () => {
             )}
           </>
         </Paper>
-        <Copyright />
       </Container>
     </ThemeProvider>
   );
