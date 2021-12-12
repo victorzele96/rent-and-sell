@@ -9,6 +9,11 @@ import Select from '@mui/material/Select';
 import ToggleButton from '@mui/material/ToggleButton';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
+import PetsIcon from '@mui/icons-material/Pets';
+import ParkIcon from '@mui/icons-material/Park';
+import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
+import DomainIcon from '@mui/icons-material/Domain';
+import CommuteIcon from '@mui/icons-material/Commute';
 
 const PropertyInfoForm = () => {
   const [propertyType, setPropertyType] = useState('');
@@ -24,12 +29,12 @@ const PropertyInfoForm = () => {
   const propertyTypeChangeHandler = (event) => setPropertyType(event.target.value);
   const renovatedChangeHandler = () => setRenovated(prevState => !prevState);
   const parkingChangeHandler = (event) => setParking(event.target.value);
-  const accessibilityChangeHandler = (event) => setAccessibility(event.target.value);
-  const illuminationChangeHandler = (event) => setIllumination(event.target.value);
-  const petsChangeHandler = (event) => setPets(event.target.value);
-  const parkChangeHandler = (event) => setPark(event.target.value);
-  const transportChangeHandler = (event) => setTransport(event.target.value);
-  const institutesChangeHandler = (event) => setInstitutes(event.target.value);
+  const accessibilityChangeHandler = () => setAccessibility(prevState => !prevState);
+  const illuminationChangeHandler = () => setIllumination(prevState => !prevState);
+  const petsChangeHandler = () => setPets(prevState => !prevState);
+  const parkChangeHandler = () => setPark(prevState => !prevState);
+  const transportChangeHandler = () => setTransport(prevState => !prevState);
+  const institutesChangeHandler = () => setInstitutes(prevState => !prevState);
   return (
     <>
       <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
@@ -106,123 +111,7 @@ const PropertyInfoForm = () => {
             variant="standard"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Parking</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={parking}
-              label="parking"
-              onChange={parkingChangeHandler}
-            >
-              <MenuItem value={0}>None</MenuItem>
-              <MenuItem value={1}>One Car</MenuItem>
-              <MenuItem value={2}>Two Cars</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Accessibility</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={accessibility}
-              label="accessibility"
-              onChange={accessibilityChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Natural Illumination</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={illumination}
-              label="iillumination"
-              onChange={illuminationChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Pets</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={pets}
-              label="pets"
-              onChange={petsChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Park</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={park}
-              label="park]"
-              onChange={parkChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Public Transport</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={transport}
-              label="transport"
-              onChange={transportChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Public Institutes</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={institutes}
-              label="institutes"
-              onChange={institutesChangeHandler}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            value="renovated"
-            selected={renovated}
-            fullWidth
-            onChange={renovatedChangeHandler}
-          >
-            <ConstructionIcon sx={{ mr: 2 }} />
-            Renovated
-          </ToggleButton>
-        </Grid>
+        <Grid item xs={12} />
         <Grid item xs={12}>
           <TextField
             required
@@ -247,15 +136,6 @@ const PropertyInfoForm = () => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="state"
-            name="state"
-            label="State/Province/Region"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
             required
             id="country"
             name="country"
@@ -264,6 +144,116 @@ const PropertyInfoForm = () => {
             autoComplete="shipping country"
             variant="standard"
           />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            id="contact"
+            name="contact"
+            label="Contact"
+            fullWidth
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} />
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="standard" fullWidth >
+            <InputLabel id="demo-simple-select-label">Parking</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={parking}
+              label="parking"
+              onChange={parkingChangeHandler}
+            >
+              <MenuItem value={0}>None</MenuItem>
+              <MenuItem value={1}>One Car</MenuItem>
+              <MenuItem value={2}>Two Cars</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="accessibility"
+            selected={accessibility}
+            fullWidth
+            onChange={accessibilityChangeHandler}
+          >
+            <ConstructionIcon sx={{ mr: 2 }} />
+            Accessibility
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="illumination"
+            selected={illumination}
+            fullWidth
+            onChange={illuminationChangeHandler}
+          >
+            <WbIncandescentIcon sx={{ mr: 2 }} />
+            Natural Illumination
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="pets"
+            selected={pets}
+            fullWidth
+            onChange={petsChangeHandler}
+          >
+            <PetsIcon sx={{ mr: 2 }} />
+            Pets
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="park"
+            selected={park}
+            fullWidth
+            onChange={parkChangeHandler}
+          >
+            <ParkIcon sx={{ mr: 2 }} />
+            Park
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="transport"
+            selected={transport}
+            fullWidth
+            onChange={transportChangeHandler}
+          >
+            <CommuteIcon sx={{ mr: 2 }} />
+            Public Transport
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="institutes"
+            selected={institutes}
+            fullWidth
+            onChange={institutesChangeHandler}
+          >
+            <DomainIcon sx={{ mr: 2 }} />
+            Public Institutes
+          </ToggleButton>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ToggleButton
+            color="primary"
+            value="renovated"
+            selected={renovated}
+            fullWidth
+            onChange={renovatedChangeHandler}
+          >
+            <ConstructionIcon sx={{ mr: 2 }} />
+            Renovated
+          </ToggleButton>
         </Grid>
       </Grid>
     </>
