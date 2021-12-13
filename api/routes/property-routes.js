@@ -1,12 +1,10 @@
 const express = require("express");
-// const bodyParser = require("body-parser");
-// const mongoose = require("mongoose");
+
+const propertyControllers = require("../controllers/property-controllers");
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    console.log('Get req in property');
-    res.json({message: 'it works'});
-});
+router.get("/:pid", propertyControllers.getPropertyById);
+router.get("/user/:uid", propertyControllers.getPropertyByUserId);
 
 module.exports = router;
