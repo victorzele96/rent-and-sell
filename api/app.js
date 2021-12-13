@@ -8,7 +8,8 @@ const userRoutes = require("./routes/users-routes");
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// With middleware
+app.use(bodyParser.json());
+
 app.use("/api/users", userRoutes);
 
 app.use("/api/property", propertyRoutes);
