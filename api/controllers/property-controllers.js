@@ -1,8 +1,8 @@
-const {uuid} = require("uuidv4");
+const { uuid } = require("uuidv4");
 
 const HttpError = require("../models/http-error");
 
-const DUMMY_PROPERTY = [
+let DUMMY_PROPERTY = [
   {
     id: "p1",
     title: "some",
@@ -21,9 +21,7 @@ const DUMMY_PROPERTY = [
 
 const getPropertyById = (req, res, next) => {
   const propertyId = req.params.pid;
-  const property = DUMMY_PROPERTY.find((p) => {
-    return p.id === propertyId;
-  });
+  const property = DUMMY_PROPERTY.find((p) => p.id === propertyId);
 
   if (!property) {
     throw new HttpError("Could not find a property for the provided id.", 404);
@@ -32,20 +30,18 @@ const getPropertyById = (req, res, next) => {
   res.json({ property });
 };
 
-const getPropertyByUserId = (req, res, next) => {
+const getPropertiesByUserId = (req, res, next) => {
   const userId = req.params.uid;
 
-  const property = DUMMY_PROPERTY.find((p) => {
-    return p.creator === userId;
-  });
+  const properties = DUMMY_PROPERTY.filter((p) => p.creator === userId);
 
-  if (!property) {
+  if (!properties || properties.length === 0) {
     return next(
       new HttpError("Could not find a property for the provided user id.", 404)
     );
   }
 
-  res.json({ property });
+  res.json({ properties });
 };
 
 const createProperty = (req, res, next) => {
@@ -63,6 +59,33 @@ const createProperty = (req, res, next) => {
   res.status(201).json({ property: createdProperty });
 };
 
+const updateProperty = (req, res, next) => {
+  const { title, description, address } = req.body;
+  const propertyId = req.params.pid;
+
+  const updatedProperty = {
+    ...DUMMY_PROPERTY.find((p) => p.id === propertyId),
+  };
+  const propertyIndex = DUMMY_PROPERTY.findIndex((p) => p.id === propertyId);
+
+  updatedProperty.title = title;
+  updatedProperty.description = description;
+  updatedProperty.address = address;
+
+  DUMMY_PROPERTY[propertyIndex] = updatedProperty;
+
+  res.status(200).json({ property: updatedProperty });
+};
+
+const deleteProperty = (req, res, next) => {
+  const propertyId = req.params.pid;
+  DUMMY_PROPERTY = DUMMY_PROPERTY.filter((p) => p.id !== propertyId);
+
+  res.status(200).json({ message: "Property deleted." });
+};
+
 exports.getPropertyById = getPropertyById;
-exports.getPropertyByUserId = getPropertyByUserId;
+exports.getPropertiesByUserId = getPropertiesByUserId;
 exports.createProperty = createProperty;
+exports.updateProperty = updateProperty;
+exports.deleteProperty = deleteProperty;
