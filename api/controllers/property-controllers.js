@@ -1,3 +1,5 @@
+const {uuid} = require("uuidv4");
+
 const HttpError = require("../models/http-error");
 
 const DUMMY_PROPERTY = [
@@ -5,12 +7,14 @@ const DUMMY_PROPERTY = [
     id: "p1",
     title: "some",
     description: "some2",
+    address: "some",
     creator: "u1",
   },
   {
     id: "p2",
     title: "some2",
     description: "some22",
+    address: "some",
     creator: "u2",
   },
 ];
@@ -44,5 +48,21 @@ const getPropertyByUserId = (req, res, next) => {
   res.json({ property });
 };
 
+const createProperty = (req, res, next) => {
+  const { title, description, address, creator } = req.body;
+
+  const createdProperty = {
+    id: uuid(),
+    title,
+    description,
+    address,
+    creator,
+  };
+
+  DUMMY_PROPERTY.push(createdProperty);
+  res.status(201).json({ property: createdProperty });
+};
+
 exports.getPropertyById = getPropertyById;
 exports.getPropertyByUserId = getPropertyByUserId;
+exports.createProperty = createProperty;
