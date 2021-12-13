@@ -1,4 +1,5 @@
 const { uuid } = require("uuidv4");
+const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 
@@ -45,6 +46,12 @@ const getPropertiesByUserId = (req, res, next) => {
 };
 
 const createProperty = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid inputs passed, please check your data.", 422);
+  }
+
   const { title, description, address, creator } = req.body;
 
   const createdProperty = {
@@ -60,6 +67,12 @@ const createProperty = (req, res, next) => {
 };
 
 const updateProperty = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid inputs passed, please check your data.", 422);
+  }
+
   const { title, description, address } = req.body;
   const propertyId = req.params.pid;
 
@@ -79,6 +92,11 @@ const updateProperty = (req, res, next) => {
 
 const deleteProperty = (req, res, next) => {
   const propertyId = req.params.pid;
+
+  if (DUMMY_PROPERTY.find((p) => p.id === propertyId)) {
+    throw new HttpError("Could not find a property for that id.", 404);
+  }
+
   DUMMY_PROPERTY = DUMMY_PROPERTY.filter((p) => p.id !== propertyId);
 
   res.status(200).json({ message: "Property deleted." });
