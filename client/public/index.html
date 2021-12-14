@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="./images/home-pin.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Modern PWA property rent/sell app." />
+    <link rel="apple-touch-icon" href="./images/home-pin.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="./images/home-pin.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Modern PWA property rent/sell app." />
-  <link rel="apple-touch-icon" href="./images/home-pin.png" />
-  <link rel="manifest" href="./manifest.json" />
+    <!-- material ui css -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
 
-  <!-- material ui css -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <title>Rent-N-Sell</title>
+  </head>
 
-  <title>Rent-N-Sell</title>
-</head>
-
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!-- <script>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!-- <script>
       if('serviceWorker' in navigator) {
           window.addEventListener('load', () => {
               navigator.serviceWorker.register('./serviceworker.js')
@@ -28,6 +30,21 @@
           })
       }
   </script> -->
-</body>
-
+    <script>
+      if ("serviceWorker" in navigator) {
+        // Register a service worker hosted at the root of the
+        // site using the default scope.
+        navigator.serviceWorker.register("./serviceworker.js").then(
+          function (registration) {
+            console.log("Service worker registration succeeded:", registration);
+          },
+          /*catch*/ function (error) {
+            console.log("Service worker registration failed:", error);
+          }
+        );
+      } else {
+        console.log("Service workers are not supported.");
+      }
+    </script>
+  </body>
 </html>
