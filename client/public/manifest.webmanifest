@@ -1,14 +1,15 @@
 {
   "short_name": "RNS",
   "name": "Rent-n-Sell",
+  "description": "rent and sell aplication",
   "icons": [
     {
       "src": "/images/home-pin.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
   ],
+  "scope": "/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
