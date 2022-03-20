@@ -87,7 +87,7 @@ const Navbar = (props) => {
               textDecoration: "none"
             }}
           >
-            RNT
+            RNS
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Search className={classes.search}>

@@ -1,12 +1,11 @@
 import { Stack } from "@mui/material";
 
-import DUMMY_DATA from "./Property/propertyData";
-import PropertyItem from "./Property/PropertyItem";
+import PropertyItem from "./PropertyItem";
 
-const List = () => {
+const List = (props) => {
   return (
     <Stack spacing="30px" sx={{ alignItems: "center" }}>
-      {DUMMY_DATA.map(item => (
+      {props.properties.map(item => (
         <PropertyItem key={item.id} title={item.title} description={item.description} />
       ))}
     </Stack >

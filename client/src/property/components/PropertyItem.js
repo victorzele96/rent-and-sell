@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import Paragraph from './Paragraph';
-import DeployAvatar from '../Avatar';
+import DeployAvatar from '../../shared/components/UIElements/Avatar';
 
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';

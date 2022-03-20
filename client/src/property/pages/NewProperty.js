@@ -9,9 +9,9 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import PropertyInfoForm from "../components/Property/PropertyForm/PropertyInfoForm";
-import PropertyGalleryForm from "../components/Property/PropertyForm/PropertyGalleryForm";
-import PropertyReview from "../components/Property/PropertyForm/PropertyReview";
+import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
+import PropertyGalleryForm from "../components/PropertyForm/PropertyGalleryForm";
+import PropertyReview from "../components/PropertyForm/PropertyReview";
 
 const steps = ["Information", "Gallery", "Review"];
 
