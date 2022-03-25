@@ -6,7 +6,7 @@ const List = (props) => {
   return (
     <Stack spacing="30px" sx={{ alignItems: "center" }}>
       {props.properties.map(item => (
-        <PropertyItem key={item.id} title={item.title} description={item.description} />
+        <PropertyItem key={item.id} property={item} />
       ))}
     </Stack >
   );
