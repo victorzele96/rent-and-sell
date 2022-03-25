@@ -19,7 +19,7 @@ const App = () => {
     <>
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
       <Routes>
-        <Route exact path={"/"} element={toggleMapList ? <Map /> : <List properties={DUMMY_DATA} />} />
+        <Route exact path={"/"} element={toggleMapList ? <Map properties={DUMMY_DATA} /> : <List properties={DUMMY_DATA} />} />
         <Route exact path={"/signin"} element={<Signin />} />
         <Route exact path={"/signup"} element={<Signup />} />
         <Route exact path={"/favorites"} element={<Favorites properties={DUMMY_DATA} />} />
