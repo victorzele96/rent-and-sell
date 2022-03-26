@@ -26,7 +26,7 @@ const App = () => {
         <Route exact path={"/chats"} element={<Chats />} />
         <Route exact path={"/add-property"} element={<NewProperty />} />
       </Routes>
-      <Copyright sx={{ mt: 4 }} />
+      <Copyright sx={{ mt: 2, md: 2 }} />
     </>
   );
 };
