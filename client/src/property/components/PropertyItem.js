@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import Paragraph from './Paragraph';
-import DeployAvatar from '../Avatar';
+import DeployAvatar from '../../shared/components/UIElements/Avatar';
 
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -65,8 +65,8 @@ const PropertyItem = (props) => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={props.title}
-        subheader="September 14, 2016"
+        title={props.property.title}
+        subheader="September 14, 2016" // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
       />
       <CardMedia //card image
         component="img"
@@ -78,7 +78,7 @@ const PropertyItem = (props) => {
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          One of the most impressive villas in Los Santos.
+          {props.property.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -101,23 +101,23 @@ const PropertyItem = (props) => {
         <CardContent className={classes["advanced-info"]}>
           <Typography paragraph letterSpacing={1} fontWeight={"bold"}>More Information:</Typography>
           <div className={classes.content}>
-            <Typography paragraph><SellIcon />Listing Status: For Sale</Typography>
-            <Paragraph show icon={<FmdGoodIcon />} info="Address:" text="5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States" />
-            <Paragraph show icon={<EventIcon />} info="Days on RNS:" text="3 hours" />
-            <Paragraph show icon={<AttachMoneyIcon />} info="Price:" text="₪ 1,750,000" />
-            <Paragraph show icon={<ConstructionIcon />} info="Renovated:" text="no" />
-            <Paragraph show icon={<HotelIcon />} info="Rooms Number:" text="3 Rooms" />
-            <Paragraph show icon={<SquareFootIcon />} info="Rooms Size:" text="75 sq m" />
-            <Paragraph show icon={<HeightIcon />} info="Stories:" text="2" />
-            <Paragraph show={false} icon={<HeightIcon />} info="Floor:" text="" />
-            <Paragraph show icon={<LocalParkingIcon />} info="Parking:" text="1 car" />
-            <Paragraph show icon={<AccessibleIcon />} info="Accessiblity:" text="yes" />
-            <Paragraph show icon={<WbIncandescentIcon />} info="Natural Illumination:" text="yes" />
-            <Paragraph show icon={<PetsIcon />} info="Pets:" text="no" />
-            <Paragraph show icon={<ParkIcon />} info="Park:" text="no" />
-            <Paragraph show icon={<CommuteIcon />} info="Public Transport:" text="yes" />
-            <Paragraph show icon={<DomainIcon />} info="Public Institutes:" text="yes" />
-            <Paragraph show icon={<CallIcon />} info="Contact:" text="+97251944245" />
+            <Typography paragraph><SellIcon />Listing Status: For {props.property.details.listing_status}</Typography>
+            <Paragraph show icon={<FmdGoodIcon />} info="Address:" text={props.property.address} />
+            <Paragraph show icon={<EventIcon />} info="Time on RNS:" text={props.property.details.creation_date} />
+            <Paragraph show icon={<AttachMoneyIcon />} info="Price:" text={"₪ " + props.property.details.price} />
+            <Paragraph show icon={<ConstructionIcon />} info="Renovated:" text={props.property.details.renovated ? "yes" : "no"} />
+            <Paragraph show icon={<HotelIcon />} info="Rooms Number:" text={props.property.details.rooms_num} />
+            <Paragraph show icon={<SquareFootIcon />} info="Rooms Size:" text={props.property.details.room_size + " sq m"} />
+            <Paragraph show={props.property.details.stories ? true : false} icon={<HeightIcon />} info="Stories:" text={props.property.details.stories} />
+            <Paragraph show={props.property.details.floor ? true : false} icon={<HeightIcon />} info="Floor:" text={props.property.details.floor} />
+            <Paragraph show icon={<LocalParkingIcon />} info="Parking:" text={props.property.details.parking} />
+            <Paragraph show icon={<AccessibleIcon />} info="Accessiblity:" text={props.property.details.accessability ? "yes" : "no"} />
+            <Paragraph show icon={<WbIncandescentIcon />} info="Natural Illumination:" text={props.property.details.natural_illumination ? "yes" : "no"} />
+            <Paragraph show icon={<PetsIcon />} info="Pets:" text={props.property.details.pets ? "yes" : "no"} />
+            <Paragraph show icon={<ParkIcon />} info="Park:" text={props.property.details.park ? "yes" : "no"} />
+            <Paragraph show icon={<CommuteIcon />} info="Public Transport:" text={props.property.details.public_transport ? "yes" : "no"} />
+            <Paragraph show icon={<DomainIcon />} info="Public Institutes:" text={props.property.details.public_institutes ? "yes" : "no"} />
+            <Paragraph show icon={<CallIcon />} info="Contact:" text={props.property.details.contact} />
           </div>
         </CardContent>
       </Collapse>

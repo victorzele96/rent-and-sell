@@ -1,0 +1,23 @@
+.map-container {
+  height: 85vh;
+  /* width: 1200px; */
+}
+
+.map-card {
+  margin-top: 80px;
+}
+
+.map-stack {
+  align-items: center;
+}
+
+@media(max-width: 393px) {
+  .map-container {
+    height: 700px;
+    width: 393px;
+  }
+
+  .map-card {
+    margin-top: 0;
+  }
+}
