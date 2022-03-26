@@ -7,6 +7,10 @@ const DUMMY_DATA = [
     description: "One of the most impressive villas in Los Santos.",
     img: image,
     address: "5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
+    location: {
+      lat: 31.2530,
+      lng: 34.7915
+    },
     details: {
       listing_status: "Sale",
       creation_date: "3 hours",
@@ -34,6 +38,10 @@ const DUMMY_DATA = [
     description: "1234dsa",
     img: image,
     address: "123 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
+    location: {
+      lat: 31.2,
+      lng: 34.7
+    },
     details: {
       listing_status: "Rent",
       creation_date: "3 hours",
