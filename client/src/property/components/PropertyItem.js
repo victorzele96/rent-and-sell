@@ -55,7 +55,7 @@ const PropertyItem = (props) => {
   const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   return (
-    <Card sx={{ maxWidth: 700, marginTop: 10 }}>
+    <Card sx={{ maxWidth: 700, mb: 5 }}>
       <CardHeader
         avatar={
           <DeployAvatar type="list" fname="arie" lname="fishman" />

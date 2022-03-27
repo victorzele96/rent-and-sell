@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import DeployAvatar from '../UIElements/Avatar';
@@ -18,10 +18,21 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+import Filter from './Filter';
+
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+
+import { styled } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 // import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
-  const [state, setState] = React.useState(false);
+  const [state, setState] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -30,6 +41,17 @@ const RightDrawer = () => {
 
     setState(prevState => !prevState);
   };
+
+  const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
 
   const list = (anchor) => (
     <Box
@@ -88,12 +110,23 @@ const RightDrawer = () => {
       </div>
       <Divider />
       <List>
-        <ListItem button component="a" href="#">
+        <ListItem>
           <ListItemIcon>
             <FilterAltIcon />
           </ListItemIcon>
           <ListItemText primary="Filter" />
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
         </ListItem>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Filter />
+        </Collapse>
       </List>
     </Box>
   );

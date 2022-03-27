@@ -18,15 +18,17 @@ const App = () => {
   return (
     <>
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      <Routes>
-        <Route exact path={"/"} element={toggleMapList ? <Map properties={DUMMY_DATA} /> : <List properties={DUMMY_DATA} />} />
-        <Route exact path={"/signin"} element={<Signin />} />
-        <Route exact path={"/signup"} element={<Signup />} />
-        <Route exact path={"/favorites"} element={<Favorites properties={DUMMY_DATA} />} />
-        <Route exact path={"/chats"} element={<Chats />} />
-        <Route exact path={"/add-property"} element={<NewProperty />} />
-      </Routes>
-      <Copyright sx={{ mt: 2, md: 2 }} />
+      <div className='content'>
+        <Routes>
+          <Route exact path={"/"} element={toggleMapList ? <Map properties={DUMMY_DATA} /> : <List properties={DUMMY_DATA} />} />
+          <Route exact path={"/signin"} element={<Signin />} />
+          <Route exact path={"/signup"} element={<Signup />} />
+          <Route exact path={"/favorites"} element={<Favorites properties={DUMMY_DATA} />} />
+          <Route exact path={"/chats"} element={<Chats />} />
+          <Route exact path={"/add-property"} element={<NewProperty />} />
+        </Routes>
+      </div>
+      {/* <Copyright sx={{ mt: 2, md: 2 }} /> */}
     </>
   );
 };

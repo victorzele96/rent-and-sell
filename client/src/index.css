@@ -1,5 +1,8 @@
 body {
   margin: 0;
-  height: 100%;
-  overflow: hidden;
+}
+
+.content {
+  margin-top: 3rem;
+  padding-top: 1rem;
 }
