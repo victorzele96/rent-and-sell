@@ -19,3 +19,8 @@
     width: 26ch;
   }
 }
+
+.menueBtn svg {
+  color: white;
+  font-size: 2.5rem;
+}

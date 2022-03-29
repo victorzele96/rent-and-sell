@@ -152,10 +152,14 @@ const RightDrawer = () => {
   return (
     <div>
       <React.Fragment key={'right'}>
-        <MenuIcon
-          fontSize="large"
+        <IconButton
           onClick={toggleDrawer()}
-        />
+          className={classes.menueBtn}
+        >
+          <MenuIcon
+          // fontSize="large"
+          />
+        </IconButton>
         <Drawer
           anchor={'right'}
           open={state}
