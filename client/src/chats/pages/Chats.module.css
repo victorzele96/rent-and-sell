@@ -1,34 +1,12 @@
-.paper {
-  width: "80vw";
-  height: "80vh";
-  max-width: "500px";
-  max-width: "700px";
-  display: "flex";
-  align-items: "center";
-  flex-direction: "column";
-  position: "relative";
+.chat-window {
+  height: 20rem;
 }
 
-.paper2 {
-  width: "80vw";
-  max-width: "500px";
-  display: "flex";
-  align-items: "center";
-  flex-direction: "column";
-  position: "relative";
+.chat-window-messages {
+  height: 18rem;
+  overflow: auto;
 }
 
-.container {
-  width: "100vw";
-  height: "100vh";
-  display: "flex";
-  align-items: "center";
-  justify-content: "center";
-}
-
-.messagesBody {
-  width: "calc( 100% - 20px )";
-  margin: 10;
-  overflow-y: "scroll";
-  height: "calc( 100% - 80px )";
+.chats-paper {
+  margin-top: 5rem;
 }
