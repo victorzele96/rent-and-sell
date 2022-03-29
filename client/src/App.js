@@ -18,12 +18,21 @@ const App = () => {
   return (
     <>
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      <div className='content'>
+      <div className="content">
         <Routes>
-          <Route exact path={"/"} element={toggleMapList ? <Map properties={DUMMY_DATA} /> : <List properties={DUMMY_DATA} />} />
+          <Route exact path={"/"} element={toggleMapList ?
+            <Map properties={DUMMY_DATA} /> : (
+              <div style={{ height: "1080px", overflow: "hidden", overflowY: "auto", marginTop: "50px" }}>
+                <List properties={DUMMY_DATA} />
+              </div>
+            )} />
           <Route exact path={"/signin"} element={<Signin />} />
           <Route exact path={"/signup"} element={<Signup />} />
-          <Route exact path={"/favorites"} element={<Favorites properties={DUMMY_DATA} />} />
+          <Route exact path={"/favorites"} element={(
+            <div style={{ height: "1040px", overflow: "hidden", overflowY: "auto", marginTop: "50px" }}>
+              <Favorites properties={DUMMY_DATA} />
+            </div>
+          )} />
           <Route exact path={"/chats"} element={<Chats />} />
           <Route exact path={"/add-property"} element={<NewProperty />} />
         </Routes>

@@ -1,4 +1,26 @@
-.btn {
-  justify-content: start;
+.filter-card {
+  margin: 3%;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.filter-div {
+  height: 350px;
+}
+
+.filter-card .btn {
   border-radius: 0%;
+  justify-content: start;
+}
+
+@media screen and (max-width: 425px) {
+  .filter-card .btn {
+    border-radius: 0%;
+    justify-content: start;
+    font-size: 10px;
+  }
+
+  .filter-div {
+    height: 250px;
+  }
 }

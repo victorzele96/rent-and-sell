@@ -8,7 +8,7 @@ const List = (props) => {
       {props.properties.map(item => (
         <PropertyItem key={item.id} property={item} />
       ))}
-    </Stack >
+    </Stack>
   );
 };
 
