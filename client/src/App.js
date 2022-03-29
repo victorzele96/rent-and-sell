@@ -22,14 +22,14 @@ const App = () => {
         <Routes>
           <Route exact path={"/"} element={toggleMapList ?
             <Map properties={DUMMY_DATA} /> : (
-              <div style={{ height: "1080px", overflow: "hidden", overflowY: "auto", marginTop: "50px" }}>
+              <div id="list" className="list-div">
                 <List properties={DUMMY_DATA} />
               </div>
             )} />
           <Route exact path={"/signin"} element={<Signin />} />
           <Route exact path={"/signup"} element={<Signup />} />
           <Route exact path={"/favorites"} element={(
-            <div style={{ height: "1040px", overflow: "hidden", overflowY: "auto", marginTop: "50px" }}>
+            <div id="favorites" className="list-div">
               <Favorites properties={DUMMY_DATA} />
             </div>
           )} />
