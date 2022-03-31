@@ -20,6 +20,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { useForm } from '../../shared/hooks/form-hook';
 
+/* 
+  TODO: 1) check if the form-hook can be used
+  TODO: 2) connect to backend
+*/
+
+
 const Auth = (props) => {
   // const authCtx = useContext(AuthContext);
   const [isSigninMode, setIsSigninMode] = useState(true);
