@@ -82,33 +82,56 @@ const Chats = () => {
 
   const [chatMessages, setChatMessages] = useState([
     {
-      user: 'John',
+      user: 'John Wick',
       message: "Hey man, What's up ?",
       time: '09:30'
     },
     {
-      user: 'Remy',
+      user: 'Remy Sharp',
       message: "Hey, Iam Good! What about you ?",
       time: '09:31'
     },
     {
-      user: 'John',
+      user: 'John Wick',
       message: "Cool. i am good, let's catch up!",
       time: '10:30'
     },
   ]);
-  const [user, setUser] = useState("");
+  const [users, setUsers] = useState([
+    {
+      name: 'John Wick',
+      avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
+      id: 'u1'
+    },
+    {
+      name: 'Remy Sharp',
+      avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
+      id: 'u2'
+    },
+    {
+      name: 'Alice',
+      avatarUrl: "https://material-ui.com/static/images/avatar/3.jpg",
+      id: 'u3'
+    },
+    {
+      name: 'Cindy Baker',
+      avatarUrl: "https://material-ui.com/static/images/avatar/2.jpg",
+      id: 'u4'
+    },
+  ]);
   const [message, setMessage] = useState("");
 
   const userChangeHandler = (event) => {
-    setUser(event.target.value);
+    setUsers(event.target.value);
   };
 
   const onEnterUserChangeHandler = (event) => {
     if (event.key === 'Enter') {
       setMessage(event.target.value);
-      setUser('John');
+      // setUsers(...users);
       sendMessageHandler();
+
+      // TODO: add backend logic
     }
   };
 
@@ -117,9 +140,12 @@ const Chats = () => {
   };
 
   const sendMessageHandler = () => {
-    if (user && message) {
-      setChatMessages([...chatMessages, { user: user, message: message, time: `${new Date().getHours()}:${new Date().getMinutes()}` }]);
+    console.log(users);
+    if (users && message) {
+      setChatMessages([...chatMessages, { user: users.filter(user => user.name === 'John Wick')[0].name, message: message, time: `${new Date().getHours()}:${new Date().getMinutes()}` }]);
       setMessage('');
+
+      // TODO: add backend logic
     }
   };
 
@@ -136,17 +162,33 @@ const Chats = () => {
       <>
         <ListItem key={index}>
           <Grid container className={classes.chatMessageGrid}>
-            <Card className={`${classes.ChatMessageCard} ${chatMessage.user === 'John' ? classes.right : classes.left}`}>
+            <Card className={`${classes.ChatMessageCard} ${chatMessage.user === 'John Wick' ? classes.right : classes.left}`}>
               <Grid item xs={12} className={classes.chatMessageOuterGrid}>
-                <ListItemText align={chatMessage.user === 'John' ? "right" : "left"} primary={chatMessage.message} />
+                <ListItemText align={chatMessage.user === 'John Wick' ? "right" : "left"} primary={chatMessage.message} />
               </Grid>
               <Grid item xs={12} className={classes.chatMessageOuterGrid}>
-                <ListItemText align={chatMessage.user === 'John' ? "right" : "left"} secondary={chatMessage.time} />
+                <ListItemText align={chatMessage.user === 'John Wick' ? "right" : "left"} secondary={chatMessage.time} />
               </Grid>
             </Card>
           </Grid>
         </ListItem>
         <div name="bottom-scroll-point" ref={messagesEndRef} />
+      </>
+    );
+  });
+
+  const usersList = users.map((user, index) => {
+    return (
+      <>
+        {user.name !== 'John Wick' && (
+          <ListItem button key={index}>
+            <ListItemIcon>
+              <Avatar alt={user.name} src={user.avatarUrl} />
+            </ListItemIcon>
+            <ListItemText primary={user.name}>`${user.name}`</ListItemText>
+            <ListItemText secondary="online" align="right" />
+          </ListItem>
+        )}
       </>
     );
   });
@@ -181,25 +223,7 @@ const Chats = () => {
           </Grid>
           <Divider />
           <List>
-            <ListItem button key="RemySharp">
-              <ListItemIcon>
-                <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-              </ListItemIcon>
-              <ListItemText primary="Remy Sharp">Remy Sharp</ListItemText>
-              <ListItemText secondary="online" align="right" />
-            </ListItem>
-            <ListItem button key="Alice">
-              <ListItemIcon>
-                <Avatar alt="Alice" src="https://material-ui.com/static/images/avatar/3.jpg" />
-              </ListItemIcon>
-              <ListItemText primary="Alice">Alice</ListItemText>
-            </ListItem>
-            <ListItem button key="CindyBaker">
-              <ListItemIcon>
-                <Avatar alt="Cindy Baker" src="https://material-ui.com/static/images/avatar/2.jpg" />
-              </ListItemIcon>
-              <ListItemText primary="Cindy Baker">Cindy Baker</ListItemText>
-            </ListItem>
+            {usersList}
           </List>
         </Grid>
         <Grid item xs={9}>
@@ -217,7 +241,7 @@ const Chats = () => {
                 onChange={messageChangeHandler}
                 fullWidth />
             </Grid>
-            <Grid xs={1} align="right">
+            <Grid item xs={1} align="right">
               <Fab
                 onClick={sendMessageHandler}
                 color="primary"
