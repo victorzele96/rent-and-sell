@@ -1,5 +1,4 @@
 import { useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -8,10 +7,26 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
 import PropertyGalleryForm from "../components/PropertyForm/PropertyGalleryForm";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
+
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    "overflow-y": "scroll",
+    marginTop: "40px",
+    maxHeight: "660px",
+    maxWidth: "1300px"
+  },
+  innerContainer: {
+    alignItems: "center",
+    paddingBottom: "40px",
+    marginBottom: "32px",
+    "overflow": "hidden"
+  }
+}));
 
 const steps = ["Information", "Gallery", "Review"];
 
@@ -28,10 +43,10 @@ const getStepContent = (step) => {
   }
 };
 
-const theme = createTheme();
-
 const NewProperty = () => {
   const [activeStep, setActiveStep] = useState(0);
+
+  const classes = useStyles();
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -42,9 +57,8 @@ const NewProperty = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Container component="main" sx={{ mb: 4 }}>
+    <Container maxWidth={false} className={classes.container}>
+      <Container maxWidth={false} component="main" className={classes.innerContainer}>
         <Paper
           variant="outlined"
           sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
@@ -90,7 +104,7 @@ const NewProperty = () => {
           </>
         </Paper>
       </Container>
-    </ThemeProvider>
+    </Container>
   );
 };
 

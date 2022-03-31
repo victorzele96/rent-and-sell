@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Card, TextField, ToggleButton } from '@mui/material';
+import { Button, Card, CardContent, Container, TextField, ToggleButton } from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -11,167 +11,250 @@ import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import SellIcon from '@mui/icons-material/Sell';
 
-import classes from './Filter.module.css';
+// import classes from './Filter.module.css';
+
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    "overflow-y": "scroll",
+    maxHeight: "350px",
+    paddingBottom: "15px"
+  },
+  filterCard: {
+    alignItems: "center",
+    paddingBottom: "50px",
+    marginTop: "40px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+  },
+  filterCardContent: {
+    "overflow": "hidden",
+    textAlign: "center"
+  },
+  filterItem: {
+    marginTop: "5px",
+    marginBottom: "5px",
+    btn: {
+      "border-radius": "0%",
+      "justify-content": "start"
+    }
+  },
+  reset: {
+    borderColor: "#1976d2",
+    border: "1px solid",
+    marginTop: "15px",
+    paddingLeft: "15%",
+    paddingRight: "15%"
+  }
+}));
+
+const initialFilterState = {
+  listingStatus: 'sale',
+  renovated: false,
+  parking: false,
+  accessibility: false,
+  illumination: false,
+  pets: false,
+  park: false,
+  transport: false,
+  institutes: false,
+};
 
 const Filter = (porps) => {
+  const classes = useStyles();
+
   const [query, setQuery] = useState("");
   const [searchParam] = useState(["title", "address"]);
 
-  const [listingStatus, setListingStatus] = useState("sale");
-  const [renovated, setRenovated] = useState(false);
-  const [parking, setParking] = useState(false);
-  const [accessibility, setAccessibility] = useState(false);
-  const [illumination, setIllumination] = useState(false);
-  const [pets, setPets] = useState(false);
-  const [park, setPark] = useState(false);
-  const [transport, setTransport] = useState(false);
-  const [institutes, setInstitutes] = useState(false);
+  const [filterState, setFilterState] = useState(initialFilterState);
+
+  // const [listingStatus, setListingStatus] = useState("sale");
+  // const [renovated, setRenovated] = useState(false);
+  // const [parking, setParking] = useState(false);
+  // const [accessibility, setAccessibility] = useState(false);
+  // const [illumination, setIllumination] = useState(false);
+  // const [pets, setPets] = useState(false);
+  // const [park, setPark] = useState(false);
+  // const [transport, setTransport] = useState(false);
+  // const [institutes, setInstitutes] = useState(false);
 
   const listingStatusChangeHandler = () => {
-    if (listingStatus === "sale") {
-      setListingStatus("rent");
+    if (filterState.listingStatus === "sale") {
+      setFilterState({ ...filterState, listingStatus: "rent" });
     } else {
-      setListingStatus("sale");
+      setFilterState({ ...filterState, listingStatus: "sale" });
     }
   };
-  const renovatedChangeHandler = () => setRenovated(prevState => !prevState);
-  const parkingChangeHandler = (event) => setParking(prevState => !prevState);
-  const accessibilityChangeHandler = () => setAccessibility(prevState => !prevState);
-  const illuminationChangeHandler = () => setIllumination(prevState => !prevState);
-  const petsChangeHandler = () => setPets(prevState => !prevState);
-  const parkChangeHandler = () => setPark(prevState => !prevState);
-  const transportChangeHandler = () => setTransport(prevState => !prevState);
-  const institutesChangeHandler = () => setInstitutes(prevState => !prevState);
+
+  const changeHandler = (event) => {
+    let newFilterState = filterState;
+
+    for (const [key, value] of Object.entries(filterState)) {
+      let state;
+
+      if (key === event.target.name) {
+        newFilterState[key] = !value;
+      }
+    };
+    setFilterState({ ...newFilterState });
+
+    // TODO: add filtering logic to apartment list
+  };
+
+  const resetHandler = () => {
+    setFilterState({ ...initialFilterState });
+    // ! bug when reseting the states
+  };
 
   return (
-    <Card className={classes["filter-card"]}>
-      <div className={classes["filter-div"]}>
-        <TextField
-          id="address"
-          name="address"
-          label="address"
-          fullWidth
-          autoComplete="shipping address-level2"
-          variant="standard"
-        />
-        <TextField
-          id="street"
-          name="street"
-          label="street"
-          fullWidth
-          autoComplete="shipping address-level2"
-          variant="standard"
-        />
-        <TextField
-          id="city"
-          name="city"
-          label="City"
-          fullWidth
-          autoComplete="shipping address-level2"
-          variant="standard"
-        />
-        <ToggleButton
-          color="primary"
-          value="listing_status"
-          selected={true}
-          fullWidth
-          onClick={listingStatusChangeHandler}
-          className={classes.btn}
-        >
-          <SellIcon sx={{ mr: 2 }} />
-          {listingStatus}
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="parking"
-          selected={parking}
-          fullWidth
-          onChange={parkingChangeHandler}
-          className={classes.btn}
-        >
-          <LocalParkingIcon sx={{ mr: 2 }} />
-          Parking
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="accessibility"
-          selected={accessibility}
-          fullWidth
-          onChange={accessibilityChangeHandler}
-          className={classes.btn}
-        >
-          <ConstructionIcon sx={{ mr: 2 }} />
-          Accessibility
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="illumination"
-          selected={illumination}
-          fullWidth
-          onChange={illuminationChangeHandler}
-          className={classes.btn}
-        >
-          <WbIncandescentIcon sx={{ mr: 2 }} />
-          Natural Illumination
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="pets"
-          selected={pets}
-          fullWidth
-          onChange={petsChangeHandler}
-          className={classes.btn}
-        >
-          <PetsIcon sx={{ mr: 2 }} />
-          Pets
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="park"
-          selected={park}
-          fullWidth
-          onChange={parkChangeHandler}
-          className={classes.btn}
-        >
-          <ParkIcon sx={{ mr: 2 }} />
-          Park
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="transport"
-          selected={transport}
-          fullWidth
-          onChange={transportChangeHandler}
-          className={classes.btn}
-        >
-          <CommuteIcon sx={{ mr: 2 }} />
-          Public Transport
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="institutes"
-          selected={institutes}
-          fullWidth
-          onChange={institutesChangeHandler}
-          className={classes.btn}
-        >
-          <DomainIcon sx={{ mr: 2 }} />
-          Public Institutes
-        </ToggleButton>
-        <ToggleButton
-          color="primary"
-          value="renovated"
-          selected={renovated}
-          fullWidth
-          onChange={renovatedChangeHandler}
-          className={classes.btn}
-        >
-          <ConstructionIcon sx={{ mr: 2 }} />
-          Renovated
-        </ToggleButton>
-      </div>
-    </Card>
-
+    <Container maxWidth={false} className={classes.container}>
+      <Card className={classes.filterCard}>
+        <CardContent className={classes.filterCardContent}>
+          <TextField
+            id="address"
+            name="address"
+            label="address"
+            fullWidth
+            autoComplete="shipping address-level2"
+            variant="standard"
+            className={classes.filterItem}
+          />
+          <TextField
+            id="street"
+            name="street"
+            label="street"
+            fullWidth
+            autoComplete="shipping address-level2"
+            variant="standard"
+            className={classes.filterItem}
+          />
+          <TextField
+            id="city"
+            name="city"
+            label="City"
+            fullWidth
+            autoComplete="shipping address-level2"
+            variant="standard"
+            className={classes.filterItem}
+          />
+          <ToggleButton
+            color="primary"
+            value="listing_status"
+            selected={true}
+            fullWidth
+            onClick={listingStatusChangeHandler}
+            className={classes.filterItem}
+            name="listing_status"
+          >
+            <SellIcon sx={{ mr: 2 }} />
+            {filterState.listingStatus}
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="parking"
+            selected={filterState.parking}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="parking"
+          >
+            <LocalParkingIcon sx={{ mr: 2 }} />
+            Parking
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="accessibility"
+            selected={filterState.accessibility}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="accessibility"
+          >
+            <ConstructionIcon sx={{ mr: 2 }} />
+            Accessibility
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="illumination"
+            selected={filterState.illumination}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="illumination"
+          >
+            <WbIncandescentIcon sx={{ mr: 2 }} />
+            Natural Illumination
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="pets"
+            selected={filterState.pets}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="pets"
+          >
+            <PetsIcon sx={{ mr: 2 }} />
+            Pets
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="park"
+            selected={filterState.park}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="park"
+          >
+            <ParkIcon sx={{ mr: 2 }} />
+            Park
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="transport"
+            selected={filterState.transport}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="transport"
+          >
+            <CommuteIcon sx={{ mr: 2 }} />
+            Public Transport
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="institutes"
+            selected={filterState.institutes}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="institutes"
+          >
+            <DomainIcon sx={{ mr: 2 }} />
+            Public Institutes
+          </ToggleButton>
+          <ToggleButton
+            color="primary"
+            value="renovated"
+            selected={filterState.renovated}
+            fullWidth
+            onChange={changeHandler}
+            className={classes.filterItem}
+            name="renovated"
+          >
+            <ConstructionIcon sx={{ mr: 2 }} />
+            Renovated
+          </ToggleButton>
+          <Button
+            onClick={resetHandler}
+            color="primary"
+            className={classes.reset}
+          >
+            Reset
+          </Button>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 
