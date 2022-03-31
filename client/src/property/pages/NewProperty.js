@@ -44,6 +44,9 @@ const getStepContent = (step) => {
 };
 
 const NewProperty = () => {
+
+  // ! the second and third step show gray scroller
+
   const [activeStep, setActiveStep] = useState(0);
 
   const classes = useStyles();
