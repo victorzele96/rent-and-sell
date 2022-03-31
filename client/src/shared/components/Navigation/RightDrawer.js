@@ -86,7 +86,7 @@ const RightDrawer = () => {
           <ListItem
             button
             component={Link}
-            to="/signin"
+            to="/auth"
             onClick={toggleDrawer(anchor, false)}
           >
             <ListItemIcon>

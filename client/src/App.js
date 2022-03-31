@@ -4,14 +4,13 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './shared/components/Navigation/Navbar';
 import Map from './property/components/Map';
 import List from './property/components/List';
-import Signin from './users/pages/Signin';
-import Signup from './users/pages/Signup';
 import Favorites from './favorites/pages/Favorites';
 import Chats from './chats/pages/Chats';
 import NewProperty from './property/pages/NewProperty';
 import Copyright from './shared/components/UIElements/Copyright';
 
 import DUMMY_DATA from "./property/components/propertyData";
+import Auth from './users/pages/Auth';
 
 const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
@@ -26,8 +25,7 @@ const App = () => {
                 <List properties={DUMMY_DATA} />
               </div>
             )} />
-          <Route exact path={"/signin"} element={<Signin />} />
-          <Route exact path={"/signup"} element={<Signup />} />
+          <Route exact path={"/auth"} element={<Auth />} />
           <Route exact path={"/favorites"} element={(
             <div id="favorites" className="list-div">
               <Favorites properties={DUMMY_DATA} />
