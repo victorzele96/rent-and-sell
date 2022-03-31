@@ -11,8 +11,6 @@ import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import SellIcon from '@mui/icons-material/Sell';
 
-// import classes from './Filter.module.css';
-
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,16 +64,6 @@ const Filter = (porps) => {
 
   const [filterState, setFilterState] = useState(initialFilterState);
 
-  // const [listingStatus, setListingStatus] = useState("sale");
-  // const [renovated, setRenovated] = useState(false);
-  // const [parking, setParking] = useState(false);
-  // const [accessibility, setAccessibility] = useState(false);
-  // const [illumination, setIllumination] = useState(false);
-  // const [pets, setPets] = useState(false);
-  // const [park, setPark] = useState(false);
-  // const [transport, setTransport] = useState(false);
-  // const [institutes, setInstitutes] = useState(false);
-
   const listingStatusChangeHandler = () => {
     if (filterState.listingStatus === "sale") {
       setFilterState({ ...filterState, listingStatus: "rent" });
@@ -88,10 +76,10 @@ const Filter = (porps) => {
     let newFilterState = filterState;
 
     for (const [key, value] of Object.entries(filterState)) {
-      let state;
-
       if (key === event.target.name) {
         newFilterState[key] = !value;
+      } else {
+        newFilterState[key] = value;
       }
     };
     setFilterState({ ...newFilterState });
@@ -101,7 +89,6 @@ const Filter = (porps) => {
 
   const resetHandler = () => {
     setFilterState({ ...initialFilterState });
-    // ! bug when reseting the states
   };
 
   const content = (
