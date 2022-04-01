@@ -14,6 +14,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 import classes from './Navbar.module.css';
+import { IconButton } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -59,20 +60,28 @@ const Navbar = (props) => {
   const toggleMapListHanler = () => props.setMapList(prevState => !prevState);
 
   const toggleMapList = props.mapList ? (
-    <FormatListBulletedIcon
-      fontSize="large"
+    <IconButton
+      className={classes.toggleBtn}
       onClick={toggleMapListHanler}
-    />
+    >
+      <FormatListBulletedIcon
+        fontSize="large"
+      />
+    </IconButton>
   ) : (
-    <TravelExploreIcon
-      fontSize="large"
+    <IconButton
+      className={classes.toggleBtn}
       onClick={toggleMapListHanler}
-    />
+    >
+      <TravelExploreIcon
+        fontSize="large"
+      />
+    </IconButton>
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, top: 0, display: "block", width: "100%" }}>
+      <AppBar position="fixed">
         <Toolbar>
           <Typography
             className={classes.logo}

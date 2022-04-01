@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import Paragraph from './Paragraph';
 import DeployAvatar from '../../shared/components/UIElements/Avatar';
 
 import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+
+import {
+  Stack,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Collapse,
+  IconButton,
+  Typography
+} from '@mui/material';
+
+import FavoritesContext from '../../shared/context/favorites-context';
+
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -36,7 +43,27 @@ import ParkIcon from '@mui/icons-material/Park';
 
 import image from '../../static/images/types-of-homes-hero.png';
 
-import classes from './PropertyItem.module.css';
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 700,
+    marginBottom: "40px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+  },
+  details: {
+    svg: {
+      marginRight: "20px",
+      fontSize: "25px"
+    }
+  },
+  leftIcon: {
+    marginRight: "1rem"
+  },
+  rightIcon: {
+    marginLeft: "1rem"
+  },
+}));
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -52,10 +79,39 @@ const ExpandMore = styled((props) => {
 const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
 
+  const favoritesCtx = useContext(FavoritesContext);
+
+  const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
+
+  const classes = useStyles();
+
   const handleExpandClick = () => setExpanded(prevState => !prevState);
 
+  const favoritesHandler = () => {
+    if (itemIsFavorite) {
+      favoritesCtx.removeFavorite(props.id);
+    } else {
+      favoritesCtx.addFavorite({
+        id: props.property.id,
+        title: props.property.title,
+        description: props.property.description,
+        img: props.property.image,
+        address: props.property.address,
+        location: props.property.location,
+        details: props.property.details,
+        creator: props.property.creator
+      });
+    }
+
+    // TODO: add favorites logic + backend connection
+  };
+
+  const shareHandler = () => {
+    // TODO: add share api
+  };
+
   return (
-    <Card sx={{ maxWidth: 700, marginTop: 10 }}>
+    <Card className={classes.root}>
       <CardHeader
         avatar={
           <DeployAvatar type="list" fname="arie" lname="fishman" />
@@ -71,8 +127,6 @@ const PropertyItem = (props) => {
       <CardMedia //card image
         component="img"
         height="auto"
-        // paddingTop='56.25%' // 16:9,
-        // marginTop='30'
         src={image}
         alt="property image"
       />
@@ -82,10 +136,15 @@ const PropertyItem = (props) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton
+          aria-label="add to favorites"
+          onClick={favoritesHandler}
+        >
+          <FavoriteIcon
+            color={itemIsFavorite ? "error" : "action"}
+          />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label="share" onClick={shareHandler}>
           <ShareIcon />
         </IconButton>
         <ExpandMore
@@ -99,26 +158,26 @@ const PropertyItem = (props) => {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent className={classes["advanced-info"]}>
-          <Typography paragraph letterSpacing={1} fontWeight={"bold"}>More Information:</Typography>
-          <div className={classes.content}>
-            <Typography paragraph><SellIcon />Listing Status: For {props.property.details.listing_status}</Typography>
-            <Paragraph show icon={<FmdGoodIcon />} info="Address:" text={props.property.address} />
-            <Paragraph show icon={<EventIcon />} info="Time on RNS:" text={props.property.details.creation_date} />
-            <Paragraph show icon={<AttachMoneyIcon />} info="Price:" text={"₪ " + props.property.details.price} />
-            <Paragraph show icon={<ConstructionIcon />} info="Renovated:" text={props.property.details.renovated ? "yes" : "no"} />
-            <Paragraph show icon={<HotelIcon />} info="Rooms Number:" text={props.property.details.rooms_num} />
-            <Paragraph show icon={<SquareFootIcon />} info="Rooms Size:" text={props.property.details.room_size + " sq m"} />
-            <Paragraph show={props.property.details.stories ? true : false} icon={<HeightIcon />} info="Stories:" text={props.property.details.stories} />
-            <Paragraph show={props.property.details.floor ? true : false} icon={<HeightIcon />} info="Floor:" text={props.property.details.floor} />
-            <Paragraph show icon={<LocalParkingIcon />} info="Parking:" text={props.property.details.parking} />
-            <Paragraph show icon={<AccessibleIcon />} info="Accessiblity:" text={props.property.details.accessability ? "yes" : "no"} />
-            <Paragraph show icon={<WbIncandescentIcon />} info="Natural Illumination:" text={props.property.details.natural_illumination ? "yes" : "no"} />
-            <Paragraph show icon={<PetsIcon />} info="Pets:" text={props.property.details.pets ? "yes" : "no"} />
-            <Paragraph show icon={<ParkIcon />} info="Park:" text={props.property.details.park ? "yes" : "no"} />
-            <Paragraph show icon={<CommuteIcon />} info="Public Transport:" text={props.property.details.public_transport ? "yes" : "no"} />
-            <Paragraph show icon={<DomainIcon />} info="Public Institutes:" text={props.property.details.public_institutes ? "yes" : "no"} />
-            <Paragraph show icon={<CallIcon />} info="Contact:" text={props.property.details.contact} />
-          </div>
+          <Stack spacing={3} className={classes.details}>
+            <Typography paragraph letterSpacing={1} fontWeight={"bold"}>More Information:</Typography>
+            <Paragraph show iconClassName={classes.rightIcon} icon={<SellIcon className={classes.leftIcon} />} info="Listing Status" text={"Listing Status: For " + props.property.details.listing_status} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<FmdGoodIcon className={classes.leftIcon} />} info="Address:" text={props.property.address} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<EventIcon className={classes.leftIcon} />} info="Time on RNS:" text={props.property.details.creation_date} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<AttachMoneyIcon className={classes.leftIcon} />} info="Price:" text={"₪ " + props.property.details.price} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<ConstructionIcon className={classes.leftIcon} />} info="Renovated:" text={props.property.details.renovated ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<HotelIcon className={classes.leftIcon} />} info="Rooms Number:" text={props.property.details.rooms_num} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<SquareFootIcon className={classes.leftIcon} />} info="Rooms Size:" text={props.property.details.room_size + " sq m"} />
+            <Paragraph show={props.property.details.stories ? true : false} iconClassName={classes.rightIcon} icon={<HeightIcon className={classes.leftIcon} />} info="Stories:" text={props.property.details.stories} />
+            <Paragraph show={props.property.details.floor ? true : false} iconClassName={classes.rightIcon} icon={<HeightIcon className={classes.leftIcon} />} info="Floor:" text={props.property.details.floor} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<LocalParkingIcon className={classes.leftIcon} />} info="Parking:" text={props.property.details.parking} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<AccessibleIcon className={classes.leftIcon} />} info="Accessiblity:" text={props.property.details.accessability ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<WbIncandescentIcon className={classes.leftIcon} />} info="Natural Illumination:" text={props.property.details.natural_illumination ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<PetsIcon className={classes.leftIcon} />} info="Pets:" text={props.property.details.pets ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<ParkIcon className={classes.leftIcon} />} info="Park:" text={props.property.details.park ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<CommuteIcon className={classes.leftIcon} />} info="Public Transport:" text={props.property.details.public_transport ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<DomainIcon className={classes.leftIcon} />} info="Public Institutes:" text={props.property.details.public_institutes ? "yes" : "no"} />
+            <Paragraph show iconClassName={classes.rightIcon} icon={<CallIcon className={classes.leftIcon} />} info="Contact:" text={props.property.details.contact} />
+          </Stack>
         </CardContent>
       </Collapse>
     </Card>
