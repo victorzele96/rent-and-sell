@@ -6,9 +6,9 @@ import ClearIcon from '@mui/icons-material/Clear';
 const Paragraph = (props) => {
   const yes_noIcon = () => {
     if (props.text === "yes") {
-      return <CheckIcon />
+      return <CheckIcon className={props.iconClassName} />
     } else if (props.text === "no") {
-      return <ClearIcon />
+      return <ClearIcon className={props.iconClassName} />
     }
   };
 
