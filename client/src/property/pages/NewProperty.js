@@ -17,14 +17,14 @@ const useStyles = makeStyles((theme) => ({
   container: {
     "overflow-y": "scroll",
     marginTop: "40px",
-    maxHeight: "660px",
-    maxWidth: "1300px"
+    // maxHeight: "660px",
+    // maxWidth: "1300px"
   },
   innerContainer: {
     alignItems: "center",
-    paddingBottom: "40px",
+    // paddingBottom: "40px",
     marginBottom: "32px",
-    "overflow": "hidden"
+    // "overflow": "hidden"
   }
 }));
 
@@ -60,54 +60,54 @@ const NewProperty = () => {
   };
 
   return (
-    <Container maxWidth={false} className={classes.container}>
-      <Container maxWidth={false} component="main" className={classes.innerContainer}>
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-        >
-          <Typography component="h1" variant="h4" align="center">
-            Add Property
-          </Typography>
-          <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <>
-            {activeStep === steps.length ? (
-              <>
-                <Typography variant="h5" gutterBottom>
-                  Your post was added successfully.
-                </Typography>
-                <Typography variant="subtitle1"></Typography>
-              </>
-            ) : (
-              <>
-                {getStepContent(activeStep)}
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
+    // <Container maxWidth={false} className={classes.container}>
+    <Container component="main" className={classes.innerContainer}>
+      <Paper
+        variant="outlined"
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+      >
+        <Typography component="h1" variant="h4" align="center">
+          Add Property
+        </Typography>
+        <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <>
+          {activeStep === steps.length ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Your post was added successfully.
+              </Typography>
+              <Typography variant="subtitle1"></Typography>
+            </>
+          ) : (
+            <>
+              {getStepContent(activeStep)}
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {activeStep !== 0 && (
+                  <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                    Back
                   </Button>
-                </Box>
-              </>
-            )}
-          </>
-        </Paper>
-      </Container>
+                )}
+
+                <Button
+                  variant="contained"
+                  onClick={handleNext}
+                  sx={{ mt: 3, ml: 1 }}
+                >
+                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
+                </Button>
+              </Box>
+            </>
+          )}
+        </>
+      </Paper>
     </Container>
+    // </Container>
   );
 };
 

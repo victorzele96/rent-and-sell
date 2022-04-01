@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import Paragraph from './Paragraph';
 import DeployAvatar from '../../shared/components/UIElements/Avatar';
@@ -16,6 +16,8 @@ import {
   IconButton,
   Typography
 } from '@mui/material';
+
+import FavoritesContext from '../../shared/context/favorites-context';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
@@ -75,15 +77,31 @@ const ExpandMore = styled((props) => {
 }));
 
 const PropertyItem = (props) => {
-  const [isFavorite, setIsFavorite] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  const favoritesCtx = useContext(FavoritesContext);
+
+  const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
 
   const classes = useStyles();
 
   const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   const favoritesHandler = () => {
-    setIsFavorite(prevIsFavorite => !prevIsFavorite);
+    if (itemIsFavorite) {
+      favoritesCtx.removeFavorite(props.id);
+    } else {
+      favoritesCtx.addFavorite({
+        id: props.property.id,
+        title: props.property.title,
+        description: props.property.description,
+        img: props.property.image,
+        address: props.property.address,
+        location: props.property.location,
+        details: props.property.details,
+        creator: props.property.creator
+      });
+    }
 
     // TODO: add favorites logic + backend connection
   };
@@ -123,7 +141,7 @@ const PropertyItem = (props) => {
           onClick={favoritesHandler}
         >
           <FavoriteIcon
-            color={isFavorite ? "error" : "action"}
+            color={itemIsFavorite ? "error" : "action"}
           />
         </IconButton>
         <IconButton aria-label="share" onClick={shareHandler}>

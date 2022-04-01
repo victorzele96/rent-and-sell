@@ -80,8 +80,8 @@ const Navbar = (props) => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, top: 0, display: "block", width: "100%" }}>
+      <AppBar position="fixed">
         <Toolbar>
           <Typography
             className={classes.logo}

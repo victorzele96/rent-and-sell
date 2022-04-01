@@ -21,10 +21,10 @@ const App = () => {
     <>
       <Routes>
         <Route exact path={"/"} element={toggleMapList ?
-          <Map properties={DUMMY_DATA} /> : <List properties={DUMMY_DATA} />}
+          <Map properties={DUMMY_DATA} /> : <List />}
         />
         <Route exact path={"/auth"} element={<Auth />} />
-        <Route exact path={"/favorites"} element={<Favorites properties={DUMMY_DATA} />} />
+        <Route exact path={"/favorites"} element={<Favorites />} />
         <Route exact path={"/chats"} element={<Chats />} />
         <Route exact path={"/add-property"} element={<NewProperty />} />
       </Routes>
@@ -35,7 +35,9 @@ const App = () => {
     <div className="root">
       <CssBaseline />
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      {routes}
+      <main className={toggleMapList ? 'map-main' : 'content-main'}>
+        {routes}
+      </main>
       {/* <Copyright sx={{ mt: 2, md: 2 }} /> */}
     </div>
   );

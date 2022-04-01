@@ -75,60 +75,64 @@ const useStyles = makeStyles({
   },
 });
 
+const initialChatMessages = [
+  {
+    user: 'John Wick',
+    message: "Hey man, What's up ?",
+    time: '09:30'
+  },
+  {
+    user: 'Remy Sharp',
+    message: "Hey, Iam Good! What about you ?",
+    time: '09:31'
+  },
+  {
+    user: 'John Wick',
+    message: "Cool. i am good, let's catch up!",
+    time: '10:30'
+  },
+];
+
+const initialUsers = [
+  {
+    name: 'John Wick',
+    avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
+    id: 'u1'
+  },
+  {
+    name: 'Remy Sharp',
+    avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
+    id: 'u2'
+  },
+  {
+    name: 'Alice',
+    avatarUrl: "https://material-ui.com/static/images/avatar/3.jpg",
+    id: 'u3'
+  },
+  {
+    name: 'Cindy Baker',
+    avatarUrl: "https://material-ui.com/static/images/avatar/2.jpg",
+    id: 'u4'
+  },
+];
+
 const Chats = () => {
   const classes = useStyles();
 
   const messagesEndRef = useRef(null);
 
-  const [chatMessages, setChatMessages] = useState([
-    {
-      user: 'John Wick',
-      message: "Hey man, What's up ?",
-      time: '09:30'
-    },
-    {
-      user: 'Remy Sharp',
-      message: "Hey, Iam Good! What about you ?",
-      time: '09:31'
-    },
-    {
-      user: 'John Wick',
-      message: "Cool. i am good, let's catch up!",
-      time: '10:30'
-    },
-  ]);
-  const [users, setUsers] = useState([
-    {
-      name: 'John Wick',
-      avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
-      id: 'u1'
-    },
-    {
-      name: 'Remy Sharp',
-      avatarUrl: "https://material-ui.com/static/images/avatar/1.jpg",
-      id: 'u2'
-    },
-    {
-      name: 'Alice',
-      avatarUrl: "https://material-ui.com/static/images/avatar/3.jpg",
-      id: 'u3'
-    },
-    {
-      name: 'Cindy Baker',
-      avatarUrl: "https://material-ui.com/static/images/avatar/2.jpg",
-      id: 'u4'
-    },
-  ]);
+  const [chatMessages, setChatMessages] = useState(initialChatMessages);
+  const [users, setUsers] = useState(initialUsers);
   const [message, setMessage] = useState("");
 
-  const userChangeHandler = (event) => {
-    setUsers(event.target.value);
-  };
+  // const userChangeHandler = (event) => {
+  //   setUsers(event.target.value);
+  // };
 
   const onEnterUserChangeHandler = (event) => {
     if (event.key === 'Enter') {
       setMessage(event.target.value);
-      // setUsers(...users);
+      setUsers(initialUsers);
       sendMessageHandler();
 
       // TODO: add backend logic
@@ -160,7 +164,7 @@ const Chats = () => {
   const listChatMessages = chatMessages.map((chatMessage, index) => {
     return (
       <>
-        <ListItem key={index}>
+        <ListItem key={'message' + index.toString()}>
           <Grid container className={classes.chatMessageGrid}>
             <Card className={`${classes.ChatMessageCard} ${chatMessage.user === 'John Wick' ? classes.right : classes.left}`}>
               <Grid item xs={12} className={classes.chatMessageOuterGrid}>
@@ -181,7 +185,7 @@ const Chats = () => {
     return (
       <>
         {user.name !== 'John Wick' && (
-          <ListItem button key={index}>
+          <ListItem button key={'user' + index.toString()}>
             <ListItemIcon>
               <Avatar alt={user.name} src={user.avatarUrl} />
             </ListItemIcon>

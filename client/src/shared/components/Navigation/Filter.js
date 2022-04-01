@@ -59,8 +59,8 @@ const initialFilterState = {
 const Filter = (porps) => {
   const classes = useStyles();
 
-  const [query, setQuery] = useState("");
-  const [searchParam] = useState(["title", "address"]);
+  // const [query, setQuery] = useState("");
+  // const [searchParam] = useState(["title", "address"]);
 
   const [filterState, setFilterState] = useState(initialFilterState);
 
