@@ -9,3 +9,8 @@
     width: 18ch;
   }
 }
+
+.toggleBtn svg {
+  color: white;
+  font-size: 2.5rem;
+}

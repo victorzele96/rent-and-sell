@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, /*useRef*/ } from 'react';
 
 import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
-  const [files, setFiles] = useState({});
-  const fileInputField = useRef(null);
+  const [files, /*setFiles*/] = useState({});
+  // const fileInputField = useRef(null);
 
   console.log(files);
   return (

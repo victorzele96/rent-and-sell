@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import DeployAvatar from '../UIElements/Avatar';
@@ -18,22 +18,62 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-// import classes from './RightDrawer.module.css';
+import Filter from './Filter';
+
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+
+import { styled } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
-  const [state, setState] = React.useState(false);
+  const [state, setState] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   const toggleDrawer = (anchor, open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    /* 
+      wont effect the toggle for clicking any key except
+      F1 - F12, Esc, Print Screen, Scroll Lock, Pause|Break, 
+      Insert, Home, End, Page Up, Page Down,
+      other spacial keys that not for typing.
+    */
+    if (event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift' || event.key === 'Backspace'
+        || event.key === 'Alt' || event.key === 'Control' || event.key === ' '
+        || event.key === 'Delete' || event.key === 'Enter' || event.key === 'Space'
+        || event.key === 'CapsLock'
+        || (event.keyCode >= 37 && event.keyCode <= 40)
+        || (event.keyCode >= 47 && event.keyCode <= 57)
+        || (event.keyCode >= 65 && event.keyCode <= 91)
+        || (event.keyCode >= 96 && event.keyCode <= 107)
+        || (event.keyCode >= 109 && event.keyCode <= 111)
+        || event.keyCode === 144 || event.keyCode === 110
+        || (event.keyCode >= 186 && event.keyCode <= 192)
+        || (event.keyCode >= 219 && event.keyCode <= 222)
+        || event.keyCode === 226)) {
       return;
     }
-
     setState(prevState => !prevState);
   };
 
+  const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
+
   const list = (anchor) => (
     <Box
-      sx={{ width: 250 }}
+      className={classes.drawer}
       role="presentation"
       onKeyDown={toggleDrawer(anchor, false)}
     >
@@ -46,7 +86,7 @@ const RightDrawer = () => {
           <ListItem
             button
             component={Link}
-            to="/signin"
+            to="/auth"
             onClick={toggleDrawer(anchor, false)}
           >
             <ListItemIcon>
@@ -88,12 +128,23 @@ const RightDrawer = () => {
       </div>
       <Divider />
       <List>
-        <ListItem button component="a" href="#">
+        <ListItem>
           <ListItemIcon>
             <FilterAltIcon />
           </ListItemIcon>
           <ListItemText primary="Filter" />
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
         </ListItem>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Filter />
+        </Collapse>
       </List>
     </Box>
   );
@@ -101,10 +152,14 @@ const RightDrawer = () => {
   return (
     <div>
       <React.Fragment key={'right'}>
-        <MenuIcon
-          fontSize="large"
+        <IconButton
           onClick={toggleDrawer()}
-        />
+          className={classes.menueBtn}
+        >
+          <MenuIcon
+          // fontSize="large"
+          />
+        </IconButton>
         <Drawer
           anchor={'right'}
           open={state}
