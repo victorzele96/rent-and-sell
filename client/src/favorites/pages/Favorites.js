@@ -33,7 +33,7 @@ const Favorites = (props) => {
   )
 
   return (
-    <Container className={classes.container}>
+    <Container id={props.tagId} className={classes.container}>
       <Card className={classes.card}>
         <h1>Favorites</h1>
         {content}

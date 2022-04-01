@@ -202,7 +202,7 @@ const Auth = (props) => {
 
   return (
     <>
-      <Container component="main" maxWidth="xs">
+      <Container id={props.tagId} component="main" maxWidth="xs">
         <CssBaseline />
         <Card sx={{ marginTop: 8, padding: 3, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.26)' }}>
           <Box

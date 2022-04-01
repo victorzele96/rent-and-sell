@@ -3,7 +3,6 @@ import image from '../../static/images/types-of-homes-hero.png';
 const DUMMY_DATA = [
   {
     id: "h1",
-    title: "Villa in San Andreas",
     description: "One of the most impressive villas in Los Santos.",
     img: image,
     address: "5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
@@ -34,7 +33,6 @@ const DUMMY_DATA = [
   },
   {
     id: "h2",
-    title: "dsfsdf",
     description: "1234dsa",
     img: image,
     address: "123 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",

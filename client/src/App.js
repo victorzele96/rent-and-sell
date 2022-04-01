@@ -20,13 +20,18 @@ const App = () => {
   const routes = (
     <>
       <Routes>
-        <Route exact path={"/"} element={toggleMapList ?
-          <Map properties={DUMMY_DATA} /> : <List />}
-        />
-        <Route exact path={"/auth"} element={<Auth />} />
-        <Route exact path={"/favorites"} element={<Favorites />} />
-        <Route exact path={"/chats"} element={<Chats />} />
-        <Route exact path={"/add-property"} element={<NewProperty />} />
+        {toggleMapList && (
+          <Route exact path={"/"} element={<Map properties={DUMMY_DATA} />}
+          />
+        )}
+        {!toggleMapList && (
+          <Route exact path={"/"} element={<List tagId="main-content" />}
+          />
+        )}
+        <Route exact path={"/auth"} element={<Auth tagId="main-content" />} />
+        <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
+        <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
+        <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
       </Routes>
     </>
   );
@@ -35,9 +40,7 @@ const App = () => {
     <div className="root">
       <CssBaseline />
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      <main className={toggleMapList ? 'map-main' : 'content-main'}>
-        {routes}
-      </main>
+      {routes}
       {/* <Copyright sx={{ mt: 2, md: 2 }} /> */}
     </div>
   );
