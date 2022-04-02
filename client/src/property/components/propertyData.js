@@ -17,7 +17,7 @@ const DUMMY_DATA = [
       renovated: true,
       rooms_num: "3",
       room_size: "75",
-      house_type: "house",
+      property_type: "house",
       stories: "2",
       floor: "",
       parking: "1",
