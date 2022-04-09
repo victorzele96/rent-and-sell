@@ -1,12 +1,15 @@
 import { useState } from "react";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import {
+  Box,
+  Container,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography
+} from "@mui/material";
+
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
 import PropertyGalleryForm from "../components/PropertyForm/PropertyGalleryForm";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
@@ -33,14 +36,7 @@ const NewProperty = (props) => {
 
   const steps = ["Information", "Gallery", "Review"];
 
-  const [form, setForm] = useState({});
-
   const classes = useStyles();
-
-  const propertyInfoHandler = (propertyData) => {
-    setForm({ ...propertyData });
-    console.log(form);
-  };
 
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
@@ -53,7 +49,7 @@ const NewProperty = (props) => {
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <PropertyInfoForm onPropertyInfo={propertyInfoHandler} />;
+        return <PropertyInfoForm />;
       case 1:
         return <PropertyGalleryForm />;
       case 2:

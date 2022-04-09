@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import ToggleButton from '@mui/material/ToggleButton';
+import {
+  Grid,
+  Typography,
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -16,7 +19,6 @@ import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
 import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
-import { ToggleButtonGroup } from '@mui/material';
 
 const initialPropertyState = {
   id: Math.floor(Math.random() * 10000),
@@ -26,7 +28,6 @@ const initialPropertyState = {
   details: {
     listing_status: "sale",
     creation_date: new Intl.DateTimeFormat('He-IL').format(),
-    // `${String(new Date().getDate()).padStart(2, '0')}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getFullYear()).padStart(2, '0')}`,
     price: 0,
     renovated: false,
     rooms_num: 0,
