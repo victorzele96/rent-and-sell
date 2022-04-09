@@ -121,7 +121,7 @@ const PropertyItem = (props) => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={props.property.title}
+        title={props.property.address}
         subheader="September 14, 2016" // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
       />
       <CardMedia //card image

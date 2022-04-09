@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   filterCard: {
     alignItems: "center",
     paddingBottom: "50px",
-    marginTop: "40px",
+    marginTop: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
   },
   filterCardContent: {
