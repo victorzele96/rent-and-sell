@@ -40,6 +40,8 @@ const NewProperty = (props) => {
 
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
+    console.log(JSON.parse(window.sessionStorage.getItem('new-property-state')));
+    console.log(JSON.parse(window.sessionStorage.getItem('new-property-images')));
   };
 
   const backHandler = () => {

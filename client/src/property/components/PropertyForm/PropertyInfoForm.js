@@ -98,7 +98,7 @@ const PropertyInfoForm = (props) => {
   };
 
   useEffect(() => {
-    console.log(propertyState);
+    window.sessionStorage.setItem('new-property-state', JSON.stringify(propertyState));
   }, [propertyState]);
 
   return (
