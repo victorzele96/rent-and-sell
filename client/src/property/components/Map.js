@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 
-import { Container } from '@mui/material';
+// import { Container } from '@mui/material';
 
 // import classes from './Map.module.css';
 
@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles((theme) => ({
   mapContainer: {
     height: "93.4vh",
+    marginTop: "64px"
   }
 }));
 

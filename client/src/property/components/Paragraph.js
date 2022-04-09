@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';

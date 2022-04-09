@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import ToggleButton from '@mui/material/ToggleButton';
+import { useEffect, useState } from 'react';
+
+import {
+  Grid,
+  Typography,
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -16,26 +20,87 @@ import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 
-const PropertyInfoForm = () => {
-  const [propertyType, setPropertyType] = useState('');
-  const [renovated, setRenovated] = useState(false);
-  const [parking, setParking] = useState(false);
-  const [accessibility, setAccessibility] = useState(false);
-  const [illumination, setIllumination] = useState(false);
-  const [pets, setPets] = useState(false);
-  const [park, setPark] = useState(false);
-  const [transport, setTransport] = useState(false);
-  const [institutes, setInstitutes] = useState(false);
+const initialPropertyState = {
+  id: Math.floor(Math.random() * 10000),
+  description: '',
+  img: '',
+  address: '',
+  details: {
+    listing_status: "sale",
+    creation_date: new Intl.DateTimeFormat('He-IL').format(),
+    price: 0,
+    renovated: false,
+    rooms_num: 0,
+    room_size: 0,
+    property_type: "house",
+    stories: 0,
+    floor: 0,
+    parking: false,
+    accessiblity: false,
+    natural_illumination: false,
+    pets: false,
+    park: false,
+    public_transport: false,
+    public_institutes: false,
+    contact: ''
+  },
+  creator: ''
+};
 
-  const propertyTypeChangeHandler = (event) => setPropertyType(event.target.value);
-  const renovatedChangeHandler = () => setRenovated(prevState => !prevState);
-  const parkingChangeHandler = (event) => setParking(prevState => !prevState);
-  const accessibilityChangeHandler = () => setAccessibility(prevState => !prevState);
-  const illuminationChangeHandler = () => setIllumination(prevState => !prevState);
-  const petsChangeHandler = () => setPets(prevState => !prevState);
-  const parkChangeHandler = () => setPark(prevState => !prevState);
-  const transportChangeHandler = () => setTransport(prevState => !prevState);
-  const institutesChangeHandler = () => setInstitutes(prevState => !prevState);
+const PropertyInfoForm = (props) => {
+  const [propertyState, setPropertyState] = useState(initialPropertyState);
+  const [selectedArray, setSelectedArray] = useState([]);
+
+  // TODO: add filtering logic to apartment list + pass the propertyState to outer components.
+
+  const houseTypeChangeHandler = (event) => {
+    setPropertyState(prevState => ({
+      ...prevState, details: {
+        ...prevState.details, property_type: prevState.details.property_type === 'house' ? 'apartment' : 'house'
+      }
+    }));
+  };
+
+  const toggle = (event, currentButtonName) => {
+    if (selectedArray.some(value => value === currentButtonName)) {
+      setSelectedArray([...selectedArray.filter(value => value !== currentButtonName)]);
+    } else {
+      setSelectedArray([...selectedArray, currentButtonName]);
+    }
+  };
+
+  const changeHandler = (event) => {
+    for (const [key1, value1] of Object.entries(propertyState)) {
+      if (key1 === 'details') {
+        for (const [key2, value2] of Object.entries(propertyState.details)) {
+          if (key2 === event.target.name) {
+            if (event.target.name === event.target.value) {
+              setPropertyState(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: !prevState[key1][key2]
+                }
+              }));
+            } else {
+              setPropertyState(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: event.target.value
+                }
+              }));
+            }
+          }
+        }
+      } else {
+        if (key1 === event.target.name) {
+          setPropertyState(prevState => ({ ...prevState, [key1]: event.target.value }));
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log(propertyState);
+  }, [propertyState]);
+
   return (
     <>
       <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
@@ -44,72 +109,84 @@ const PropertyInfoForm = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormControl variant="standard" fullWidth >
-            <InputLabel id="demo-simple-select-label">Property Type</InputLabel>
+            <InputLabel id="property_type-label">Property Type</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={propertyType}
+              labelId="property_type-label"
+              id="property_type"
+              name="property_type"
+              value={propertyState.details.property_type}
+              // value="house"
               label="property-type"
-              onChange={propertyTypeChangeHandler}
+              onChange={houseTypeChangeHandler}
+              required
             >
-              <MenuItem value="house">House</MenuItem>
-              <MenuItem value="apartment">Apartment</MenuItem>
+              <MenuItem value="house">house</MenuItem>
+              <MenuItem value="apartment">apartment</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="stories"
-            name="stories"
-            label="Stories"
-            fullWidth
-            autoComplete="stories"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="floor"
-            name="floor"
-            label="Floor"
-            fullWidth
-            autoComplete="floor"
-            variant="standard"
-          />
-        </Grid>
+        {propertyState.details.property_type === 'house' && (
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="stories"
+              name="stories"
+              label="Stories"
+              type="number"
+              fullWidth
+              variant="standard"
+              onChange={changeHandler}
+            />
+          </Grid>
+        )}
+        {propertyState.details.property_type === 'apartment' && (
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="floor"
+              name="floor"
+              label="Floor"
+              type="number"
+              fullWidth
+              variant="standard"
+              onChange={changeHandler}
+            />
+          </Grid>
+        )}
         <Grid item xs={12} sm={6}>
           <TextField
             required
             id="price"
             name="price"
             label="Price"
+            type="number"
             fullWidth
-            autoComplete="price"
             variant="standard"
+            onChange={changeHandler}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="rooms-num"
-            name="rooms-num"
+            id="rooms_num"
+            name="rooms_num"
             label="Rooms Number"
+            type="number"
             fullWidth
-            autoComplete="rooms-num"
             variant="standard"
+            onChange={changeHandler}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="rooms-size"
-            name="rooms-size"
+            id="rooms_size"
+            name="rooms_size"
             label="Rooms Size"
+            type="number"
             fullWidth
-            autoComplete="rooms-size"
             variant="standard"
+            onChange={changeHandler}
           />
         </Grid>
         <Grid item xs={12} />
@@ -120,30 +197,8 @@ const PropertyInfoForm = () => {
             name="address"
             label="Address"
             fullWidth
-            autoComplete="address"
             variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="city"
-            name="city"
-            label="City"
-            fullWidth
-            autoComplete="shipping address-level2"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="country"
-            name="country"
-            label="Country"
-            fullWidth
-            autoComplete="shipping country"
-            variant="standard"
+            onChange={changeHandler}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -151,106 +206,126 @@ const PropertyInfoForm = () => {
             id="contact"
             name="contact"
             label="Contact"
+            type="tel"
             fullWidth
             variant="standard"
+            onChange={changeHandler}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="description"
+            name="description"
+            label="description"
+            multiline
+            rows={3}
+            fullWidth
+            inputProps={{ maxLength: 500 }}
+            onChange={changeHandler}
           />
         </Grid>
         <Grid item xs={12} />
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="parking"
-            selected={parking}
-            fullWidth
-            onChange={parkingChangeHandler}
-          >
-            <LocalParkingIcon sx={{ mr: 2 }} />
-            Parking
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="accessibility"
-            selected={accessibility}
-            fullWidth
-            onChange={accessibilityChangeHandler}
-          >
-            <ConstructionIcon sx={{ mr: 2 }} />
-            Accessibility
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="illumination"
-            selected={illumination}
-            fullWidth
-            onChange={illuminationChangeHandler}
-          >
-            <WbIncandescentIcon sx={{ mr: 2 }} />
-            Natural Illumination
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="pets"
-            selected={pets}
-            fullWidth
-            onChange={petsChangeHandler}
-          >
-            <PetsIcon sx={{ mr: 2 }} />
-            Pets
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="park"
-            selected={park}
-            fullWidth
-            onChange={parkChangeHandler}
-          >
-            <ParkIcon sx={{ mr: 2 }} />
-            Park
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="transport"
-            selected={transport}
-            fullWidth
-            onChange={transportChangeHandler}
-          >
-            <CommuteIcon sx={{ mr: 2 }} />
-            Public Transport
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="institutes"
-            selected={institutes}
-            fullWidth
-            onChange={institutesChangeHandler}
-          >
-            <DomainIcon sx={{ mr: 2 }} />
-            Public Institutes
-          </ToggleButton>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <ToggleButton
-            color="primary"
-            value="renovated"
-            selected={renovated}
-            fullWidth
-            onChange={renovatedChangeHandler}
-          >
-            <ConstructionIcon sx={{ mr: 2 }} />
-            Renovated
-          </ToggleButton>
+        <Grid container columns={2} spacing={3}>
+          <Grid item xs={1}>
+            <ToggleButtonGroup
+              onChange={changeHandler}
+              value={selectedArray}
+              color="primary"
+              orientation='vertical'
+              fullWidth
+            >
+              <ToggleButton
+                name="park"
+                color="primary"
+                value="park"
+                fullWidth
+                onClick={toggle}
+              >
+                <ParkIcon sx={{ mr: 2 }} />
+                Park
+              </ToggleButton>
+              <ToggleButton
+                name="public_transport"
+                color="primary"
+                value="public_transport"
+                fullWidth
+                onClick={toggle}
+              >
+                <CommuteIcon sx={{ mr: 2 }} />
+                Public Transport
+              </ToggleButton>
+              <ToggleButton
+                name="public_institutes"
+                color="primary"
+                value="public_institutes"
+                fullWidth
+                onClick={toggle}
+              >
+                <DomainIcon sx={{ mr: 2 }} />
+                Public Institutes
+              </ToggleButton>
+              <ToggleButton
+                name="renovated"
+                color="primary"
+                value="renovated"
+                fullWidth
+                onClick={toggle}
+              >
+                <ConstructionIcon sx={{ mr: 2 }} />
+                Renovated
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
+          <Grid item xs={1}>
+            <ToggleButtonGroup
+              onChange={changeHandler}
+              value={selectedArray}
+              color="primary"
+              orientation='vertical'
+              fullWidth
+            >
+              <ToggleButton
+                color="primary"
+                value="parking"
+                name="parking"
+                fullWidth
+                onClick={toggle}
+              >
+                <LocalParkingIcon sx={{ mr: 2 }} />
+                Parking
+              </ToggleButton>
+              <ToggleButton
+                name="accessiblity"
+                color="primary"
+                value="accessiblity"
+                fullWidth
+                onClick={toggle}
+              >
+                <ConstructionIcon sx={{ mr: 2 }} />
+                Accessibility
+              </ToggleButton>
+              <ToggleButton
+                name="natural_illumination"
+                color="primary"
+                value="natural_illumination"
+                fullWidth
+                onClick={toggle}
+              >
+                <WbIncandescentIcon sx={{ mr: 2 }} />
+                Natural Illumination
+              </ToggleButton>
+              <ToggleButton
+                name="pets"
+                color="primary"
+                value="pets"
+                fullWidth
+                onClick={toggle}
+              >
+                <PetsIcon sx={{ mr: 2 }} />
+                Pets
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
         </Grid>
       </Grid>
     </>

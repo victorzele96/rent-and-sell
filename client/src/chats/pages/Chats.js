@@ -116,7 +116,7 @@ const initialUsers = [
   },
 ];
 
-const Chats = () => {
+const Chats = (props) => {
   const classes = useStyles();
 
   const messagesEndRef = useRef(null);
@@ -198,7 +198,7 @@ const Chats = () => {
   });
 
   return (
-    <Container className={classes.container} maxWidth={false}>
+    <Container id={props.tagId} className={classes.container} maxWidth={false}>
       <Grid container component={Paper} className={classes.chatSection}>
         <Grid item xs={3} className={classes.borderRight500}>
           <List>

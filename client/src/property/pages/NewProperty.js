@@ -1,12 +1,15 @@
 import { useState } from "react";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import {
+  Box,
+  Container,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography
+} from "@mui/material";
+
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
 import PropertyGalleryForm from "../components/PropertyForm/PropertyGalleryForm";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
@@ -28,40 +31,37 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const steps = ["Information", "Gallery", "Review"];
-
-const getStepContent = (step) => {
-  switch (step) {
-    case 0:
-      return <PropertyInfoForm />;
-    case 1:
-      return <PropertyGalleryForm />;
-    case 2:
-      return <PropertyReview />;
-    default:
-      throw new Error("Unknown step");
-  }
-};
-
-const NewProperty = () => {
-
-  // ! the second and third step show gray scroller
-
+const NewProperty = (props) => {
   const [activeStep, setActiveStep] = useState(0);
+
+  const steps = ["Information", "Gallery", "Review"];
 
   const classes = useStyles();
 
-  const handleNext = () => {
+  const nextHandler = () => {
     setActiveStep(activeStep + 1);
   };
 
-  const handleBack = () => {
+  const backHandler = () => {
     setActiveStep(activeStep - 1);
+  };
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <PropertyInfoForm />;
+      case 1:
+        return <PropertyGalleryForm />;
+      case 2:
+        return <PropertyReview />;
+      default:
+        throw new Error("Unknown step");
+    }
   };
 
   return (
     // <Container maxWidth={false} className={classes.container}>
-    <Container component="main" className={classes.innerContainer}>
+    <Container id={props.tagId} component="main" className={classes.innerContainer}>
       <Paper
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
@@ -89,14 +89,14 @@ const NewProperty = () => {
               {getStepContent(activeStep)}
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 {activeStep !== 0 && (
-                  <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                  <Button onClick={backHandler} sx={{ mt: 3, ml: 1 }}>
                     Back
                   </Button>
                 )}
 
                 <Button
                   variant="contained"
-                  onClick={handleNext}
+                  onClick={nextHandler}
                   sx={{ mt: 3, ml: 1 }}
                 >
                   {activeStep === steps.length - 1 ? "Submit" : "Next"}
