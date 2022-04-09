@@ -1,5 +1,6 @@
-import { Card, Container } from "@mui/material";
 import { useContext } from "react";
+
+import { Card, Container } from "@mui/material";
 
 import List from '../../property/components/List';
 
@@ -33,7 +34,7 @@ const Favorites = (props) => {
   )
 
   return (
-    <Container className={classes.container}>
+    <Container id={props.tagId} className={classes.container}>
       <Card className={classes.card}>
         <h1>Favorites</h1>
         {content}

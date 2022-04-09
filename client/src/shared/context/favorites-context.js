@@ -16,17 +16,17 @@ export const FavoritesContextProvider = (props) => {
     setUserFavorites((prevUserFavorites => {
       return prevUserFavorites.concat(favoriteProperty);
     }));
-  }
+  };
 
   const removeFavoriteHandler = (propertyId) => {
     setUserFavorites((prevUserFavorites => {
       return prevUserFavorites.filter(property => property.id !== propertyId);
     }));
-  }
+  };
 
   const itemIsFavoriteHandler = (propertyId) => {
     return userFavorites.some(property => property.id === propertyId);
-  }
+  };
 
   const context = {
     favorites: userFavorites,

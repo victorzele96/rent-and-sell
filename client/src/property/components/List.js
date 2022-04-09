@@ -74,7 +74,7 @@ const List = (props) => {
 
   return (
     // <Container maxWidth={false} className={classes.listContainer}>
-    <Stack spacing="30px" className={classes.listContainerInner}>
+    <Stack id={props.tagId} spacing="30px" className={classes.listContainerInner}>
       {loadedProperties.map(item => (
         <PropertyItem key={item.id} property={item} />
       ))}
