@@ -27,6 +27,7 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
+  Divider,
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
@@ -155,8 +156,9 @@ const PropertyItem = (props) => {
           <ShareIcon />
         </IconButton>
         <Dialog onClose={toggle} open={isOpen}>
-          <DialogTitle>Share</DialogTitle>
-          <DialogActions onClick={toggle}>
+          <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
+          <Divider />
+          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggle}>
             <FacebookShareButton url={shareUrl}>
               <FacebookIcon size={40} round={true} />
             </FacebookShareButton>
