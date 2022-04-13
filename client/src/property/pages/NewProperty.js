@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
-import PropertyGalleryForm from "../components/PropertyForm/PropertyGalleryForm";
+import FileUpload from "../components/PropertyForm/FileUpload";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
 
 import { makeStyles } from '@mui/styles';
@@ -40,8 +40,12 @@ const NewProperty = (props) => {
 
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
-    console.log(JSON.parse(window.sessionStorage.getItem('new-property-state')));
-    console.log(JSON.parse(window.sessionStorage.getItem('new-property-images')));
+    console.log(JSON.parse(window.sessionStorage.getItem("new-property-state")));
+    try {
+      console.log(JSON.parse(window.sessionStorage.getItem("new-property-images")));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const backHandler = () => {
@@ -53,7 +57,7 @@ const NewProperty = (props) => {
       case 0:
         return <PropertyInfoForm />;
       case 1:
-        return <PropertyGalleryForm />;
+        return <FileUpload />;
       case 2:
         return <PropertyReview />;
       default:
@@ -89,7 +93,7 @@ const NewProperty = (props) => {
           ) : (
             <>
               {getStepContent(activeStep)}
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: "2rem" }}>
                 {activeStep !== 0 && (
                   <Button onClick={backHandler} sx={{ mt: 3, ml: 1 }}>
                     Back

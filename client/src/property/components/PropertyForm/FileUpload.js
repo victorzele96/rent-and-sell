@@ -1,58 +1,50 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { DropzoneAreaBase } from 'material-ui-dropzone';
 
 import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
+  const [images, setImages] = useState([]);
 
-  const getBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file);
-    });
-  }
+  const addImageHandler = (newImages) => {
+    console.log('onAdd', newImages);
+    setImages([].concat(images, newImages));
+  };
 
-  const selectFilesHandler = (event) => {
-    const images = event.target.files;
+  const deleteImageHandler = (deleteImage) => {
+    console.log('onDelete', deleteImage);
 
-    // Object.values(images).map(image => {
-    //   console.log(typeof image.type);
-    //   if (image.type !== "image/jpg" || image.type !== "image/jpeg" || image.type !== "image/png") {
-    //     console.error('wrong file type');
-    //   }
-    //   return image;
-    // });
-    Object.values(images).map(image => getBase64(image).then(base64 => {
-      let imagesBase64 = [];
-      const currentSession = JSON.parse(window.sessionStorage.getItem('new-property-images'));
-
-      if (currentSession) {
-        imagesBase64 = imagesBase64.concat(currentSession);
-      }
-
-      imagesBase64.push(base64);
-      window.sessionStorage.setItem('new-property-images', JSON.stringify(imagesBase64));
-    }));
+    let indexToDelete = images.indexOf(deleteImage);
+    setImages(prevState => prevState.filter(image => images.indexOf(image) !== indexToDelete));
   };
 
   useEffect(() => {
-    window.sessionStorage.removeItem('new-property-images');
-  }, []);
+    console.log(images);
+    window.sessionStorage.setItem("new-property-images", JSON.stringify(images));
+  }, [images]);
 
   return (
-    <form method="post" action="#" id="#">
-      <div className={classes.files}>
-        <label>Upload Your File </label>
-        <input
-          className={classes["form-control"]}
-          type="file"
-          multiple={true}
-          accept="image/*"
-          onChange={selectFilesHandler}
+    <div className={classes.container}>
+      <div>
+        <DropzoneAreaBase
+          style={classes}
+          fileObjects={images}
+          onAdd={addImageHandler}
+          onDelete={deleteImageHandler}
+          showPreviews={true}
+          showPreviewsInDropzone={false}
+          acceptedFiles={['image/*']}
+          showFileNames={false}
+          showAlerts={false}
+          filesLimit={6}
+          useChipsForPreview
+          previewGridProps={{ container: { spacing: 1, direction: 'row' } }}
+          previewChipProps={{ classes: { root: classes.previewChip } }}
+          previewText="Selected files"
         />
       </div>
-    </form>
+    </div>
   );
 };
 
