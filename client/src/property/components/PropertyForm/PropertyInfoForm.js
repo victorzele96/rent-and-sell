@@ -23,7 +23,6 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 const initialPropertyState = {
   id: Math.floor(Math.random() * 10000),
   description: '',
-  img: '',
   address: '',
   details: {
     listing_status: "sale",
@@ -98,7 +97,7 @@ const PropertyInfoForm = (props) => {
   };
 
   useEffect(() => {
-    console.log(propertyState);
+    window.sessionStorage.setItem("new-property-state", JSON.stringify(propertyState));
   }, [propertyState]);
 
   return (
@@ -180,9 +179,9 @@ const PropertyInfoForm = (props) => {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="rooms_size"
-            name="rooms_size"
-            label="Rooms Size"
+            id="room_size"
+            name="room_size"
+            label="Room Size"
             type="number"
             fullWidth
             variant="standard"
