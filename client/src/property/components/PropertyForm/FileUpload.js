@@ -10,6 +10,7 @@ const FileUpload = (props) => {
   const addImageHandler = (newImages) => {
     console.log('onAdd', newImages);
     setImages([].concat(images, newImages));
+    // TODO: add serverside formdata
   };
 
   const deleteImageHandler = (deleteImage) => {
@@ -17,6 +18,7 @@ const FileUpload = (props) => {
 
     let indexToDelete = images.indexOf(deleteImage);
     setImages(prevState => prevState.filter(image => images.indexOf(image) !== indexToDelete));
+    // TODO: add serverside formdata
   };
 
   useEffect(() => {

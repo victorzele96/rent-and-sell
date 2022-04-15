@@ -24,6 +24,7 @@ const initialPropertyState = {
   id: Math.floor(Math.random() * 10000),
   description: '',
   address: '',
+  images: [],
   details: {
     listing_status: "sale",
     creation_date: new Intl.DateTimeFormat('He-IL').format(),
