@@ -96,6 +96,12 @@ const PropertyItem = (props) => {
 
   const classes = useStyles();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+  const shareUrl = window.location.href; // TODO: need to be changed to url with specific item
+
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
 
   let actionIcons = null;
@@ -133,12 +139,6 @@ const PropertyItem = (props) => {
       </>
     );
   }
-
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-  const shareUrl = window.location.href; // TODO: need to be changed to url with specific item
 
   return (
     <Card className={classes.root}>
@@ -267,7 +267,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<LocalParkingIcon className={classes.leftIcon} />}
               info="Parking:"
-              text={props.property.details.parking}
+              text={props.property.details.parking ? "yes" : "no"}
             />
             <Paragraph
               show

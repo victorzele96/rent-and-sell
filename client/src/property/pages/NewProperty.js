@@ -54,7 +54,11 @@ const NewProperty = (props) => {
       images
     };
 
-    setPropertyState(property)
+    setPropertyState(property);
+
+    if (activeStep === steps.length - 1) { // Submit
+      // TODO: send data to backend server
+    }
   };
 
   const backHandler = () => {
