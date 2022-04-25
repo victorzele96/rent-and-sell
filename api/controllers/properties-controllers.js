@@ -1,15 +1,17 @@
+const mongoose = require('mongoose');
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const getCoordsForAddress = require('../util/location');
 const Property = require('../models/property');
+const User = require('../models/user');
 
 const getPropertiesByUserId = async (req, res, next) => {
   const userId = req.params.uid // params = { uid: 'u1' }
-  let properties;
+
   try {
     await Property.find({}, (err, properties) => {
-      let userProperties = properties.filter((property) => property.creator === userId);
+      let userProperties = properties.filter((property) => property.creator.toString() === userId);
 
       if (!userProperties || userProperties.length === 0) {
         return next(
@@ -88,8 +90,30 @@ const createProperty = async (req, res, next) => {
     details
   });
 
+  let user;
   try {
-    createdProperty.save();
+    user = await User.findById(creator);
+  } catch (err) {
+    return next(
+      new HttpError('Creating property failed, please try again.', 500)
+    );
+  }
+
+  if (!user) {
+    return next(
+      new HttpError('Could not find user for provided id', 404)
+    );
+  }
+
+  console.log(createdProperty);
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdProperty.save({ session: sess });
+    user.properties.push(createdProperty);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     return next(
       new HttpError('Creating property failed, please try again.', 500)
@@ -160,15 +184,26 @@ const deleteProperty = async (req, res, next) => {
 
   let property;
   try {
-    property = await Property.findById(propertyId);
+    property = await Property.findById(propertyId).populate('creator');
   } catch (err) {
     return (
       new HttpError('Something went wrong, could not delete property.', 500)
     );
   }
 
+  if (!property) {
+    return next(
+      new HttpError('Could not find property for this id.', 404)
+    );
+  }
+
   try {
-    await property.remove();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await property.remove({ session: sess });
+    property.creator.properties.pull(property);
+    await property.creator.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     return (
       new HttpError('Something went wrong, could not delete property.', 500)

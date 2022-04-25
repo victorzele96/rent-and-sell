@@ -4,18 +4,18 @@ const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
   description: { type: String, required: true },
-  image: { type: [String], required: true },
+  images: { type: [String], required: false },
   address: { type: String, required: true },
   // location: {
   //   type: {
   //     type: String,
   //     enum: ['Point'],
-  //     required: true
   //   },
   //   coordinates: {
   //     type: [Number],
-  //     required: true
-  //   }
+  //     index: '2dsphere'
+  //   },
+  //   formattedAddress: { type: String }
   // },
   details: {
     listing_status: { type: String, required: true },
@@ -24,7 +24,7 @@ const propertySchema = new Schema({
     renovated: { type: Boolean },
     rooms_num: { type: Number, required: true },
     room_size: { type: Number, required: true },
-    house_type: { type: String, required: true },
+    property_type: { type: String, required: true },
     stories: { type: Number },
     floor: { type: Number },
     parking: { type: Boolean },
@@ -36,8 +36,7 @@ const propertySchema = new Schema({
     public_institutes: { type: Boolean },
     contact: { type: String, required: true }
   },
-  creator: { type: String, require: true }
-  // creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
+  creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
 });
 
 propertySchema.set('toJSON', { getters: true });
