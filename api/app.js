@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const propertiesRoutes = require('./routes/properties-routes');
 const usersRoutes = require('./routes/users-routes');
@@ -26,4 +27,11 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error accurred" });
 });
 
-app.listen(process.env.PORT || 9000);
+mongoose
+  .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.l6yqd.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+  .then(() => {
+    app.listen(process.env.PORT || 9000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
