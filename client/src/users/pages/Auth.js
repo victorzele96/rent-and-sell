@@ -15,12 +15,15 @@ import {
   Button,
   Avatar,
   CircularProgress,
-  Backdrop
+  Backdrop,
+  Alert
 } from '@mui/material';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import AuthContext from '../../shared/context/auth-context';
+
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
 /* 
   TODO: 1) check if the form-hook can be used
@@ -31,8 +34,6 @@ import AuthContext from '../../shared/context/auth-context';
 const Auth = (props) => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [isSigninMode, setIsSigninMode] = useState(true);
   const [firstName, setFirstName] = useState({ value: '', isValid: false });
   const [lastName, setLastName] = useState({ value: '', isValid: false });
@@ -48,7 +49,7 @@ const Auth = (props) => {
   });
   const [formIsValid, setFormIsValid] = useState(false);
 
-  // const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const changeHandler = (event) => {
     const enteredValue = event.target.value
@@ -121,62 +122,55 @@ const Auth = (props) => {
     if (!isSigninMode) {
       // Sign up
       try {
-        setIsLoading(true);
         if (formIsValid) {
-          const response = await fetch('http://localhost:9000/api/users/signup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+          await sendRequest(
+            'http://localhost:9000/api/users/signup',
+            'POST',
+            JSON.stringify({
               firstName: firstName.value,
               lastName: lastName.value,
               email: email.value,
               password: password.value,
               confirmPassword: confirmPassword.value
-            })
-          });
+            }),
+            {
+              'Content-Type': 'application/json'
+            },
+          );
 
-          const responseData = await response.json();
-          console.log(responseData);
-          setIsLoading(false);
           authCtx.signin();
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');
         }
       } catch (err) {
-        setError(err.message || 'Something went wrong, please try again.');
+        console.log(err.message || 'Something went wrong, please try again.');
       }
     } else {
       // Sign in
       try {
-        setIsLoading(true);
         if (formIsValid) {
-          const response = await fetch('http://localhost:9000/api/users/signin', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+          await sendRequest('http://localhost:9000/api/users/signin',
+            'POST',
+            JSON.stringify({
               email: email.value,
               password: password.value,
-            })
-          });
+            }),
+            {
+              'Content-Type': 'application/json'
+            },
 
-          const responseData = await response.json();
-          console.log(responseData);
-          setIsLoading(false);
+          );
+
           authCtx.signin();
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');
         }
       } catch (err) {
-        setError(err.message || 'Something went wrong, please try again.');
+        console.log(err.message || 'Something went wrong, please try again.');
       }
     }
-    setIsLoading(false);
   };
 
   const content = (
@@ -309,6 +303,11 @@ const Auth = (props) => {
             </Box>
           </Box>
         </Card>
+        {error && (
+          <Box id="error-container" sx={{ marginTop: '20px' }}>
+            <Alert severity="error">{error}</Alert>
+          </Box>
+        )}
       </Container>
     </>
   );
