@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NewProperty = (props) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [propertyData, setPropertyState] = useState({});
 
   const steps = ["Information", "Gallery", "Review"];
 
@@ -40,11 +41,23 @@ const NewProperty = (props) => {
 
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
-    console.log(JSON.parse(window.sessionStorage.getItem("new-property-state")));
+
+    let images = [];
     try {
-      console.log(JSON.parse(window.sessionStorage.getItem("new-property-images")));
+      images = [...JSON.parse(window.sessionStorage.getItem("new-property-images"))];
     } catch (e) {
       console.log(e);
+    }
+
+    const property = {
+      ...JSON.parse(sessionStorage.getItem("new-property-state")),
+      images
+    };
+
+    setPropertyState(property);
+
+    if (activeStep === steps.length - 1) { // Submit
+      // TODO: send data to backend server
     }
   };
 
@@ -59,7 +72,7 @@ const NewProperty = (props) => {
       case 1:
         return <FileUpload />;
       case 2:
-        return <PropertyReview />;
+        return <PropertyReview property={propertyData} />;
       default:
         throw new Error("Unknown step");
     }

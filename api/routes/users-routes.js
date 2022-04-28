@@ -1,23 +1,29 @@
-const express = require("express");
-const { check } = require("express-validator");
-
-const usersControllers = require("../controllers/users-controllers");
+const express = require('express');
+const { check } = require('express-validator');
 
 const router = express.Router();
 
-router.get("/", usersControllers.getUser);
+const usersControllers = require('../controllers/users-controllers');
+
+router.get('/', usersControllers.getUsers);
 
 router.post(
-  "/signup",
+  '/signup',
   [
-    check("firstName").not().isEmpty(),
-    check("lastName").not().isEmpty(),
-    check("email").normalizeEmail().isEmail(),
-    check("password").isLength({ min: 6 }),
+    check('firstName').notEmpty(),
+    check('lastName').notEmpty(),
+    check('email').normalizeEmail().isEmail(),
+    check('password').isLength({ min: 6 }),
+    check('confirmPassword').custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('Password confirmation does not match password');
+      }
+      return true;
+    }),
   ],
   usersControllers.signup
 );
 
-router.post("/signin", usersControllers.signin);
+router.post('/signin', usersControllers.signin);
 
 module.exports = router;

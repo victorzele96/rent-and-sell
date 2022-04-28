@@ -94,30 +94,7 @@ const PropertyItem = (props) => {
 
   const favoritesCtx = useContext(FavoritesContext);
 
-  const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
-
   const classes = useStyles();
-
-  const handleExpandClick = () => setExpanded((prevState) => !prevState);
-
-  const favoritesHandler = () => {
-    if (itemIsFavorite) {
-      favoritesCtx.removeFavorite(props.id);
-    } else {
-      favoritesCtx.addFavorite({
-        id: props.property.id,
-        title: props.property.title,
-        description: props.property.description,
-        img: props.property.image,
-        address: props.property.address,
-        location: props.property.location,
-        details: props.property.details,
-        creator: props.property.creator,
-      });
-    }
-
-    // TODO: add favorites logic + backend connection
-  };
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => {
@@ -125,8 +102,48 @@ const PropertyItem = (props) => {
   };
   const shareUrl = window.location.href; // TODO: need to be changed to url with specific item
 
+  const handleExpandClick = () => setExpanded((prevState) => !prevState);
+
+  let actionIcons = null;
+
+  if (!props.preview) {
+    const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
+
+    const favoritesHandler = () => {
+      if (itemIsFavorite) {
+        favoritesCtx.removeFavorite(props.id);
+      } else {
+        favoritesCtx.addFavorite({
+          id: props.property.id,
+          title: props.property.title,
+          description: props.property.description,
+          img: props.property.image,
+          address: props.property.address,
+          location: props.property.location,
+          details: props.property.details,
+          creator: props.property.creator,
+        });
+      }
+
+      // TODO: add favorites logic + backend connection
+    };
+
+    actionIcons = (
+      <>
+        <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
+          <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
+        </IconButton>
+        <IconButton aria-label="share" onClick={toggle}>
+          <ShareIcon />
+        </IconButton>
+      </>
+    );
+  }
+
   return (
     <Card className={classes.root}>
+      {console.log(props)}
+
       <CardHeader
         avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
         action={
@@ -149,12 +166,7 @@ const PropertyItem = (props) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
-          <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
-        </IconButton>
-        <IconButton aria-label="share" onClick={toggle}>
-          <ShareIcon />
-        </IconButton>
+        {actionIcons}
         <Dialog onClose={toggle} open={isOpen}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
@@ -191,7 +203,7 @@ const PropertyItem = (props) => {
               icon={<SellIcon className={classes.leftIcon} />}
               info="Listing Status"
               text={
-                "Listing Status: For " + props.property.details.listing_status
+                "Listing Status: For " + props.property.details["listing_status"]
               }
             />
             <Paragraph
@@ -206,7 +218,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<EventIcon className={classes.leftIcon} />}
               info="Time on RNS:"
-              text={props.property.details.creation_date}
+              text={props.property.details["creation_date"]}
             />
             <Paragraph
               show
@@ -227,14 +239,14 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<HotelIcon className={classes.leftIcon} />}
               info="Rooms Number:"
-              text={props.property.details.rooms_num}
+              text={props.property.details["rooms_num"]}
             />
             <Paragraph
               show
               iconClassName={classes.rightIcon}
               icon={<SquareFootIcon className={classes.leftIcon} />}
               info="Rooms Size:"
-              text={props.property.details.room_size + " sq m"}
+              text={props.property.details["room_size"] + " sq m"}
             />
             <Paragraph
               show={props.property.details.stories ? true : false}
@@ -255,7 +267,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<LocalParkingIcon className={classes.leftIcon} />}
               info="Parking:"
-              text={props.property.details.parking}
+              text={props.property.details.parking ? "yes" : "no"}
             />
             <Paragraph
               show
@@ -269,7 +281,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<WbIncandescentIcon className={classes.leftIcon} />}
               info="Natural Illumination:"
-              text={props.property.details.natural_illumination ? "yes" : "no"}
+              text={props.property.details["natural_illumination"] ? "yes" : "no"}
             />
             <Paragraph
               show
@@ -290,14 +302,14 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<CommuteIcon className={classes.leftIcon} />}
               info="Public Transport:"
-              text={props.property.details.public_transport ? "yes" : "no"}
+              text={props.property.details["public_transport"] ? "yes" : "no"}
             />
             <Paragraph
               show
               iconClassName={classes.rightIcon}
               icon={<DomainIcon className={classes.leftIcon} />}
               info="Public Institutes:"
-              text={props.property.details.public_institutes ? "yes" : "no"}
+              text={props.property.details["public_institutes"] ? "yes" : "no"}
             />
             <Paragraph
               show
