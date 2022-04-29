@@ -1,87 +1,46 @@
-const { uuid } = require("uuidv4");
+const mongoose = require('mongoose');
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
+const getCoordsForAddress = require('../util/location');
+const Property = require('../models/property');
+const User = require('../models/user');
 
-let DUMMY_PROPERTIES = [
-  {
-    id: "p1",
-    description: "One of the most impressive villas in Los Santos.",
-    images: [],
-    address: "5454 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
-    location: {
-      lat: 31.2530,
-      lng: 34.7915
-    },
-    details: {
-      listing_status: "Sale",
-      creation_date: "3 hours",
-      price: 1_750_000,
-      renovated: true,
-      rooms_num: 3,
-      room_size: 75,
-      property_type: "house",
-      stories: "2",
-      floor: "",
-      parking: true,
-      accessiblity: true,
-      natural_illumination: true,
-      pets: false,
-      park: false,
-      public_transport: true,
-      public_institutes: true,
-      contact: "+972111111112"
-    },
-    creator: "u1"
-  },
-  {
-    id: "p2",
-    description: "1234dsa",
-    images: [],
-    address: "123 Interstate 55 North Frontage Rd, Jackson, MS 39211, United States",
-    location: {
-      lat: 31.2,
-      lng: 34.7
-    },
-    details: {
-      listing_status: "Rent",
-      creation_date: "3 hours",
-      price: 2100,
-      renovated: true,
-      rooms_num: 3,
-      room_size: 75,
-      house_type: "apartment",
-      stories: "",
-      floor: "1",
-      parking: false,
-      accessiblity: false,
-      natural_illumination: true,
-      pets: true,
-      park: true,
-      public_transport: true,
-      public_institutes: true,
-      contact: "+972111111112"
-    },
-    creator: "u2"
-  },
-];
-
-const getPropertiesByUserId = (req, res, next) => {
+const getPropertiesByUserId = async (req, res, next) => {
   const userId = req.params.uid // params = { uid: 'u1' }
-  const properties = DUMMY_PROPERTIES.filter(p => p.creator === userId);
 
-  if (!properties || properties.length === 0) {
+  try {
+    await Property.find({}, (err, properties) => {
+      let userProperties = properties.filter((property) => property.creator.toString() === userId);
+
+      if (!userProperties || userProperties.length === 0) {
+        return next(
+          new HttpError("Could not find a property for the provided user id.", 404)
+        );
+      }
+
+      res.json({ properties: userProperties });
+    }).clone();
+  } catch (err) {
     return next(
-      new HttpError("Could not find a property for the provided user id.", 404)
+      new HttpError('Fetching properties failed, please try again later.', 500)
     );
   }
 
-  res.json({ properties });
+  // res.json({ properties });
 };
 
-const getPropertyById = (req, res, next) => {
+const getPropertyById = async (req, res, next) => {
   const propertyId = req.params.pid // params = { pid: 'h1' }
-  const property = DUMMY_PROPERTIES.find(p => p.id === propertyId);
+
+  let property;
+  try {
+    property = await Property.findById(propertyId);
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not find a property.', 500)
+    );
+  }
 
   if (!property) {
     return next(
@@ -92,12 +51,19 @@ const getPropertyById = (req, res, next) => {
   res.json({ property });
 };
 
-const getAllProperties = (req, res, next) => {
-  console.log('GET Request in Property');
-  res.json({ properties: DUMMY_PROPERTIES });
+const getAllProperties = async (req, res, next) => {
+  try {
+    await Property.find({}, (err, properties) => {
+      res.json({ properties: properties });
+    }).clone();
+  } catch (err) {
+    return next(
+      new HttpError('Fetching properties failed, please try again later.', 500)
+    );
+  }
 };
 
-const createProperty = (req, res, next) => {
+const createProperty = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -106,47 +72,58 @@ const createProperty = (req, res, next) => {
     );
   }
 
-  const { description, address, images, creator, details, coordinates } = req.body;
-  const {
-    listing_status, price, rooms_num, room_size,
-    house_type, floor, stories, renovated, parking,
-    accessiblity, park, pets, natural_illumination,
-    public_institutes, public_transport, contact
-  } = details;
+  const { description, address, images, creator, details } = req.body;
 
-  const createdProperty = {
-    id: uuid(),
+  let coordinates;
+  try {
+    // coordinates = await getCoordsForAddress(address);
+    // TODO: adjust the getCoordsForAddress function to node geocoder
+  } catch (err) {
+    return next(err);
+  }
+
+  const createdProperty = new Property({
     description,
     address,
     images,
-    location: coordinates,
     creator,
-    details: {
-      listing_status,
-      price,
-      rooms_num,
-      room_size,
-      house_type,
-      floor,
-      stories,
-      renovated,
-      parking,
-      accessiblity,
-      park,
-      pets,
-      natural_illumination,
-      public_institutes,
-      public_transport,
-      contact
-    }
-  };
+    details
+  });
 
-  DUMMY_PROPERTIES.push(createdProperty);
+  let user;
+  try {
+    user = await User.findById(creator);
+  } catch (err) {
+    return next(
+      new HttpError('Creating property failed, please try again.', 500)
+    );
+  }
+
+  if (!user) {
+    return next(
+      new HttpError('Could not find user for provided id', 404)
+    );
+  }
+
+  console.log(createdProperty);
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdProperty.save({ session: sess });
+    user.properties.push(createdProperty);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    return next(
+      new HttpError('Creating property failed, please try again.', 500)
+    );
+  }
 
   res.status(201).json({ property: createdProperty });
 };
 
-const updateProperty = (req, res, next) => {
+const updateProperty = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -164,35 +141,75 @@ const updateProperty = (req, res, next) => {
   } = details;
   const propertyId = req.params.pid;
 
-  const updatedProperty = { ...DUMMY_PROPERTIES.find(p => p.id === propertyId) };
-  const propertyIndex = DUMMY_PROPERTIES.findIndex(p => p.id === propertyId);
+  let property;
+  try {
+    property = await Property.findById(propertyId)
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not update property.', 500)
+    );
+  }
 
-  updatedProperty.description = description;
-  updatedProperty.images = images.map(image => image);
-  updatedProperty.details.listing_status = listing_status;
-  updatedProperty.details.price = price;
-  updatedProperty.details.rooms_num = rooms_num;
-  updatedProperty.details.room_size = room_size;
-  updatedProperty.details.floor = floor;
-  updatedProperty.details.stories = stories;
-  updatedProperty.details.renovated = renovated;
-  updatedProperty.details.parking = parking;
-  updatedProperty.details.accessiblity = accessiblity;
-  updatedProperty.details.park = park;
-  updatedProperty.details.pets = pets;
-  updatedProperty.details.natural_illumination = natural_illumination;
-  updatedProperty.details.public_institutes = public_institutes;
-  updatedProperty.details.public_transport = public_transport;
-  updatedProperty.details.contact = contact;
+  property.description = description;
+  property.images = images.map(image => image);
+  property.details.listing_status = listing_status;
+  property.details.price = price;
+  property.details.rooms_num = rooms_num;
+  property.details.room_size = room_size;
+  property.details.floor = floor;
+  property.details.stories = stories;
+  property.details.renovated = renovated;
+  property.details.parking = parking;
+  property.details.accessiblity = accessiblity;
+  property.details.park = park;
+  property.details.pets = pets;
+  property.details.natural_illumination = natural_illumination;
+  property.details.public_institutes = public_institutes;
+  property.details.public_transport = public_transport;
+  property.details.contact = contact;
 
-  DUMMY_PROPERTIES[propertyIndex] = updatedProperty;
-  res.status(200).json({ property: updatedProperty });
+  try {
+    await property.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not update property.', 500)
+    );
+  }
+
+  res.status(200).json({ property: property });
 };
 
-const deleteProperty = (req, res, next) => {
+const deleteProperty = async (req, res, next) => {
   const propertyId = req.params.pid;
 
-  DUMMY_PROPERTIES = DUMMY_PROPERTIES.filter(p => p.id !== propertyId);
+  let property;
+  try {
+    property = await Property.findById(propertyId).populate('creator');
+  } catch (err) {
+    return (
+      new HttpError('Something went wrong, could not delete property.', 500)
+    );
+  }
+
+  if (!property) {
+    return next(
+      new HttpError('Could not find property for this id.', 404)
+    );
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await property.remove({ session: sess });
+    property.creator.properties.pull(property);
+    await property.creator.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    return (
+      new HttpError('Something went wrong, could not delete property.', 500)
+    );
+  }
+
   res.status(200).json({ message: 'The property was successfully deleted.', propertyId: propertyId });
 };
 
