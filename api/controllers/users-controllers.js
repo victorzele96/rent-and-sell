@@ -80,7 +80,7 @@ const signin = async (req, res, next) => {
     );
   }
 
-  res.json({ message: 'Signed in!' });
+  res.json({ message: 'Signed in!', user: existingUser });
 }
 
 exports.getUsers = getUsers;

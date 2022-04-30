@@ -123,7 +123,7 @@ const Auth = (props) => {
       // Sign up
       try {
         if (formIsValid) {
-          await sendRequest(
+          const responseData = await sendRequest(
             'http://localhost:9000/api/users/signup',
             'POST',
             JSON.stringify({
@@ -138,7 +138,7 @@ const Auth = (props) => {
             },
           );
 
-          authCtx.signin();
+          authCtx.signin(responseData.user.id);
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');
@@ -150,7 +150,8 @@ const Auth = (props) => {
       // Sign in
       try {
         if (formIsValid) {
-          await sendRequest('http://localhost:9000/api/users/signin',
+          const responseData = await sendRequest(
+            'http://localhost:9000/api/users/signin',
             'POST',
             JSON.stringify({
               email: email.value,
@@ -158,11 +159,10 @@ const Auth = (props) => {
             }),
             {
               'Content-Type': 'application/json'
-            },
-
+            }
           );
 
-          authCtx.signin();
+          authCtx.signin(responseData.user.id);
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');

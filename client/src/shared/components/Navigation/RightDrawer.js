@@ -8,8 +8,14 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+
+
+import Filter from './Filter';
+
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import StoreIcon from '@mui/icons-material/Store';
 import MenuIcon from '@mui/icons-material/Menu';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -17,11 +23,7 @@ import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-
-import Filter from './Filter';
-
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -123,6 +125,12 @@ const RightDrawer = () => {
               <AddBusinessIcon />
             </ListItemIcon>
             <ListItemText primary="Add Property" />
+          </ListItem>
+          <ListItem button component={Link} to="/my-properties">
+            <ListItemIcon>
+              <StoreIcon />
+            </ListItemIcon>
+            <ListItemText primary="My Properties" />
           </ListItem>
         </List>
       </div>

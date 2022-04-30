@@ -21,12 +21,12 @@ import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 
 const initialPropertyState = {
-  id: Math.floor(Math.random() * 10000),
+  // id: Math.floor(Math.random() * 10000),
   description: '',
   address: '',
   images: [],
   details: {
-    listing_status: "sale",
+    listing_status: "rent",
     creation_date: new Intl.DateTimeFormat('He-IL').format(),
     price: 0,
     renovated: false,
@@ -52,6 +52,14 @@ const PropertyInfoForm = (props) => {
   const [selectedArray, setSelectedArray] = useState([]);
 
   // TODO: add filtering logic to apartment list + pass the propertyState to outer components.
+
+  const listingStatusChangeHandler = (event) => {
+    setPropertyState(prevState => ({
+      ...prevState, details: {
+        ...prevState.details, listing_status: prevState.details.listing_status === 'rent' ? 'sale' : 'rent'
+      }
+    }));
+  };
 
   const houseTypeChangeHandler = (event) => {
     setPropertyState(prevState => ({
@@ -109,13 +117,29 @@ const PropertyInfoForm = (props) => {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormControl variant="standard" fullWidth >
+            <InputLabel id="listing_status-label">Listing Status</InputLabel>
+            <Select
+              labelId="listing_status-label"
+              id="listing_status"
+              name="listing_status"
+              value={propertyState.details.listing_status}
+              label="listing-status"
+              onChange={listingStatusChangeHandler}
+              required
+            >
+              <MenuItem value="rent">rent</MenuItem>
+              <MenuItem value="sale">sale</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="standard" fullWidth >
             <InputLabel id="property_type-label">Property Type</InputLabel>
             <Select
               labelId="property_type-label"
               id="property_type"
               name="property_type"
               value={propertyState.details.property_type}
-              // value="house"
               label="property-type"
               onChange={houseTypeChangeHandler}
               required

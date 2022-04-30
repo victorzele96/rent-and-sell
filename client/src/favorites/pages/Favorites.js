@@ -28,17 +28,20 @@ const Favorites = (props) => {
   const favoritesCtx = useContext(FavoritesContext);
 
   const content = favoritesCtx.totalFavorites === 0 ? (
-    <p>You got no favorites yet. Start adding some?</p>
+    <Card className={classes.card}>
+      <h1>Favorites</h1>
+      <p>You got no favorites yet. Start adding some?</p>
+    </Card>
   ) : (
-    <List />
+    <>
+      <h1>Favorites</h1>
+      <List load='favorites' />
+    </>
   )
 
   return (
     <Container id={props.tagId} className={classes.container}>
-      <Card className={classes.card}>
-        <h1>Favorites</h1>
-        {content}
-      </Card>
+      {content}
     </Container>
   );
 };
