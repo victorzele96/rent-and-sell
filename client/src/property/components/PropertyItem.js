@@ -100,7 +100,8 @@ const PropertyItem = (props) => {
   const toggle = () => {
     setIsOpen((prev) => !prev);
   };
-  const shareUrl = `http://127.0.0.1:3000/property/${props.propertyId}`; // TODO: need to be changed to url with specific item
+
+  const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
 
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
 
