@@ -94,6 +94,9 @@ const PropertyInfoForm = (props) => {
                 }
               }));
             }
+            if (false) {
+              console.log(value1, value2);
+            }
           }
         }
       } else {

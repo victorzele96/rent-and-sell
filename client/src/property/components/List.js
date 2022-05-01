@@ -69,6 +69,9 @@ const List = (props) => {
         } else {
           data.push(value);
         }
+        if (false) {
+          console.log(key);
+        }
       }
       setLoadedProperties(prevState => prevState.concat(data));
     } catch (err) {
