@@ -11,7 +11,7 @@ const userSchema = new Schema({
   properties: [{ type: mongoose.Types.ObjectId, required: true, ref: 'Property' }]
 });
 
-userSchema.plugin(uniqueValidator);
+// userSchema.plugin(uniqueValidator);
 
 userSchema.set('toJSON', { getters: true });
 

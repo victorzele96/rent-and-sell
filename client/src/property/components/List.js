@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { Card, Container, Stack } from "@mui/material";
 
@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 
 import PropertyItem from "./PropertyItem";
 
-import DUMMY_DATA from "./propertyData";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 const useStyles = makeStyles((theme) => ({
   listContainer: {
@@ -29,57 +29,92 @@ const useStyles = makeStyles((theme) => ({
   loadingCard: {
     padding: "1rem",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+  },
+  container: {
+    width: "fit-content",
+    blockSize: "fit-content",
+    marginTop: "5vh",
+    textAlign: "center",
+
+  },
+  card: {
+    padding: "1rem",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
   }
 }));
 
 const List = (props) => {
-  const [isLoading, setIsLoading] = useState(true);
   const [loadedProperties, setLoadedProperties] = useState([]);
+  const { isLoading, sendRequest } = useHttpClient();
 
   const classes = useStyles();
 
+  const loadProperties = useCallback(async (load, id) => {
+    let url = process.env.REACT_APP_BACK_URL + '/properties';
+
+    if (load === 'by_user_id') {
+      url += `/user/${id}`;
+    }
+
+    if (load === 'by_property_id') {
+      url += `/${id}`;
+    }
+
+    try {
+      const responseData = await sendRequest(url);
+      let data = [];
+      for (const [key, value] of Object.entries(responseData)) {
+        if (value?.length > 1) {
+          value.map(item => data.push(item));
+        } else {
+          data.push(value);
+        }
+        if (false) {
+          console.log(key);
+        }
+      }
+      setLoadedProperties(prevState => prevState.concat(data));
+    } catch (err) {
+      console.log(err.message);
+    }
+  }, [sendRequest]);
+
   useEffect(() => {
-    setIsLoading(true);
-    setLoadedProperties(DUMMY_DATA);
-    // fetch('https://learn-react-1-8c84e-default-rtdb.firebaseio.com/meetups1.json')
-    //   .then(response => {
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     const meetups = [];
-
-    //     for (const key in data) {
-    //       const meetup = {
-    //         id: key,
-    //         ...data[key]
-    //       };
-    //       meetups.push(meetup);
-    //     }
-
-    //   setIsLoading(false);
-    //   setLoadedMeetups(meetups);
-    // });
-    setIsLoading(false);
-  }, []);
+    loadProperties(props.load, props.id_prop);
+  }, [loadProperties, props.load, props.id_prop]);
 
   if (isLoading) {
     return (
-      <Container className={classes.loadingContainer}>
-        <Card className={classes.loadingCard}>
+      <Container id={props.tagId} className={classes.container}>
+        <Card className={classes.card}>
           <p>Loading...</p>
         </Card>
       </Container>
     );
   }
 
-  return (
-    // <Container maxWidth={false} className={classes.listContainer}>
-    <Stack id={props.tagId} spacing="30px" className={classes.listContainerInner}>
+  const text = props.load === 'by_property_id' ?
+    'Could not find property with specified id' :
+    'There are no properties yet. Start adding some?';
+
+  const content = loadedProperties.length === 0 ? (
+    <Container id={props.tagId} className={classes.container}>
+      <Card className={classes.card}>
+        <p>{text}</p>
+      </Card>
+    </Container>
+  ) : (
+    <Stack id={props.tagId || 'list-stack'} spacing="30px" className={classes.listContainerInner}>
       {loadedProperties.map(item => (
-        <PropertyItem key={item.id} property={item} />
+        <PropertyItem key={item.id} property={item} propertyId={item.id} />
       ))}
     </Stack>
-    // </Container>
+  )
+
+  return (
+    <>
+      {content}
+    </>
   );
 };
 
