@@ -10,15 +10,12 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: "fit-content",
-    blockSize: "fit-content",
     marginTop: "5vh",
-    textAlign: "center",
-
   },
   card: {
     padding: "1rem",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)",
+    textAlign: "center",
   }
 }));
 
@@ -34,13 +31,15 @@ const Favorites = (props) => {
     </Card>
   ) : (
     <>
-      <h1>Favorites</h1>
-      <List load='favorites' />
+      <h1 style={{ textAlign: "center" }}>Favorites</h1>
+      <div style={{ textAlign: "left" }}>
+        <List load='favorites' />
+      </div>
     </>
   )
 
   return (
-    <Container id={props.tagId} className={classes.container}>
+    <Container style={favoritesCtx.totalFavorites === 0 ? { width: "fit-content", blockSize: "fit-content" } : null} id={props.tagId} className={classes.container}>
       {content}
     </Container>
   );

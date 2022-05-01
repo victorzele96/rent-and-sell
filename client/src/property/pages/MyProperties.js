@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Card, Container } from "@mui/material";
+import { Container } from "@mui/material";
 
 import List from '../../property/components/List';
 
@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme) => ({
     width: "fit-content",
     blockSize: "fit-content",
     marginTop: "5vh",
-    textAlign: "center",
-
+    textAlign: "left",
   }
 }));
 

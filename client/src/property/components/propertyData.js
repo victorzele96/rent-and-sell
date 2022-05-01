@@ -11,7 +11,7 @@ const DUMMY_DATA = [
       lng: 34.7915
     },
     details: {
-      listing_status: "Sale",
+      listing_status: "sale",
       creation_date: "3 hours",
       price: "1,750,000",
       renovated: true,
@@ -41,7 +41,7 @@ const DUMMY_DATA = [
       lng: 34.7
     },
     details: {
-      listing_status: "Rent",
+      listing_status: "rent",
       creation_date: "3 hours",
       price: "2,100",
       renovated: true,

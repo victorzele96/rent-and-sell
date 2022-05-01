@@ -112,18 +112,9 @@ const PropertyItem = (props) => {
 
     const favoritesHandler = () => {
       if (itemIsFavorite) {
-        favoritesCtx.removeFavorite(props.id);
+        favoritesCtx.removeFavorite(props.property.id);
       } else {
-        favoritesCtx.addFavorite({
-          id: props.property.id,
-          title: props.property.title,
-          description: props.property.description,
-          img: props.property.image,
-          address: props.property.address,
-          location: props.property.location,
-          details: props.property.details,
-          creator: props.property.creator,
-        });
+        favoritesCtx.addFavorite(props.property);
       }
 
       // TODO: add favorites logic + backend connection
@@ -200,9 +191,9 @@ const PropertyItem = (props) => {
               show
               iconClassName={classes.rightIcon}
               icon={<SellIcon className={classes.leftIcon} />}
-              info="Listing Status"
+              info="Listing Status:"
               text={
-                "Listing Status: For " + props.property.details["listing_status"]
+                "For " + props.property.details["listing_status"]
               }
             />
             <Paragraph

@@ -21,13 +21,12 @@ import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 
 const initialPropertyState = {
-  // id: Math.floor(Math.random() * 10000),
   description: '',
   address: '',
   images: [],
   details: {
     listing_status: "rent",
-    creation_date: new Intl.DateTimeFormat('He-IL').format(),
+    // creation_date: new Intl.DateTimeFormat('He-IL').format(),
     price: 0,
     renovated: false,
     rooms_num: 0,
@@ -127,8 +126,8 @@ const PropertyInfoForm = (props) => {
               onChange={listingStatusChangeHandler}
               required
             >
-              <MenuItem value="rent">rent</MenuItem>
-              <MenuItem value="sale">sale</MenuItem>
+              <MenuItem value="rent">Rent</MenuItem>
+              <MenuItem value="sale">Sale</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -144,8 +143,8 @@ const PropertyInfoForm = (props) => {
               onChange={houseTypeChangeHandler}
               required
             >
-              <MenuItem value="house">house</MenuItem>
-              <MenuItem value="apartment">apartment</MenuItem>
+              <MenuItem value="house">House</MenuItem>
+              <MenuItem value="apartment">Apartment</MenuItem>
             </Select>
           </FormControl>
         </Grid>

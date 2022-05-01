@@ -10,8 +10,6 @@ import NewProperty from './property/pages/NewProperty';
 import MyProperties from './property/pages/MyProperties';
 import Auth from './users/pages/Auth';
 
-import DUMMY_DATA from "./property/components/propertyData";
-
 import { CssBaseline } from '@mui/material';
 import ShowProperty from './property/pages/ShowProperty';
 
@@ -22,7 +20,7 @@ const App = () => {
     <>
       <Routes>
         {toggleMapList && (
-          <Route exact path={"/"} element={<Map properties={DUMMY_DATA} />}
+          <Route exact path={"/"} element={<Map />}
           />
         )}
         {!toggleMapList && (

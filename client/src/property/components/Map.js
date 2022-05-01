@@ -86,7 +86,7 @@ const Map = props => {
               lat: 31.2,
               lng: 34.7
             }}
-            icon={property.details.listing_status === 'Rent' ? greenIcon : blueIcon}
+            icon={property.details.listing_status === 'rent' ? greenIcon : blueIcon}
           >
             <Popup>
               <address>

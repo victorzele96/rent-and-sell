@@ -72,9 +72,9 @@ const NewProperty = (props) => {
       console.log(err);
     }
 
-    // setTimeout(() => {
-    //   navigate('/');
-    // }, 5000);
+    setTimeout(() => {
+      navigate('/');
+    }, 5000);
   };
 
   const nextHandler = () => {
