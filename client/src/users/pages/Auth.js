@@ -124,7 +124,7 @@ const Auth = (props) => {
       try {
         if (formIsValid) {
           const responseData = await sendRequest(
-            'http://localhost:9000/api/users/signup',
+            process.env.REACT_APP_BACK_URL + '/users/signup',
             'POST',
             JSON.stringify({
               firstName: firstName.value,
@@ -151,7 +151,7 @@ const Auth = (props) => {
       try {
         if (formIsValid) {
           const responseData = await sendRequest(
-            'http://localhost:9000/api/users/signin',
+            process.env.REACT_APP_BACK_URL + '/users/signin',
             'POST',
             JSON.stringify({
               email: email.value,

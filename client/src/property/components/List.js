@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { Card, Container, Stack } from "@mui/material";
 
@@ -45,13 +45,14 @@ const useStyles = makeStyles((theme) => ({
 
 const List = (props) => {
   const [loadedProperties, setLoadedProperties] = useState([]);
-  const { isLoading, error, sendRequest } = useHttpClient();
+  const { isLoading, sendRequest } = useHttpClient();
 
   const classes = useStyles();
 
-  const loadProperties = async (load, id) => {
-    let url = 'http://localhost:9000/api/properties';
-    if (load === 'by_user_id' && id) {
+  const loadProperties = useCallback(async (load, id) => {
+    let url = process.env.REACT_APP_BACK_URL + '/properties';
+
+    if (load === 'by_user_id') {
       url += `/user/${id}`;
     }
 
@@ -73,11 +74,11 @@ const List = (props) => {
     } catch (err) {
       console.log(err.message);
     }
-  };
+  }, [sendRequest]);
 
   useEffect(() => {
     loadProperties(props.load, props.id_prop);
-  }, []);
+  }, [loadProperties, props.load, props.id_prop]);
 
   if (isLoading) {
     return (
@@ -88,8 +89,6 @@ const List = (props) => {
       </Container>
     );
   }
-
-  console.log(loadedProperties);
 
   const text = props.load === 'by_property_id' ?
     'Could not find property with specified id' :

@@ -54,7 +54,7 @@ const NewProperty = (props) => {
   const requestHandler = async () => {
     try {
       await sendRequest(
-        'http://localhost:9000/api/properties',
+        process.env.REACT_APP_BACK_URL + '/properties',
         'POST',
         JSON.stringify({
           description: propertyData.description,
