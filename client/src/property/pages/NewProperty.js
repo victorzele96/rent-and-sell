@@ -66,7 +66,6 @@ const NewProperty = (props) => {
         {
           'Content-Type': 'application/json'
         },
-        'no-cors'
       );
 
       setTimeout(() => {
@@ -80,16 +79,18 @@ const NewProperty = (props) => {
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
 
-    let images;
+    // let images;
+    let paths;
     try {
-      images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
+      // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
+      paths = JSON.parse(window.sessionStorage.getItem("new-property-images-paths"));
     } catch (e) {
       console.log(e);
     }
 
     const property = {
       ...JSON.parse(sessionStorage.getItem("new-property-state")),
-      images
+      images: paths
     };
 
     setPropertyData(property);

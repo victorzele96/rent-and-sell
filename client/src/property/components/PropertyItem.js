@@ -28,6 +28,8 @@ import {
   DialogTitle,
   DialogActions,
   Divider,
+  Button,
+  Box
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
@@ -76,6 +78,16 @@ const useStyles = makeStyles((theme) => ({
   rightIcon: {
     marginLeft: "1rem",
   },
+  btn: {
+    width: "80px",
+    marginLeft: 10,
+    marginRight: 10
+  },
+  btnBox: {
+    width: "100%",
+    justifyContent: "right",
+    display: "flex"
+  }
 }));
 
 const ExpandMore = styled((props) => {
@@ -104,6 +116,14 @@ const PropertyItem = (props) => {
   const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
 
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
+
+  const editHandler = () => {
+    console.log("Edit");
+  };
+
+  const deleteHandler = () => {
+    console.log("Delete");
+  };
 
   let actionIcons = null;
 
@@ -157,6 +177,22 @@ const PropertyItem = (props) => {
       </CardContent>
       <CardActions disableSpacing>
         {actionIcons}
+        <Box spacing={2} className={classes.btnBox}>
+          <Button
+            className={classes.btn}
+            variant="outlined"
+            onClick={editHandler}
+          >
+            Edit
+          </Button>
+          <Button
+            className={classes.btn}
+            variant="contained"
+            onClick={deleteHandler}
+          >
+            Delete
+          </Button>
+        </Box>
         <Dialog onClose={toggle} open={isOpen}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
@@ -193,7 +229,7 @@ const PropertyItem = (props) => {
               icon={<SellIcon className={classes.leftIcon} />}
               info="Listing Status:"
               text={
-                "For " + props.property.details["listing_status"]
+                "For " + props.property.details.listing_status
               }
             />
             <Paragraph

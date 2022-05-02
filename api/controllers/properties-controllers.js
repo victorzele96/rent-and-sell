@@ -73,14 +73,13 @@ const createProperty = async (req, res, next) => {
   }
 
   const { description, address, images, creator, details } = req.body;
-
-  let coordinates;
-  try {
-    // coordinates = await getCoordsForAddress(address);
-    // TODO: adjust the getCoordsForAddress function to node geocoder
-  } catch (err) {
-    return next(err);
-  }
+  // let coordinates;
+  // try {
+  // coordinates = await getCoordsForAddress(address);
+  // TODO: adjust the getCoordsForAddress function to node geocoder
+  // } catch (err) {
+  //   return next(err);
+  // }
 
   const createdProperty = new Property({
     description,
@@ -115,6 +114,7 @@ const createProperty = async (req, res, next) => {
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
+    console.log(err);
     return next(
       new HttpError('Creating property failed, please try again.', 500)
     );
