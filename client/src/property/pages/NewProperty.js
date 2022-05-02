@@ -68,13 +68,13 @@ const NewProperty = (props) => {
         },
         'no-cors'
       );
+
+      setTimeout(() => {
+        navigate('/');
+      }, 5000);
     } catch (err) {
       console.log(err);
     }
-
-    setTimeout(() => {
-      navigate('/');
-    }, 5000);
   };
 
   const nextHandler = () => {
