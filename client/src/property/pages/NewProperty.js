@@ -64,6 +64,7 @@ const NewProperty = (props) => {
           details: propertyData.details
         }),
         {
+          'Authorization': 'Bearer ' + authCtx.token,
           'Content-Type': 'application/json'
         },
       );

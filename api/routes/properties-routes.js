@@ -5,11 +5,15 @@ const router = express.Router();
 
 const propertiesControllers = require('../controllers/properties-controllers');
 
+const checkAuth = require('../middleware/check-auth');
+
 router.get('/user/:uid', propertiesControllers.getPropertiesByUserId);
 
 router.get('/:pid', propertiesControllers.getPropertyById);
 
 router.get('/', propertiesControllers.getAllProperties);
+
+router.use(checkAuth);
 
 router.post(
   '/',

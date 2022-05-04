@@ -1,30 +1,32 @@
 import { createContext, useCallback, useState } from "react";
 
 const AuthContext = createContext({
-  isSignnedIn: false,
+  isSignedIn: false,
+  token: null,
   userId: null,
   signin: () => { },
   signout: () => { },
 });
 
 export const AuthContextProvider = (props) => {
-  const [isSignnedIn, setIsSignnedIn] = useState([]);
+  const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  const signin = useCallback((uid) => {
-    setIsSignnedIn(true);
+  const signin = useCallback((uid, token) => {
+    setToken(token);
     setUserId(uid);
     console.log('Signed In!');
   }, []);
 
   const signout = useCallback(() => {
-    setIsSignnedIn(false);
+    setToken(null);
     setUserId(null);
     console.log('Signed Out!');
   }, []);
 
   const context = {
-    isSignnedIn,
+    isSignedIn: !!token,
+    token,
     userId,
     signin,
     signout,

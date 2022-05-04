@@ -138,7 +138,7 @@ const Auth = (props) => {
             },
           );
 
-          authCtx.signin(responseData.user.id);
+          authCtx.signin(responseData.userId, responseData.token);
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');
@@ -162,7 +162,7 @@ const Auth = (props) => {
             }
           );
 
-          authCtx.signin(responseData.user.id);
+          authCtx.signin(responseData.userId, responseData.token);
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');

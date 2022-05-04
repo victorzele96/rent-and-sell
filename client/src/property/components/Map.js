@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const Map = props => {
   const [map, setMap] = useState(null);
   const [loadedProperties, setLoadedProperties] = useState([]);
+  // const [filterState, setFilterState] = useState(null);
   const { sendRequest } = useHttpClient();
 
   const loadProperties = useCallback(async () => {
@@ -29,8 +30,6 @@ const Map = props => {
       for (const [key, value] of Object.entries(responseData)) {
         if (value?.length > 1) {
           value.map(item => data.push(item));
-        } else {
-          data.push(value);
         }
         if (false) {
           console.log(key);
@@ -42,8 +41,43 @@ const Map = props => {
     }
   }, [sendRequest]);
 
+  // const customFilter = useCallback(() => {
+  //   if (filterState) {
+  //     setLoadedProperties(prevState => prevState.filter((property) => {
+  //       let flag = false;
+  //       loop1:
+  //       for (const [key1, value1] of Object.entries(property)) {
+  //         if (key1 === 'address' || key1 === 'street') {
+  //           continue;
+  //         }
+  //         loop2:
+  //         for (const [key2, value2] of Object.entries(filterState)) {
+  //           if (key1 === key2) {
+  //             if (value1 === value2) {
+  //               flag = true;
+  //             } else {
+  //               break loop1;
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (flag) {
+  //         return property;
+  //       }
+  //     }));
+  //   } else {
+
+  //   }
+  // }, [filterState]);
+
   useEffect(() => {
+    // try {
+    //   setFilterState(JSON.parse(window.sessionStorage.getItem("filter-state")));
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
     loadProperties();
+    // customFilter();
   }, [loadProperties]);
 
   const greenIcon = new L.Icon({
