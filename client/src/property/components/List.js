@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 const List = (props) => {
   const [loadedProperties, setLoadedProperties] = useState([]);
   const { isLoading, sendRequest } = useHttpClient();
+  // const [filterState, setFilterState] = useState(null);
 
   const classes = useStyles();
 
@@ -62,25 +63,71 @@ const List = (props) => {
 
     try {
       const responseData = await sendRequest(url);
-      let data = [];
+      let data;
+      let data_arr = [];
+      let flag = false;
       for (const [key, value] of Object.entries(responseData)) {
-        if (value?.length > 1) {
-          value.map(item => data.push(item));
+        if (Array.isArray(value)) {
+          data = value;
+          flag = true;
         } else {
-          data.push(value);
-        }
-        if (false) {
-          console.log(key);
+          if (value?.length > 1) {
+            value.map(item => data_arr.push(item));
+          } else {
+            data_arr.push(value);
+          }
+          if (false) {
+            console.log(key);
+          }
         }
       }
-      setLoadedProperties(prevState => prevState.concat(data));
+      setLoadedProperties(prevState => prevState.concat(flag ? data : data_arr));
     } catch (err) {
       console.log(err.message);
     }
   }, [sendRequest]);
 
+  const deletePropertyHandler = deletedPropertyId => {
+    setLoadedProperties(prevState => prevState.filter(property => property.id !== deletedPropertyId));
+  };
+
+  // const customFilter = useCallback(() => {
+  //   if (filterState) {
+  //     setLoadedProperties(prevState => prevState.filter((property) => {
+  //       let flag = false;
+  //       loop1:
+  //       for (const [key1, value1] of Object.entries(property)) {
+  //         if (key1 === 'address' || key1 === 'street') {
+  //           continue;
+  //         }
+  //         loop2:
+  //         for (const [key2, value2] of Object.entries(filterState)) {
+  //           if (key1 === key2) {
+  //             if (value1 === value2) {
+  //               flag = true;
+  //             } else {
+  //               break loop1;
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (flag) {
+  //         return property;
+  //       }
+  //     }));
+  //   } else {
+
+  //   }
+  // }, [filterState]);
+
   useEffect(() => {
+    // try {
+    //   setFilterState(JSON.parse(window.sessionStorage.getItem("filter-state")));
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
     loadProperties(props.load, props.id_prop);
+    // customFilter();
   }, [loadProperties, props.load, props.id_prop]);
 
   if (isLoading) {
@@ -106,7 +153,7 @@ const List = (props) => {
   ) : (
     <Stack id={props.tagId || 'list-stack'} spacing="30px" className={classes.listContainerInner}>
       {loadedProperties.map(item => (
-        <PropertyItem key={item.id} property={item} propertyId={item.id} />
+        <PropertyItem key={item.id} property={item} propertyId={item.id} onDelete={deletePropertyHandler} />
       ))}
     </Stack>
   )

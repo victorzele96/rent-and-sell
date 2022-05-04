@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Paragraph from "./Paragraph";
 import DeployAvatar from "../../shared/components/UIElements/Avatar";
@@ -25,6 +26,8 @@ import {
   IconButton,
   Typography,
   Dialog,
+  Backdrop,
+  CircularProgress,
   DialogTitle,
   DialogActions,
   Divider,
@@ -33,6 +36,8 @@ import {
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
+
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -106,23 +111,43 @@ const PropertyItem = (props) => {
 
   const favoritesCtx = useContext(FavoritesContext);
 
+  const { isLoading, error, sendRequest } = useHttpClient();
+  const navigate = useNavigate();
+
   const classes = useStyles();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => {
-    setIsOpen((prev) => !prev);
+  const [share, setShare] = useState(false);
+
+  const toggleShare = () => {
+    setShare((prev) => !prev);
+  };
+
+  const [deleteState, setDeleteState] = useState(false);
+
+  const toggleDeleteState = () => {
+    setDeleteState((prev) => !prev);
   };
 
   const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
 
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
 
-  const editHandler = () => {
+  const editHandler = async () => {
     console.log("Edit");
+    // navigate('/add-property', { state: { mode: 'edit', property: props.property } });
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     console.log("Delete");
+    try {
+      await sendRequest(
+        process.env.REACT_APP_BACK_URL + `/properties/${props.propertyId}`,
+        'DELETE'
+      );
+      props.onDelete(props.propertyId);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   let actionIcons = null;
@@ -145,7 +170,7 @@ const PropertyItem = (props) => {
         <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
           <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
         </IconButton>
-        <IconButton aria-label="share" onClick={toggle}>
+        <IconButton aria-label="share" onClick={toggleShare}>
           <ShareIcon />
         </IconButton>
       </>
@@ -188,15 +213,41 @@ const PropertyItem = (props) => {
           <Button
             className={classes.btn}
             variant="contained"
-            onClick={deleteHandler}
+            onClick={toggleDeleteState}
           >
             Delete
           </Button>
+          <Box>
+            <Dialog
+              open={deleteState}
+              onClose={toggleDeleteState}
+              aria-labelledby="delete-alert-dialog-title"
+              aria-describedby="delete-alert-dialog-description"
+            >
+              <DialogTitle id="delete-alert-dialog-title">
+                Are you sure you want to delete this property?
+              </DialogTitle>
+              <DialogActions>
+                {isLoading && (
+                  <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={isLoading}
+                  >
+                    <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
+                  </Backdrop>
+                )}
+                <Button onClick={toggleDeleteState}>Cancel</Button>
+                <Button onClick={deleteHandler} autoFocus>
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Box>
         </Box>
-        <Dialog onClose={toggle} open={isOpen}>
+        <Dialog onClose={toggleShare} open={share}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
-          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggle}>
+          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggleShare}>
             <FacebookShareButton url={shareUrl}>
               <FacebookIcon size={40} round={true} />
             </FacebookShareButton>
