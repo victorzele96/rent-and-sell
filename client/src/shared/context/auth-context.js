@@ -14,11 +14,13 @@ export const AuthContextProvider = (props) => {
   const signin = useCallback((uid) => {
     setIsSignnedIn(true);
     setUserId(uid);
+    console.log('Signed In!');
   }, []);
 
   const signout = useCallback(() => {
     setIsSignnedIn(false);
     setUserId(null);
+    console.log('Signed Out!');
   }, []);
 
   const context = {

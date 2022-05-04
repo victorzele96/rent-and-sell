@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+
+import AuthContext from '../../context/auth-context';
 
 import DeployAvatar from '../UIElements/Avatar';
 
@@ -9,7 +11,6 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-
 
 import Filter from './Filter';
 
@@ -24,15 +25,21 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { styled } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
-  const [state, setState] = useState(false);
+  const authCtx = useContext(AuthContext);
+  const [drawerstate, setDrawerState] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  const signoutHandler = () => {
+    authCtx.signout();
+    setDrawerState(false);
+  };
 
   const handleExpandClick = () => setExpanded(prevState => !prevState);
 
@@ -59,7 +66,7 @@ const RightDrawer = () => {
         || event.keyCode === 226)) {
       return;
     }
-    setState(prevState => !prevState);
+    setDrawerState(prevState => !prevState);
   };
 
   const ExpandMore = styled((props) => {
@@ -84,7 +91,7 @@ const RightDrawer = () => {
           <ListItemIcon />
           <DeployAvatar type="sidebar" fname="Dear" lname="Guest" />
         </ListItem>
-        {true ? ( //change to state!!!!
+        {!authCtx.userId ? ( //change to state!!!!
           <ListItem
             button
             component={Link}
@@ -97,7 +104,7 @@ const RightDrawer = () => {
             <ListItemText primary="Sign In" />
           </ListItem>
         ) : (
-          <ListItem button component={Link} to="/">
+          <ListItem button component={Link} to="/" onClick={signoutHandler} >
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>
@@ -170,7 +177,7 @@ const RightDrawer = () => {
         </IconButton>
         <Drawer
           anchor={'right'}
-          open={state}
+          open={drawerstate}
           onClose={toggleDrawer()}
         >
           {list('right')}

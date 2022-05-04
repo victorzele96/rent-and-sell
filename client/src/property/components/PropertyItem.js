@@ -36,6 +36,7 @@ import {
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
+import AuthContext from "../../shared/context/auth-context";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
@@ -110,6 +111,7 @@ const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
 
   const favoritesCtx = useContext(FavoritesContext);
+  const authCtx = useContext(AuthContext);
 
   const { isLoading, error, sendRequest } = useHttpClient();
   const navigate = useNavigate();
@@ -202,48 +204,50 @@ const PropertyItem = (props) => {
       </CardContent>
       <CardActions disableSpacing>
         {actionIcons}
-        <Box spacing={2} className={classes.btnBox}>
-          <Button
-            className={classes.btn}
-            variant="outlined"
-            onClick={editHandler}
-          >
-            Edit
-          </Button>
-          <Button
-            className={classes.btn}
-            variant="contained"
-            onClick={toggleDeleteState}
-          >
-            Delete
-          </Button>
-          <Box>
-            <Dialog
-              open={deleteState}
-              onClose={toggleDeleteState}
-              aria-labelledby="delete-alert-dialog-title"
-              aria-describedby="delete-alert-dialog-description"
+        {authCtx.userId === props.property.creator && (
+          <Box spacing={2} className={classes.btnBox}>
+            <Button
+              className={classes.btn}
+              variant="outlined"
+              onClick={editHandler}
             >
-              <DialogTitle id="delete-alert-dialog-title">
-                Are you sure you want to delete this property?
-              </DialogTitle>
-              <DialogActions>
-                {isLoading && (
-                  <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                    open={isLoading}
-                  >
-                    <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
-                  </Backdrop>
-                )}
-                <Button onClick={toggleDeleteState}>Cancel</Button>
-                <Button onClick={deleteHandler} autoFocus>
-                  Confirm
-                </Button>
-              </DialogActions>
-            </Dialog>
+              Edit
+            </Button>
+            <Button
+              className={classes.btn}
+              variant="contained"
+              onClick={toggleDeleteState}
+            >
+              Delete
+            </Button>
+            <Box>
+              <Dialog
+                open={deleteState}
+                onClose={toggleDeleteState}
+                aria-labelledby="delete-alert-dialog-title"
+                aria-describedby="delete-alert-dialog-description"
+              >
+                <DialogTitle id="delete-alert-dialog-title">
+                  Are you sure you want to delete this property?
+                </DialogTitle>
+                <DialogActions>
+                  {isLoading && (
+                    <Backdrop
+                      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                      open={isLoading}
+                    >
+                      <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
+                    </Backdrop>
+                  )}
+                  <Button onClick={toggleDeleteState}>Cancel</Button>
+                  <Button onClick={deleteHandler} autoFocus>
+                    Confirm
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Box>
           </Box>
-        </Box>
+        )}
         <Dialog onClose={toggleShare} open={share}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
