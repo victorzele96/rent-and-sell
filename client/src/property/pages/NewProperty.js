@@ -56,7 +56,6 @@ const NewProperty = (props) => {
           description: propertyData.description,
           address: propertyData.address,
           images: propertyData.images,
-          creator: authCtx.userId,
           details: propertyData.details
         }),
         {
@@ -67,7 +66,7 @@ const NewProperty = (props) => {
 
       setTimeout(() => {
         navigate('/');
-      }, 5000);
+      }, 2000);
     } catch (err) {
       console.log(err);
     }

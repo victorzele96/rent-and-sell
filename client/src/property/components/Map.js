@@ -1,10 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
 import Legend from './Legend';
-
-import { useHttpClient } from '../../shared/hooks/http-hook';
 
 import { makeStyles } from '@mui/styles';
 
@@ -17,68 +15,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Map = props => {
   const [map, setMap] = useState(null);
-  const [loadedProperties, setLoadedProperties] = useState([]);
-  // const [filterState, setFilterState] = useState(null);
-  const { sendRequest } = useHttpClient();
-
-  const loadProperties = useCallback(async () => {
-    let url = process.env.REACT_APP_BACK_URL + '/properties';
-
-    try {
-      const responseData = await sendRequest(url);
-      let data = [];
-      for (const [key, value] of Object.entries(responseData)) {
-        if (value?.length > 1) {
-          value.map(item => data.push(item));
-        }
-        if (false) {
-          console.log(key);
-        }
-      }
-      setLoadedProperties(prevState => prevState.concat(data));
-    } catch (err) {
-      console.log(err.message);
-    }
-  }, [sendRequest]);
-
-  // const customFilter = useCallback(() => {
-  //   if (filterState) {
-  //     setLoadedProperties(prevState => prevState.filter((property) => {
-  //       let flag = false;
-  //       loop1:
-  //       for (const [key1, value1] of Object.entries(property)) {
-  //         if (key1 === 'address' || key1 === 'street') {
-  //           continue;
-  //         }
-  //         loop2:
-  //         for (const [key2, value2] of Object.entries(filterState)) {
-  //           if (key1 === key2) {
-  //             if (value1 === value2) {
-  //               flag = true;
-  //             } else {
-  //               break loop1;
-  //             }
-  //           }
-  //         }
-  //       }
-  //       if (flag) {
-  //         return property;
-  //       }
-  //     }));
-  //   } else {
-
-  //   }
-  // }, [filterState]);
-
-  useEffect(() => {
-    // try {
-    //   setFilterState(JSON.parse(window.sessionStorage.getItem("filter-state")));
-    // } catch (err) {
-    //   console.log(err.message);
-    // }
-    loadProperties();
-    // customFilter();
-  }, [loadProperties]);
 
   const greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -115,7 +51,7 @@ const Map = props => {
         attribution="© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a> | © Rent-n-Sell 2022</strong>"
         url={`https://api.mapbox.com/styles/v1/jayzpkz/cl17glze8000714pt2eqa32x7/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_GL_API_KEY}`}
       />
-      {loadedProperties.map(property => {
+      {props.properties.map(property => {
         return (
           <Marker
             key={property.id}

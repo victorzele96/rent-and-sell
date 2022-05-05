@@ -1,30 +1,16 @@
 import { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
-
-import { Container } from "@mui/material";
-
-import List from '../../property/components/List';
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import { makeStyles } from '@mui/styles';
+import List from "../components/List";
+import Map from "../components/Map";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    width: "fit-content",
-    blockSize: "fit-content",
-    marginTop: "5vh",
-    textAlign: "left",
-  }
-}));
-
-const ShowProperty = (props) => {
-  const { propertyId } = useParams();
+const AllProperties = (props) => {
   const [loadedProperties, setLoadedProperties] = useState([]);
   const { isLoading, sendRequest } = useHttpClient();
 
   const loadProperties = useCallback(async () => {
-    let url = process.env.REACT_APP_BACK_URL + `/properties/${propertyId}`;
+    let url = process.env.REACT_APP_BACK_URL + '/properties';
 
     try {
       const responseData = await sendRequest(url);
@@ -49,9 +35,8 @@ const ShowProperty = (props) => {
       setLoadedProperties(prevState => prevState.concat(flag ? data : data_arr));
     } catch (err) {
       console.log(err.message);
-      setLoadedProperties([]);
     }
-  }, [sendRequest, propertyId]);
+  }, [sendRequest]);
 
   const deletePropertyHandler = deletedPropertyId => {
     setLoadedProperties(prevState => prevState.filter(property => property.id !== deletedPropertyId));
@@ -61,19 +46,23 @@ const ShowProperty = (props) => {
     loadProperties();
   }, [loadProperties]);
 
-  const classes = useStyles();
-
   return (
-    <Container id={props.tagId} className={classes.container}>
-      <List
-        load='by-property-id'
-        tagId={props.tagId}
-        onDelete={deletePropertyHandler}
-        isLoading={isLoading}
-        properties={loadedProperties}
-      />
-    </Container>
+    <>
+      {props.toggle && (
+        <Map
+          properties={loadedProperties}
+        />
+      )}
+      {!props.toggle && (
+        <List
+          load='all'
+          tagId={props.tagId}
+          onDelete={deletePropertyHandler}
+          isLoading={isLoading}
+          properties={loadedProperties}
+        />
+      )}
+    </>
   )
 }
-
-export default ShowProperty;
+export default AllProperties;

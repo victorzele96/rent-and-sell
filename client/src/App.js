@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import Navbar from './shared/components/Navigation/Navbar';
-import Map from './property/components/Map';
-import List from './property/components/List';
-import Favorites from './favorites/pages/Favorites';
+import Favorites from './property/pages/Favorites';
 import Chats from './chats/pages/Chats';
 import NewProperty from './property/pages/NewProperty';
 import MyProperties from './property/pages/MyProperties';
 import ShowProperty from './property/pages/ShowProperty';
+import AllProperties from './property/pages/AllProperties';
 import Auth from './users/pages/Auth';
 
 import { AuthContext } from './shared/context/auth-context';
@@ -24,14 +23,7 @@ const App = () => {
   const routes = (
     <>
       <Routes>
-        {toggleMapList && (
-          <Route exact path={"/"} element={<Map />}
-          />
-        )}
-        {!toggleMapList && (
-          <Route exact path={"/"} element={<List load='all' tagId="main-content" />}
-          />
-        )}
+        <Route exact path={"/"} element={<AllProperties toggle={toggleMapList} tagId="main-content" />} />
         <Route exact path={"/auth"} element={<Auth tagId="main-content" />} />
         <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
         <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />

@@ -173,9 +173,11 @@ const PropertyItem = (props) => {
 
     actionIcons = (
       <>
-        <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
-          <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
-        </IconButton>
+        {props.property.creator.toString() !== authCtx.userId && (
+          <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
+            <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
+          </IconButton>
+        )}
         <IconButton aria-label="share" onClick={toggleShare}>
           <ShareIcon />
         </IconButton>

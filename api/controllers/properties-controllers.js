@@ -72,7 +72,7 @@ const createProperty = async (req, res, next) => {
     );
   }
 
-  const { description, address, images, creator, details } = req.body;
+  const { description, address, images, details } = req.body;
   // let coordinates;
   // try {
   // coordinates = await getCoordsForAddress(address);
@@ -85,13 +85,13 @@ const createProperty = async (req, res, next) => {
     description,
     address,
     images,
-    creator,
+    creator: req.userData.userId,
     details
   });
 
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     return next(
       new HttpError('Creating property failed, please try again.', 500)

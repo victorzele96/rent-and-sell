@@ -2,15 +2,19 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AuthContext } from '../../context/auth-context';
+import FavoritesContext from '../../context/favorites-context';
 
 import DeployAvatar from '../UIElements/Avatar';
 
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import {
+  Box,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+  Badge
+} from '@mui/material';
 
 import Filter from './Filter';
 
@@ -33,6 +37,7 @@ import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
   const authCtx = useContext(AuthContext);
+  const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -80,6 +85,15 @@ const RightDrawer = () => {
     }),
   }));
 
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -15,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+    },
+  }));
+
   const list = (anchor) => (
     <Box
       className={classes.drawer}
@@ -116,10 +130,12 @@ const RightDrawer = () => {
       <div onClick={toggleDrawer(anchor, false)}>
         <List>
           <ListItem button component={Link} to="/favorites">
-            <ListItemIcon>
-              <BookmarkAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Favorites" />
+            <StyledBadge badgeContent={favoritesCtx.totalFavorites} color="primary">
+              <ListItemIcon>
+                <BookmarkAddIcon />
+              </ListItemIcon>
+              <ListItemText primary="Favorites" />
+            </StyledBadge>
           </ListItem>
           <ListItem button component={Link} to="/chats">
             <ListItemIcon>
