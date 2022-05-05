@@ -144,7 +144,11 @@ const PropertyItem = (props) => {
     try {
       await sendRequest(
         process.env.REACT_APP_BACK_URL + `/properties/${props.propertyId}`,
-        'DELETE'
+        'DELETE',
+        null,
+        {
+          Authorization: 'Bearer ' + authCtx.token
+        }
       );
       props.onDelete(props.propertyId);
     } catch (err) {
