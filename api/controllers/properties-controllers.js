@@ -150,6 +150,12 @@ const updateProperty = async (req, res, next) => {
     );
   }
 
+  if (property.creator.toString() !== req.userData.userId) {
+    return next(
+      new HttpError('You are not allowed to edit this property.', 401)
+    );
+  }
+
   property.description = description;
   property.images = images.map(image => image);
   property.details.listing_status = listing_status;
@@ -194,6 +200,12 @@ const deleteProperty = async (req, res, next) => {
   if (!property) {
     return next(
       new HttpError('Could not find property for this id.', 404)
+    );
+  }
+
+  if (property.creator.toString() !== req.userData.userId) {
+    return next(
+      new HttpError('You are not allowed to delete this property.', 401)
     );
   }
 

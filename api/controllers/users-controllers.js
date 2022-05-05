@@ -100,7 +100,7 @@ const signin = async (req, res, next) => {
 
   if (!existingUser) {
     return next(
-      new HttpError('Could not identify user, credentials seem to be wrong', 401)
+      new HttpError('Could not identify user, credentials seem to be wrong', 403)
     );
   }
 
@@ -115,7 +115,7 @@ const signin = async (req, res, next) => {
 
   if (!isValidPassword) {
     return next(
-      new HttpError('Could not identify user, credentials seem to be wrong', 401)
+      new HttpError('Could not identify user, credentials seem to be wrong', 403)
     );
   }
 
