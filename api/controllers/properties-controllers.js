@@ -150,7 +150,7 @@ const updateProperty = async (req, res, next) => {
     );
   }
 
-  if (property.creator.toString() !== req.userData.userId) {
+  if (property.creator.id.toString() !== req.userData.userId) {
     return next(
       new HttpError('You are not allowed to edit this property.', 401)
     );
@@ -203,7 +203,7 @@ const deleteProperty = async (req, res, next) => {
     );
   }
 
-  if (property.creator.toString() !== req.userData.userId) {
+  if (property.creator.id.toString() !== req.userData.userId) {
     return next(
       new HttpError('You are not allowed to delete this property.', 401)
     );

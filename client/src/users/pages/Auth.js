@@ -21,7 +21,7 @@ import {
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-import AuthContext from '../../shared/context/auth-context';
+import { AuthContext } from '../../shared/context/auth-context';
 
 import { useHttpClient } from '../../shared/hooks/http-hook';
 

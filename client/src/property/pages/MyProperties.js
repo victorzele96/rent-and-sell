@@ -4,7 +4,7 @@ import { Container } from "@mui/material";
 
 import List from '../../property/components/List';
 
-import AuthContext from "../../shared/context/auth-context";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import { makeStyles } from '@mui/styles';
 

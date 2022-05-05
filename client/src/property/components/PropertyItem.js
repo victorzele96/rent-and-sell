@@ -36,7 +36,7 @@ import {
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
-import AuthContext from "../../shared/context/auth-context";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 

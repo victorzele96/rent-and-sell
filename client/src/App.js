@@ -8,13 +8,18 @@ import Favorites from './favorites/pages/Favorites';
 import Chats from './chats/pages/Chats';
 import NewProperty from './property/pages/NewProperty';
 import MyProperties from './property/pages/MyProperties';
+import ShowProperty from './property/pages/ShowProperty';
 import Auth from './users/pages/Auth';
 
+import { AuthContext } from './shared/context/auth-context';
+
+import { useAuth } from './shared/hooks/auth-hook';
+
 import { CssBaseline } from '@mui/material';
-import ShowProperty from './property/pages/ShowProperty';
 
 const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
+  const { token, signin, signout, userId } = useAuth();
 
   const routes = (
     <>
@@ -38,11 +43,21 @@ const App = () => {
   );
 
   return (
-    <div className="root">
-      <CssBaseline />
-      <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      {routes}
-    </div>
+    <AuthContext.Provider
+      value={{
+        isSignedIn: !!token,
+        token,
+        userId,
+        signin,
+        signout
+      }}
+    >
+      <div className="root">
+        <CssBaseline />
+        <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
+        {routes}
+      </div>
+    </AuthContext.Provider>
   );
 };
 

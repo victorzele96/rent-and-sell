@@ -21,7 +21,7 @@ import PropertyReview from "../components/PropertyForm/PropertyReview";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import AuthContext from "../../shared/context/auth-context";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import { makeStyles } from '@mui/styles';
 
@@ -29,14 +29,10 @@ const useStyles = makeStyles((theme) => ({
   container: {
     "overflow-y": "scroll",
     marginTop: "40px",
-    // maxHeight: "660px",
-    // maxWidth: "1300px"
   },
   innerContainer: {
     alignItems: "center",
-    // paddingBottom: "40px",
     marginBottom: "32px",
-    // "overflow": "hidden"
   }
 }));
 
