@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+
+import { AuthContext } from '../../context/auth-context';
+import FavoritesContext from '../../context/favorites-context';
 
 import DeployAvatar from '../UIElements/Avatar';
 
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-
+import {
+  Box,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+  Badge
+} from '@mui/material';
 
 import Filter from './Filter';
 
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import StoreIcon from '@mui/icons-material/Store';
-import MenuIcon from '@mui/icons-material/Menu';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
@@ -24,15 +28,23 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Menu } from '../../../admin/icons/menu';
 
 import { styled } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import classes from './RightDrawer.module.css';
 
 const RightDrawer = () => {
-  const [state, setState] = useState(false);
+  const authCtx = useContext(AuthContext);
+  const favoritesCtx = useContext(FavoritesContext);
+  const [drawerstate, setDrawerState] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  const signoutHandler = () => {
+    authCtx.signout();
+    setDrawerState(false);
+  };
 
   const handleExpandClick = () => setExpanded(prevState => !prevState);
 
@@ -59,7 +71,7 @@ const RightDrawer = () => {
         || event.keyCode === 226)) {
       return;
     }
-    setState(prevState => !prevState);
+    setDrawerState(prevState => !prevState);
   };
 
   const ExpandMore = styled((props) => {
@@ -73,6 +85,15 @@ const RightDrawer = () => {
     }),
   }));
 
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -15,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+    },
+  }));
+
   const list = (anchor) => (
     <Box
       className={classes.drawer}
@@ -84,7 +105,7 @@ const RightDrawer = () => {
           <ListItemIcon />
           <DeployAvatar type="sidebar" fname="Dear" lname="Guest" />
         </ListItem>
-        {true ? ( //change to state!!!!
+        {!authCtx.userId ? ( //change to state!!!!
           <ListItem
             button
             component={Link}
@@ -97,7 +118,7 @@ const RightDrawer = () => {
             <ListItemText primary="Sign In" />
           </ListItem>
         ) : (
-          <ListItem button component={Link} to="/">
+          <ListItem button component={Link} to="/" onClick={signoutHandler} >
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>
@@ -109,10 +130,12 @@ const RightDrawer = () => {
       <div onClick={toggleDrawer(anchor, false)}>
         <List>
           <ListItem button component={Link} to="/favorites">
-            <ListItemIcon>
-              <BookmarkAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Favorites" />
+            <StyledBadge badgeContent={favoritesCtx.totalFavorites} color="primary">
+              <ListItemIcon>
+                <BookmarkAddIcon />
+              </ListItemIcon>
+              <ListItemText primary="Favorites" />
+            </StyledBadge>
           </ListItem>
           <ListItem button component={Link} to="/chats">
             <ListItemIcon>
@@ -164,16 +187,16 @@ const RightDrawer = () => {
           onClick={toggleDrawer()}
           className={classes.menueBtn}
         >
-          <MenuIcon
+          <Menu
           // fontSize="large"
           />
         </IconButton>
         <Drawer
-          anchor={'right'}
-          open={state}
+          anchor={'left'}
+          open={drawerstate}
           onClose={toggleDrawer()}
         >
-          {list('right')}
+          {list('left')}
         </Drawer>
       </React.Fragment>
     </div>

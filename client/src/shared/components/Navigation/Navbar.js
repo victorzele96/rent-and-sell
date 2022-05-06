@@ -7,14 +7,15 @@ import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { IconButton, Tooltip } from '@mui/material';
+
+import rns_logo from '../../../static/images/rns_logo.jpeg';
 
 import classes from './Navbar.module.css';
-import { IconButton } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -83,21 +84,16 @@ const Navbar = (props) => {
     <Box sx={{ flexGrow: 1, top: 0, display: "block", width: "100%" }}>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography
-            className={classes.logo}
-            variant="h6"
-            noWrap
+          <Box sx={{ display: { md: 'flex' } }}>
+            {/* sdiebar */}
+            <RightDrawer />
+          </Box>
+          <IconButton
             component={Link}
-            to="/"
-            sx={{
-              display: { sm: 'block' },
-              color: "white",
-              fontSize: "24px",
-              textDecoration: "none"
-            }}
+            to='/'
           >
-            RNS
-          </Typography>
+            <img src={rns_logo} alt="rns_logo" width={84} height={42} />
+          </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Search className={classes.search}>
             <SearchIconWrapper>
@@ -109,13 +105,11 @@ const Navbar = (props) => {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { md: 'flex' }, marginRight: "1rem" }}>
-            {toggleMapList}
-          </Box>
-          <Box sx={{ display: { md: 'flex' } }}>
-            {/* sdiebar */}
-            <RightDrawer />
-          </Box>
+          <Tooltip title={props.mapList ? "Show as List" : "Show on Map"}>
+            <Box sx={{ display: { md: 'flex' }, marginRight: "1rem" }}>
+              {toggleMapList}
+            </Box>
+          </Tooltip>
         </Toolbar>
       </AppBar>
     </Box>

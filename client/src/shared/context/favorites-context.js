@@ -13,15 +13,11 @@ export const FavoritesContextProvider = (props) => {
   const [userFavorites, setUserFavorites] = useState([]);
 
   const addFavoriteHandler = (favoriteProperty) => {
-    setUserFavorites((prevUserFavorites => {
-      return prevUserFavorites.concat(favoriteProperty);
-    }));
+    setUserFavorites(prevUserFavorites => prevUserFavorites.concat(favoriteProperty));
   };
 
   const removeFavoriteHandler = (propertyId) => {
-    setUserFavorites((prevUserFavorites => {
-      return prevUserFavorites.filter(property => property.id !== propertyId);
-    }));
+    setUserFavorites(prevUserFavorites => prevUserFavorites.filter(property => property.id !== propertyId));
   };
 
   const itemIsFavoriteHandler = (propertyId) => {

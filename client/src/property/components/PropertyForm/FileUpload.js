@@ -6,9 +6,18 @@ import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
   const [images, setImages] = useState([]);
+  const [paths, setPaths] = useState([]);
 
   const addImageHandler = (newImages) => {
     console.log('onAdd', newImages);
+    let imagesPaths = [];
+    for (const [key, value] of Object.entries(newImages)) {
+      imagesPaths.push(value.file.path);
+      if (false) {
+        console.log(key);
+      }
+    }
+    setPaths([].concat(paths, imagesPaths));
     setImages([].concat(images, newImages));
     // TODO: add serverside formdata
   };
@@ -18,13 +27,15 @@ const FileUpload = (props) => {
 
     let indexToDelete = images.indexOf(deleteImage);
     setImages(prevState => prevState.filter(image => images.indexOf(image) !== indexToDelete));
+
+    setPaths(prevState => prevState.filter(path => paths.indexOf(path) !== indexToDelete));
     // TODO: add serverside formdata
   };
 
   useEffect(() => {
-    console.log(images);
     window.sessionStorage.setItem("new-property-images", JSON.stringify(images));
-  }, [images]);
+    window.sessionStorage.setItem("new-property-images-paths", JSON.stringify(paths));
+  }, [images, paths]);
 
   return (
     <div className={classes.container}>
