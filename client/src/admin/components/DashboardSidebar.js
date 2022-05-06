@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import { Box, Divider, Drawer, IconButton } from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
 import { Users as UsersIcon } from '../icons/users';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { NavItem } from './NavItem';
 
 import rns_logo from '../../static/images/rns_logo_reverse.jpeg';
+import { useContext } from "react";
+import { AuthContext } from "../../shared/context/auth-context";
 
 const items = [
   {
@@ -17,11 +20,22 @@ const items = [
     href: '/dashboard/users',
     icon: (<UsersIcon fontSize="small" />),
     title: 'Users'
+  },
+  {
+    href: '/',
+    icon: (<LogoutIcon fontSize="small" />),
+    title: 'Sign Out'
   }
 ];
 
 export const DashboardSidebar = (props) => {
   const { open, onClose } = props;
+  const authCtx = useContext(AuthContext);
+
+  const signoutHandler = () => {
+    authCtx.signout();
+    onClose();
+  };
 
   const content = (
     <>
@@ -50,15 +64,28 @@ export const DashboardSidebar = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              onClick={onClose}
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-            />
-          ))}
+          {items.map((item) => {
+            if (item.title === 'Sign Out') {
+              return (
+                <NavItem
+                  onClick={signoutHandler}
+                  key={item.title}
+                  icon={item.icon}
+                  href={item.href}
+                  title={item.title}
+                />
+              );
+            }
+            return (
+              <NavItem
+                onClick={onClose}
+                key={item.title}
+                icon={item.icon}
+                href={item.href}
+                title={item.title}
+              />
+            );
+          })}
         </Box>
         <Divider sx={{ borderColor: '#2D3748' }} />
       </Box>

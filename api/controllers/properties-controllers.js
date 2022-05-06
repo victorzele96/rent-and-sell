@@ -73,20 +73,21 @@ const createProperty = async (req, res, next) => {
   }
 
   const { description, address, images, details } = req.body;
-  // let coordinates;
-  // try {
-  // coordinates = await getCoordsForAddress(address);
-  // TODO: adjust the getCoordsForAddress function to node geocoder
-  // } catch (err) {
-  //   return next(err);
-  // }
+  let coordsAndAddress;
+  try {
+    coordsAndAddress = await getCoordsForAddress(address);
+    console.log(coordsAndAddress)
+  } catch (err) {
+    return next(err);
+  }
 
   const createdProperty = new Property({
     description,
-    address,
+    address: coordsAndAddress.formatted_address,
     images,
     creator: req.userData.userId,
-    details
+    location: coordsAndAddress.coordinates,
+    details,
   });
 
   let user;
