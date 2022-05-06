@@ -5,11 +5,15 @@ const router = express.Router();
 
 const propertiesControllers = require('../controllers/properties-controllers');
 
+const checkAuth = require('../middleware/check-auth');
+
 router.get('/user/:uid', propertiesControllers.getPropertiesByUserId);
 
 router.get('/:pid', propertiesControllers.getPropertyById);
 
 router.get('/', propertiesControllers.getAllProperties);
+
+router.use(checkAuth);
 
 router.post(
   '/',
@@ -17,7 +21,7 @@ router.post(
     check("description").isLength({ min: 5 }),
     check("address").not().isEmpty(),
     check('images').isArray().isLength({ min: 1 }),
-    check('details.listing_status').custom(value => (value === 'Sale' || value === 'Rent') ? true : Promise.reject('Listing Status must be Sale or Rent.')),
+    check('details.listing_status').custom(value => (value === 'sale' || value === 'rent') ? true : Promise.reject('Listing Status must be Sale or Rent.')),
     check('details.price').isNumeric(),
     check('details.rooms_num').isNumeric(),
     check('details.room_size').isNumeric(),
@@ -39,7 +43,7 @@ router.patch(
   '/:pid',
   [
     check("description").isLength({ min: 5 }),
-    check('details.listing_status').custom(value => (value === 'Sale' || value === 'Rent') ? true : Promise.reject('Listing Status must be Sale or Rent.')),
+    check('details.listing_status').custom(value => (value === 'sale' || value === 'rent') ? true : Promise.reject('Listing Status must be Sale or Rent.')),
     check('details.price').isNumeric(),
     check('details.rooms_num').isNumeric(),
     check('details.room_size').isNumeric(),

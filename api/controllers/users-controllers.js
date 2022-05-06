@@ -1,5 +1,7 @@
 const { uuid } = require("uuidv4");
 const { validationResult } = require("express-validator");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const HttpError = require("../models/http-error");
 const User = require('../models/user');
@@ -42,12 +44,21 @@ const signup = async (req, res, next) => {
     );
   }
 
+  let hashedPassword;
+  try {
+    hashedPassword = await bcrypt.hash(password, 12);
+  } catch (err) {
+    return next(
+      new HttpError('Could not create user, please try again.', 500)
+    );
+  }
+
   const createdUser = new User({
     id: uuid(),
     firstName,
     lastName,
     email,
-    password,
+    password: hashedPassword,
     properties: []
   });
 
@@ -59,7 +70,20 @@ const signup = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ user: createdUser });
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: createdUser.id, email: createdUser.email },
+      'supersecret_dont_share',
+      { expiresIn: '1h' }
+    );
+  } catch (err) {
+    return next(
+      new HttpError("Signing up failed, please try again.", 500)
+    );
+  }
+
+  res.status(201).json({ userId: createdUser.id, email: createdUser.email, token });
 }
 
 const signin = async (req, res, next) => {
@@ -74,13 +98,41 @@ const signin = async (req, res, next) => {
     );
   }
 
-  if (!existingUser || existingUser.password !== password) {
+  if (!existingUser) {
     return next(
-      new HttpError('Could not identify user, credentials seem to be wrong', 401)
+      new HttpError('Could not identify user, credentials seem to be wrong', 403)
     );
   }
 
-  res.json({ message: 'Signed in!', user: existingUser });
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
+  } catch (err) {
+    return next(
+      new HttpError('Could not sign you in, please check your credentials and try again.', 500)
+    );
+  }
+
+  if (!isValidPassword) {
+    return next(
+      new HttpError('Could not identify user, credentials seem to be wrong', 403)
+    );
+  }
+
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      'supersecret_dont_share',
+      { expiresIn: '1h' }
+    );
+  } catch (err) {
+    return next(
+      new HttpError("Signing in failed, please try again.", 500)
+    );
+  }
+
+  res.json({ userId: existingUser.id, email: existingUser.email, token });
 }
 
 exports.getUsers = getUsers;
