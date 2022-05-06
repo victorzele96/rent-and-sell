@@ -25,7 +25,7 @@ const MyProperties = (props) => {
   const { isLoading, sendRequest } = useHttpClient();
 
   const loadProperties = useCallback(async () => {
-    let url = process.env.REACT_APP_BACK_URL + `/properties/user/${authCtx.userId}`;
+    let url = process.env.REACT_APP_BACK_URL + `/properties/user/${authCtx.user.userId}`;
 
     try {
       const responseData = await sendRequest(url);
@@ -51,7 +51,7 @@ const MyProperties = (props) => {
     } catch (err) {
       console.log(err.message);
     }
-  }, [sendRequest, authCtx.userId]);
+  }, [sendRequest, authCtx.user.userId]);
 
   const deletePropertyHandler = deletedPropertyId => {
     setLoadedProperties(prevState => prevState.filter(property => property.id !== deletedPropertyId));

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import RightDrawer from './RightDrawer';
+import LeftDrawer from './LeftDrawer';
 
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -86,7 +86,7 @@ const Navbar = (props) => {
         <Toolbar>
           <Box sx={{ display: { md: 'flex' } }}>
             {/* sdiebar */}
-            <RightDrawer />
+            <LeftDrawer />
           </Box>
           <IconButton
             component={Link}
