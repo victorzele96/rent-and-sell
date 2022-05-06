@@ -2,7 +2,7 @@
   "env": {
     "DB_USER": "arie",
     "DB_PASSWORD": "a1a2a3",
-    "DB_NAME": "final_project",
+    "DB_NAME": "rent_and_sell_dev",
     "GOOGLE_API_KEY": "AIzaSyDgLmMpKCzveJf1_yuA0fUzzhy0WRChvZA",
     "JWT_KEY": "supersecret_dont_share"
   }

@@ -1,7 +1,9 @@
-const PropertyReview = () => {
+import PropertyItem from "../PropertyItem"
+
+const PropertyReview = (props) => {
   return (
     <>
-      Property Review
+      <PropertyItem preview={true} property={props.property} />
     </>
   );
 };

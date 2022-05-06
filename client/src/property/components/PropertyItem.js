@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Paragraph from "./Paragraph";
 import DeployAvatar from "../../shared/components/UIElements/Avatar";
@@ -25,12 +26,19 @@ import {
   IconButton,
   Typography,
   Dialog,
+  Backdrop,
+  CircularProgress,
   DialogTitle,
   DialogActions,
   Divider,
+  Button,
+  Box
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
+import { AuthContext } from "../../shared/context/auth-context";
+
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -76,6 +84,16 @@ const useStyles = makeStyles((theme) => ({
   rightIcon: {
     marginLeft: "1rem",
   },
+  btn: {
+    width: "80px",
+    marginLeft: 10,
+    marginRight: 10
+  },
+  btnBox: {
+    width: "100%",
+    justifyContent: "right",
+    display: "flex"
+  }
 }));
 
 const ExpandMore = styled((props) => {
@@ -93,37 +111,79 @@ const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
 
   const favoritesCtx = useContext(FavoritesContext);
+  const authCtx = useContext(AuthContext);
 
-  const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
+  const { isLoading, error, sendRequest } = useHttpClient();
+  const navigate = useNavigate();
 
   const classes = useStyles();
 
+  const [share, setShare] = useState(false);
+
+  const toggleShare = () => {
+    setShare((prev) => !prev);
+  };
+
+  const [deleteState, setDeleteState] = useState(false);
+
+  const toggleDeleteState = () => {
+    setDeleteState((prev) => !prev);
+  };
+
+  const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
+
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
 
-  const favoritesHandler = () => {
-    if (itemIsFavorite) {
-      favoritesCtx.removeFavorite(props.id);
-    } else {
-      favoritesCtx.addFavorite({
-        id: props.property.id,
-        title: props.property.title,
-        description: props.property.description,
-        img: props.property.image,
-        address: props.property.address,
-        location: props.property.location,
-        details: props.property.details,
-        creator: props.property.creator,
-      });
+  const editHandler = async () => {
+    console.log("Edit");
+    // navigate('/add-property', { state: { mode: 'edit', property: props.property } });
+  };
+
+  const deleteHandler = async () => {
+    console.log("Delete");
+    try {
+      await sendRequest(
+        process.env.REACT_APP_BACK_URL + `/properties/${props.propertyId}`,
+        'DELETE',
+        null,
+        {
+          Authorization: 'Bearer ' + authCtx.token
+        }
+      );
+      props.onDelete(props.propertyId);
+    } catch (err) {
+      console.log(err.message);
     }
-
-    // TODO: add favorites logic + backend connection
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-  const shareUrl = window.location.href; // TODO: need to be changed to url with specific item
+  let actionIcons = null;
+
+  if (!props.preview) {
+    const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
+
+    const favoritesHandler = () => {
+      if (itemIsFavorite) {
+        favoritesCtx.removeFavorite(props.property.id);
+      } else {
+        favoritesCtx.addFavorite(props.property);
+      }
+
+      // TODO: add favorites logic + backend connection
+    };
+
+    actionIcons = (
+      <>
+        {props.property.creator.toString() !== authCtx.userId && (
+          <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
+            <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
+          </IconButton>
+        )}
+        <IconButton aria-label="share" onClick={toggleShare}>
+          <ShareIcon />
+        </IconButton>
+      </>
+    );
+  }
 
   return (
     <Card className={classes.root}>
@@ -149,16 +209,55 @@ const PropertyItem = (props) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
-          <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
-        </IconButton>
-        <IconButton aria-label="share" onClick={toggle}>
-          <ShareIcon />
-        </IconButton>
-        <Dialog onClose={toggle} open={isOpen}>
+        {actionIcons}
+        {authCtx.userId === props.property.creator && (
+          <Box spacing={2} className={classes.btnBox}>
+            <Button
+              className={classes.btn}
+              variant="outlined"
+              onClick={editHandler}
+            >
+              Edit
+            </Button>
+            <Button
+              className={classes.btn}
+              variant="contained"
+              onClick={toggleDeleteState}
+            >
+              Delete
+            </Button>
+            <Box>
+              <Dialog
+                open={deleteState}
+                onClose={toggleDeleteState}
+                aria-labelledby="delete-alert-dialog-title"
+                aria-describedby="delete-alert-dialog-description"
+              >
+                <DialogTitle id="delete-alert-dialog-title">
+                  Are you sure you want to delete this property?
+                </DialogTitle>
+                <DialogActions>
+                  {isLoading && (
+                    <Backdrop
+                      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                      open={isLoading}
+                    >
+                      <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
+                    </Backdrop>
+                  )}
+                  <Button onClick={toggleDeleteState}>Cancel</Button>
+                  <Button onClick={deleteHandler} autoFocus>
+                    Confirm
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Box>
+          </Box>
+        )}
+        <Dialog onClose={toggleShare} open={share}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
-          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggle}>
+          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggleShare}>
             <FacebookShareButton url={shareUrl}>
               <FacebookIcon size={40} round={true} />
             </FacebookShareButton>
@@ -189,9 +288,9 @@ const PropertyItem = (props) => {
               show
               iconClassName={classes.rightIcon}
               icon={<SellIcon className={classes.leftIcon} />}
-              info="Listing Status"
+              info="Listing Status:"
               text={
-                "Listing Status: For " + props.property.details.listing_status
+                "For " + props.property.details.listing_status
               }
             />
             <Paragraph
@@ -206,7 +305,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<EventIcon className={classes.leftIcon} />}
               info="Time on RNS:"
-              text={props.property.details.creation_date}
+              text={props.property.details["creation_date"]}
             />
             <Paragraph
               show
@@ -227,14 +326,14 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<HotelIcon className={classes.leftIcon} />}
               info="Rooms Number:"
-              text={props.property.details.rooms_num}
+              text={props.property.details["rooms_num"]}
             />
             <Paragraph
               show
               iconClassName={classes.rightIcon}
               icon={<SquareFootIcon className={classes.leftIcon} />}
               info="Rooms Size:"
-              text={props.property.details.room_size + " sq m"}
+              text={props.property.details["room_size"] + " sq m"}
             />
             <Paragraph
               show={props.property.details.stories ? true : false}
@@ -255,7 +354,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<LocalParkingIcon className={classes.leftIcon} />}
               info="Parking:"
-              text={props.property.details.parking}
+              text={props.property.details.parking ? "yes" : "no"}
             />
             <Paragraph
               show
@@ -269,7 +368,7 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<WbIncandescentIcon className={classes.leftIcon} />}
               info="Natural Illumination:"
-              text={props.property.details.natural_illumination ? "yes" : "no"}
+              text={props.property.details["natural_illumination"] ? "yes" : "no"}
             />
             <Paragraph
               show
@@ -290,14 +389,14 @@ const PropertyItem = (props) => {
               iconClassName={classes.rightIcon}
               icon={<CommuteIcon className={classes.leftIcon} />}
               info="Public Transport:"
-              text={props.property.details.public_transport ? "yes" : "no"}
+              text={props.property.details["public_transport"] ? "yes" : "no"}
             />
             <Paragraph
               show
               iconClassName={classes.rightIcon}
               icon={<DomainIcon className={classes.leftIcon} />}
               info="Public Institutes:"
-              text={props.property.details.public_institutes ? "yes" : "no"}
+              text={props.property.details["public_institutes"] ? "yes" : "no"}
             />
             <Paragraph
               show

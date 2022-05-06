@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
-
-import { Card, Container, Stack } from "@mui/material";
-
-import { makeStyles } from '@mui/styles';
+import { Button, Card, Container, Stack } from "@mui/material";
 
 import PropertyItem from "./PropertyItem";
 
-import DUMMY_DATA from "./propertyData";
+import { makeStyles } from '@mui/styles';
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   listContainer: {
@@ -29,57 +26,65 @@ const useStyles = makeStyles((theme) => ({
   loadingCard: {
     padding: "1rem",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+  },
+  container: {
+    width: "fit-content",
+    blockSize: "fit-content",
+    marginTop: "5vh",
+    textAlign: "center",
+
+  },
+  card: {
+    padding: "1rem",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
   }
 }));
 
 const List = (props) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadedProperties, setLoadedProperties] = useState([]);
-
   const classes = useStyles();
 
-  useEffect(() => {
-    setIsLoading(true);
-    setLoadedProperties(DUMMY_DATA);
-    // fetch('https://learn-react-1-8c84e-default-rtdb.firebaseio.com/meetups1.json')
-    //   .then(response => {
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     const meetups = [];
-
-    //     for (const key in data) {
-    //       const meetup = {
-    //         id: key,
-    //         ...data[key]
-    //       };
-    //       meetups.push(meetup);
-    //     }
-
-    //   setIsLoading(false);
-    //   setLoadedMeetups(meetups);
-    // });
-    setIsLoading(false);
-  }, []);
-
-  if (isLoading) {
+  if (props.isLoading) {
     return (
-      <Container className={classes.loadingContainer}>
-        <Card className={classes.loadingCard}>
+      <Container id={props.tagId} className={classes.container}>
+        <Card className={classes.card}>
           <p>Loading...</p>
         </Card>
       </Container>
     );
   }
 
-  return (
-    // <Container maxWidth={false} className={classes.listContainer}>
-    <Stack id={props.tagId} spacing="30px" className={classes.listContainerInner}>
-      {loadedProperties.map(item => (
-        <PropertyItem key={item.id} property={item} />
+  let text;
+  if (props.load === 'by-property-id') {
+    text = 'Could not find property with specified id';
+  }
+
+  if (props.load === 'all' || props.load === 'by-user-id') {
+    text = 'There are no properties yet. Start adding some?';
+  }
+
+  if (props.load === 'favorites') {
+    text = 'There are no favorites yet. Start adding some?';
+  }
+
+  const content = props.properties.length === 0 ? (
+    <Container id={props.tagId} className={classes.container}>
+      <Card className={classes.card}>
+        <p>{text}</p>
+        {props.load === 'by-user-id' && <Button variant="outlined" component={Link} to="/add-property">Add Property</Button>}
+      </Card>
+    </Container>
+  ) : (
+    <Stack id={props.tagId || 'list-stack'} spacing="30px" className={classes.listContainerInner}>
+      {props.properties.map(property => (
+        <PropertyItem key={property.id} property={property} propertyId={property.id} onDelete={props.onDelete} />
       ))}
     </Stack>
-    // </Container>
+  )
+
+  return (
+    <>
+      {content}
+    </>
   );
 };
 

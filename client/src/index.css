@@ -1,5 +1,9 @@
 body {
   margin: 0;
+  /* background-image: url('./background-rns.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; */
 }
 
 #main-content {
@@ -12,7 +16,7 @@ body {
   margin-top: 50px;
 }
 
-#list { 
+#list {
   height: 1080px;
 }
 

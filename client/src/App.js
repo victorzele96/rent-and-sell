@@ -1,48 +1,89 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+//? User
 import Navbar from './shared/components/Navigation/Navbar';
-import Map from './property/components/Map';
-import List from './property/components/List';
-import Favorites from './favorites/pages/Favorites';
+import Favorites from './property/pages/Favorites';
 import Chats from './chats/pages/Chats';
 import NewProperty from './property/pages/NewProperty';
+import MyProperties from './property/pages/MyProperties';
+import ShowProperty from './property/pages/ShowProperty';
+import AllProperties from './property/pages/AllProperties';
 import Auth from './users/pages/Auth';
-// import Copyright from './shared/components/UIElements/Copyright';
+//?
+//! Admin
+import Dashboard from './admin/pages/Dashboard';
+import Users from './admin/pages/Users';
+import { DashboardNavbar } from './admin/components/DashboardNavbar';
+import { DashboardSidebar } from './admin/components/DashboardSidebar';
+//!
 
-import DUMMY_DATA from "./property/components/propertyData";
+import { AuthContext } from './shared/context/auth-context';
+
+import { useAuth } from './shared/hooks/auth-hook';
 
 import { CssBaseline } from '@mui/material';
 
 const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
+  const [open, setOpen] = useState(false);
+  const { token, signin, signout, userId } = useAuth();
 
-  const routes = (
+  const userRoutes = (
     <>
       <Routes>
-        {toggleMapList && (
-          <Route exact path={"/"} element={<Map properties={DUMMY_DATA} />}
-          />
-        )}
-        {!toggleMapList && (
-          <Route exact path={"/"} element={<List tagId="main-content" />}
-          />
-        )}
+        {/* User routes */}
+        <Route exact path={"/"} element={<AllProperties toggle={toggleMapList} tagId="main-content" />} />
         <Route exact path={"/auth"} element={<Auth tagId="main-content" />} />
         <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
         <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
         <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
+        <Route exact path={"/my-properties"} element={<MyProperties tagId="main-content" />} />
+        <Route exact path={'/property/:propertyId'} element={<ShowProperty tagId="main-content" />} />
+      </Routes>
+    </>
+  );
+
+  const adminRoutes = (
+    <>
+      <Routes>
+        {/* Admin routes */}
+        <Route exact path={'/dashboard'} element={<Dashboard tagId="main-content" />} />
+        <Route exact path={'/dashboard/users'} element={<Users tagId="main-content" />} />
       </Routes>
     </>
   );
 
   return (
-    <div className="root">
-      <CssBaseline />
-      <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      {routes}
-      {/* <Copyright sx={{ mt: 2, md: 2 }} /> */}
-    </div>
+    <AuthContext.Provider
+      value={{
+        isSignedIn: !!token,
+        token,
+        userId,
+        signin,
+        signout
+      }}
+    >
+      <div className="root">
+        <CssBaseline />
+        {false && (
+          <>
+            <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
+            {userRoutes}
+          </>
+        )}
+        {true && (
+          <>
+            <DashboardNavbar onSidebarOpen={() => setOpen(true)} />
+            <DashboardSidebar
+              onClose={() => setOpen(false)}
+              open={open}
+            />
+            {adminRoutes}
+          </>
+        )}
+      </div>
+    </AuthContext.Provider>
   );
 };
 

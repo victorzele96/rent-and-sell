@@ -1,6 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button, Card, CardContent, Container, TextField, ToggleButton } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  ToggleButton
+} from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -45,15 +52,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialFilterState = {
-  listingStatus: 'sale',
+  address: "",
+  street: "",
+  city: "",
+  rooms_num: 0,
+  listing_status: 'sale',
   renovated: false,
   parking: false,
   accessibility: false,
-  illumination: false,
+  natural_illumination: false,
   pets: false,
   park: false,
-  transport: false,
-  institutes: false,
+  public_transport: false,
+  public_institutes: false,
 };
 
 const Filter = (porps) => {
@@ -65,30 +76,37 @@ const Filter = (porps) => {
   const [filterState, setFilterState] = useState(initialFilterState);
 
   const listingStatusChangeHandler = () => {
-    if (filterState.listingStatus === "sale") {
-      setFilterState({ ...filterState, listingStatus: "rent" });
+    if (filterState.listing_status === "sale") {
+      setFilterState({ ...filterState, listing_status: "rent" });
     } else {
-      setFilterState({ ...filterState, listingStatus: "sale" });
+      setFilterState({ ...filterState, listing_status: "sale" });
     }
   };
 
   const changeHandler = (event) => {
-    let newFilterState = filterState;
+    let newFilterState = { ...filterState };
 
     for (const [key, value] of Object.entries(filterState)) {
       if (key === event.target.name) {
-        newFilterState[key] = !value;
-      } else {
-        newFilterState[key] = value;
-      }
-    };
-    setFilterState({ ...newFilterState });
+        if (typeof value === "boolean") {
+          newFilterState[key] = !value;
+        } else {
+          console.log(event.target.name)
+          newFilterState[key] = event.target.value;
+        }
+      };
+      setFilterState({ ...newFilterState });
 
-    // TODO: add filtering logic to apartment list
+      // TODO: add filtering logic to apartment list
+    }
   };
 
+  useEffect(() => {
+    console.log(filterState);
+  }, [filterState]);
+
   const resetHandler = () => {
-    setFilterState({ ...initialFilterState });
+    setFilterState(initialFilterState);
   };
 
   const content = (
@@ -96,29 +114,43 @@ const Filter = (porps) => {
       <TextField
         id="address"
         name="address"
-        label="address"
+        label="Address"
         fullWidth
-        autoComplete="shipping address-level2"
         variant="standard"
+        onChange={changeHandler}
         className={classes.filterItem}
+        value={filterState.address}
       />
       <TextField
         id="street"
         name="street"
-        label="street"
+        label="Street"
         fullWidth
-        autoComplete="shipping address-level2"
         variant="standard"
+        onChange={changeHandler}
         className={classes.filterItem}
+        value={filterState.street}
       />
       <TextField
         id="city"
         name="city"
         label="City"
         fullWidth
-        autoComplete="shipping address-level2"
         variant="standard"
+        onChange={changeHandler}
         className={classes.filterItem}
+        value={filterState.city}
+      />
+      <TextField
+        id="rooms_num"
+        name="rooms_num"
+        label="Rooms Number"
+        fullWidth
+        variant="standard"
+        onChange={changeHandler}
+        className={classes.filterItem}
+        value={filterState.rooms_num}
+        type="number"
       />
       <ToggleButton
         color="primary"
@@ -130,7 +162,7 @@ const Filter = (porps) => {
         name="listing_status"
       >
         <SellIcon sx={{ mr: 2 }} />
-        {filterState.listingStatus}
+        {filterState.listing_status}
       </ToggleButton>
       <ToggleButton
         color="primary"
@@ -158,12 +190,12 @@ const Filter = (porps) => {
       </ToggleButton>
       <ToggleButton
         color="primary"
-        value="illumination"
-        selected={filterState.illumination}
+        value="natural_illumination"
+        selected={filterState.natural_illumination}
         fullWidth
         onChange={changeHandler}
         className={classes.filterItem}
-        name="illumination"
+        name="natural_illumination"
       >
         <WbIncandescentIcon sx={{ mr: 2 }} />
         Natural Illumination
@@ -194,24 +226,24 @@ const Filter = (porps) => {
       </ToggleButton>
       <ToggleButton
         color="primary"
-        value="transport"
-        selected={filterState.transport}
+        value="public_transport"
+        selected={filterState.public_transport}
         fullWidth
         onChange={changeHandler}
         className={classes.filterItem}
-        name="transport"
+        name="public_transport"
       >
         <CommuteIcon sx={{ mr: 2 }} />
         Public Transport
       </ToggleButton>
       <ToggleButton
         color="primary"
-        value="institutes"
-        selected={filterState.institutes}
+        value="public_institutes"
+        selected={filterState.public_institutes}
         fullWidth
         onChange={changeHandler}
         className={classes.filterItem}
-        name="institutes"
+        name="public_institutes"
       >
         <DomainIcon sx={{ mr: 2 }} />
         Public Institutes

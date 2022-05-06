@@ -38,9 +38,9 @@ export const PropertyContextProvider = (props) => {
   };
 
   const context = {
-    properties: properties,
-    propertyForm: propertyForm,
-    setPropertyForm: setPropertyForm,
+    properties,
+    propertyForm,
+    setPropertyForm,
     createProperty: createPropertyHandler,
     addProperty: addPropertyHandler,
     editProperty: editPropertyHandler,

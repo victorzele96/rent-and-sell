@@ -1,23 +1,63 @@
-import { useState, /*useRef*/ } from 'react';
+import { useEffect, useState } from 'react';
+
+import { DropzoneAreaBase } from 'material-ui-dropzone';
 
 import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
-  const [files, /*setFiles*/] = useState({});
-  // const fileInputField = useRef(null);
+  const [images, setImages] = useState([]);
+  const [paths, setPaths] = useState([]);
 
-  console.log(files);
+  const addImageHandler = (newImages) => {
+    console.log('onAdd', newImages);
+    let imagesPaths = [];
+    for (const [key, value] of Object.entries(newImages)) {
+      imagesPaths.push(value.file.path);
+      if (false) {
+        console.log(key);
+      }
+    }
+    setPaths([].concat(paths, imagesPaths));
+    setImages([].concat(images, newImages));
+    // TODO: add serverside formdata
+  };
+
+  const deleteImageHandler = (deleteImage) => {
+    console.log('onDelete', deleteImage);
+
+    let indexToDelete = images.indexOf(deleteImage);
+    setImages(prevState => prevState.filter(image => images.indexOf(image) !== indexToDelete));
+
+    setPaths(prevState => prevState.filter(path => paths.indexOf(path) !== indexToDelete));
+    // TODO: add serverside formdata
+  };
+
+  useEffect(() => {
+    window.sessionStorage.setItem("new-property-images", JSON.stringify(images));
+    window.sessionStorage.setItem("new-property-images-paths", JSON.stringify(paths));
+  }, [images, paths]);
+
   return (
-    <form method="post" action="#" id="#">
-      <div className={classes.files}>
-        <label>Upload Your File </label>
-        <input
-          className={classes["form-control"]}
-          type="file"
-        // multiple={5}
+    <div className={classes.container}>
+      <div>
+        <DropzoneAreaBase
+          style={classes}
+          fileObjects={images}
+          onAdd={addImageHandler}
+          onDelete={deleteImageHandler}
+          showPreviews={true}
+          showPreviewsInDropzone={false}
+          acceptedFiles={['image/*']}
+          showFileNames={false}
+          showAlerts={false}
+          filesLimit={6}
+          useChipsForPreview
+          previewGridProps={{ container: { spacing: 1, direction: 'row' } }}
+          previewChipProps={{ classes: { root: classes.previewChip } }}
+          previewText="Selected files"
         />
       </div>
-    </form>
+    </div>
   );
 };
 
