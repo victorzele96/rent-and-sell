@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { Card, Container } from "@mui/material";
 
-import List from '../../property/components/List';
+import List from '../components/List';
 
 import FavoritesContext from '../../shared/context/favorites-context';
 
@@ -20,9 +20,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Favorites = (props) => {
-  const classes = useStyles();
-
   const favoritesCtx = useContext(FavoritesContext);
+
+  const deletePropertyHandler = deletedPropertyId => {
+    favoritesCtx.removeFavorite(deletedPropertyId);
+  };
+
+  const classes = useStyles();
 
   const content = favoritesCtx.totalFavorites === 0 ? (
     <Card className={classes.card}>
@@ -33,7 +37,12 @@ const Favorites = (props) => {
     <>
       <h1 style={{ textAlign: "center" }}>Favorites</h1>
       <div style={{ textAlign: "left" }}>
-        <List load='favorites' />
+        <List
+          load='favorites'
+          tagId={props.tagId}
+          onDelete={deletePropertyHandler}
+          properties={favoritesCtx.favorites}
+        />
       </div>
     </>
   )

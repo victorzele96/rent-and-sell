@@ -72,27 +72,26 @@ const createProperty = async (req, res, next) => {
     );
   }
 
-  const { description, address, images, creator, details } = req.body;
-
-  let coordinates;
-  try {
-    // coordinates = await getCoordsForAddress(address);
-    // TODO: adjust the getCoordsForAddress function to node geocoder
-  } catch (err) {
-    return next(err);
-  }
+  const { description, address, images, details } = req.body;
+  // let coordinates;
+  // try {
+  // coordinates = await getCoordsForAddress(address);
+  // TODO: adjust the getCoordsForAddress function to node geocoder
+  // } catch (err) {
+  //   return next(err);
+  // }
 
   const createdProperty = new Property({
     description,
     address,
     images,
-    creator,
+    creator: req.userData.userId,
     details
   });
 
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     return next(
       new HttpError('Creating property failed, please try again.', 500)
@@ -115,6 +114,7 @@ const createProperty = async (req, res, next) => {
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
+    console.log(err);
     return next(
       new HttpError('Creating property failed, please try again.', 500)
     );
@@ -147,6 +147,12 @@ const updateProperty = async (req, res, next) => {
   } catch (err) {
     return next(
       new HttpError('Something went wrong, could not update property.', 500)
+    );
+  }
+
+  if (property.creator.id.toString() !== req.userData.userId) {
+    return next(
+      new HttpError('You are not allowed to edit this property.', 401)
     );
   }
 
@@ -194,6 +200,12 @@ const deleteProperty = async (req, res, next) => {
   if (!property) {
     return next(
       new HttpError('Could not find property for this id.', 404)
+    );
+  }
+
+  if (property.creator.id.toString() !== req.userData.userId) {
+    return next(
+      new HttpError('You are not allowed to delete this property.', 401)
     );
   }
 

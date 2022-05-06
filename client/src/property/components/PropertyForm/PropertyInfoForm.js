@@ -26,7 +26,6 @@ const initialPropertyState = {
   images: [],
   details: {
     listing_status: "rent",
-    // creation_date: new Intl.DateTimeFormat('He-IL').format(),
     price: 0,
     renovated: false,
     rooms_num: 0,

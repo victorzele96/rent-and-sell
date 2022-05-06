@@ -21,7 +21,7 @@ import PropertyReview from "../components/PropertyForm/PropertyReview";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import AuthContext from "../../shared/context/auth-context";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import { makeStyles } from '@mui/styles';
 
@@ -29,14 +29,10 @@ const useStyles = makeStyles((theme) => ({
   container: {
     "overflow-y": "scroll",
     marginTop: "40px",
-    // maxHeight: "660px",
-    // maxWidth: "1300px"
   },
   innerContainer: {
     alignItems: "center",
-    // paddingBottom: "40px",
     marginBottom: "32px",
-    // "overflow": "hidden"
   }
 }));
 
@@ -60,36 +56,37 @@ const NewProperty = (props) => {
           description: propertyData.description,
           address: propertyData.address,
           images: propertyData.images,
-          creator: authCtx.userId,
           details: propertyData.details
         }),
         {
+          'Authorization': 'Bearer ' + authCtx.token,
           'Content-Type': 'application/json'
         },
-        'no-cors'
       );
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (err) {
       console.log(err);
     }
-
-    setTimeout(() => {
-      navigate('/');
-    }, 5000);
   };
 
   const nextHandler = () => {
     setActiveStep(activeStep + 1);
 
-    let images;
+    // let images;
+    let paths;
     try {
-      images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
+      // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
+      paths = JSON.parse(window.sessionStorage.getItem("new-property-images-paths"));
     } catch (e) {
       console.log(e);
     }
 
     const property = {
       ...JSON.parse(sessionStorage.getItem("new-property-state")),
-      images
+      images: paths
     };
 
     setPropertyData(property);
