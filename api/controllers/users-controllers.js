@@ -73,7 +73,12 @@ const signup = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: createdUser.id, email: createdUser.email },
+      {
+        userId: createdUser.id,
+        email: createdUser.email,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+      },
       'supersecret_dont_share',
       { expiresIn: '1h' }
     );
@@ -83,7 +88,15 @@ const signup = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ userId: createdUser.id, email: createdUser.email, token });
+  res.status(201).json({
+    user: {
+      userId: createdUser.id,
+      email: createdUser.email,
+      firstName: createdUser.firstName,
+      lastName: createdUser.lastName,
+      isAdmin: false
+    }, token
+  });
 }
 
 const signin = async (req, res, next) => {
@@ -119,10 +132,19 @@ const signin = async (req, res, next) => {
     );
   }
 
+  let isAdmin = false;
+  if (existingUser.role && existingUser.role === 'admin') {
+    isAdmin = true;
+  }
+
   let token;
   try {
     token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
+      {
+        userId: existingUser.id,
+        email: existingUser.email,
+        isAdmin
+      },
       'supersecret_dont_share',
       { expiresIn: '1h' }
     );
@@ -132,7 +154,15 @@ const signin = async (req, res, next) => {
     );
   }
 
-  res.json({ userId: existingUser.id, email: existingUser.email, token });
+  res.json({
+    user: {
+      userId: existingUser.id,
+      email: existingUser.email,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
+      isAdmin
+    }, token
+  });
 }
 
 exports.getUsers = getUsers;

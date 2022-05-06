@@ -137,8 +137,7 @@ const Auth = (props) => {
               'Content-Type': 'application/json'
             },
           );
-
-          authCtx.signin(responseData.userId, responseData.token);
+          authCtx.signin(responseData.user, responseData.token);
           navigate('/');
         } else {
           throw new Error('User input is not valid, please enter valid input.');
@@ -161,9 +160,12 @@ const Auth = (props) => {
               'Content-Type': 'application/json'
             }
           );
-
-          authCtx.signin(responseData.userId, responseData.token);
-          navigate('/');
+          authCtx.signin(responseData.user, responseData.token);
+          if (responseData.user.isAdmin) {
+            navigate('/dashboard');
+          } else {
+            navigate('/');
+          }
         } else {
           throw new Error('User input is not valid, please enter valid input.');
         }

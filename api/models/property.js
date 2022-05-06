@@ -6,17 +6,10 @@ const propertySchema = new Schema({
   description: { type: String, required: true },
   images: { type: [String], required: false },
   address: { type: String, required: true },
-  // location: {
-  //   type: {
-  //     type: String,
-  //     enum: ['Point'],
-  //   },
-  //   coordinates: {
-  //     type: [Number],
-  //     index: '2dsphere'
-  //   },
-  //   formattedAddress: { type: String }
-  // },
+  location: {
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
+  },
   details: {
     listing_status: { type: String, required: true },
     creation_date: { type: Date, default: Date.now() },
