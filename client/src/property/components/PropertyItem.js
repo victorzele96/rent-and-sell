@@ -156,7 +156,8 @@ const PropertyItem = (props) => {
     }
   };
 
-  let actionIcons = null;
+  let actionIcons;
+  let delAndEdit;
 
   if (!props.preview) {
     const itemIsFavorite = favoritesCtx.itemisFavorite(props.property.id);
@@ -171,9 +172,19 @@ const PropertyItem = (props) => {
       // TODO: add favorites logic + backend connection
     };
 
+    let showFavoritesBtn = false;
+    let showDelEdit = false;
+    if (authCtx.user) {
+      if (props.property.creator.toString() !== authCtx.user.userId) {
+        showFavoritesBtn = true;
+      } else {
+        showDelEdit = true;
+      }
+    }
+
     actionIcons = (
       <>
-        {props.property.creator.toString() !== authCtx.user.userId && (
+        {showFavoritesBtn && (
           <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
             <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
           </IconButton>
@@ -183,6 +194,53 @@ const PropertyItem = (props) => {
         </IconButton>
       </>
     );
+
+    delAndEdit = showDelEdit ? (
+      <>
+        <Box spacing={2} className={classes.btnBox}>
+          <Button
+            className={classes.btn}
+            variant="outlined"
+            onClick={editHandler}
+          >
+            Edit
+          </Button>
+          <Button
+            className={classes.btn}
+            variant="contained"
+            onClick={toggleDeleteState}
+          >
+            Delete
+          </Button>
+          <Box>
+            <Dialog
+              open={deleteState}
+              onClose={toggleDeleteState}
+              aria-labelledby="delete-alert-dialog-title"
+              aria-describedby="delete-alert-dialog-description"
+            >
+              <DialogTitle id="delete-alert-dialog-title">
+                Are you sure you want to delete this property?
+              </DialogTitle>
+              <DialogActions>
+                {isLoading && (
+                  <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={isLoading}
+                  >
+                    <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
+                  </Backdrop>
+                )}
+                <Button onClick={toggleDeleteState}>Cancel</Button>
+                <Button onClick={deleteHandler} autoFocus>
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Box>
+        </Box>
+      </>
+    ) : null;
   }
 
   return (
@@ -210,50 +268,7 @@ const PropertyItem = (props) => {
       </CardContent>
       <CardActions disableSpacing>
         {actionIcons}
-        {authCtx.user.userId === props.property.creator && (
-          <Box spacing={2} className={classes.btnBox}>
-            <Button
-              className={classes.btn}
-              variant="outlined"
-              onClick={editHandler}
-            >
-              Edit
-            </Button>
-            <Button
-              className={classes.btn}
-              variant="contained"
-              onClick={toggleDeleteState}
-            >
-              Delete
-            </Button>
-            <Box>
-              <Dialog
-                open={deleteState}
-                onClose={toggleDeleteState}
-                aria-labelledby="delete-alert-dialog-title"
-                aria-describedby="delete-alert-dialog-description"
-              >
-                <DialogTitle id="delete-alert-dialog-title">
-                  Are you sure you want to delete this property?
-                </DialogTitle>
-                <DialogActions>
-                  {isLoading && (
-                    <Backdrop
-                      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                      open={isLoading}
-                    >
-                      <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
-                    </Backdrop>
-                  )}
-                  <Button onClick={toggleDeleteState}>Cancel</Button>
-                  <Button onClick={deleteHandler} autoFocus>
-                    Confirm
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </Box>
-          </Box>
-        )}
+        {delAndEdit}
         <Dialog onClose={toggleShare} open={share}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />

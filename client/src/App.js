@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 //? User
@@ -28,16 +28,6 @@ const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
   const [open, setOpen] = useState(false);
   const { token, signin, signout, user } = useAuth();
-  const [isAdmin, setIdAdmin] = useState(false);
-
-  useEffect(() => {
-    console.log(user);
-    if (user) {
-      setIdAdmin(user.role ? user.role : false);
-    } else {
-      setIdAdmin('');
-    }
-  }, [user, isAdmin]);
 
   const userRoutes = (
     <>
