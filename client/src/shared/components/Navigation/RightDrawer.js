@@ -21,7 +21,6 @@ import Filter from './Filter';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import StoreIcon from '@mui/icons-material/Store';
-import MenuIcon from '@mui/icons-material/Menu';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
@@ -30,6 +29,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Menu } from '../../../admin/icons/menu';
 
 import { styled } from '@mui/material/styles';
 
@@ -187,16 +187,16 @@ const RightDrawer = () => {
           onClick={toggleDrawer()}
           className={classes.menueBtn}
         >
-          <MenuIcon
+          <Menu
           // fontSize="large"
           />
         </IconButton>
         <Drawer
-          anchor={'right'}
+          anchor={'left'}
           open={drawerstate}
           onClose={toggleDrawer()}
         >
-          {list('right')}
+          {list('left')}
         </Drawer>
       </React.Fragment>
     </div>
