@@ -55,10 +55,7 @@ const Map = props => {
         return (
           <Marker
             key={property.id}
-            position={{
-              lat: 31.2,
-              lng: 34.7
-            }}
+            position={property.location}
             icon={property.details.listing_status === 'rent' ? greenIcon : blueIcon}
           >
             <Popup>
