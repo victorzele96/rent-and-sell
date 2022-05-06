@@ -66,13 +66,13 @@ const App = () => {
     >
       <div className="root">
         <CssBaseline />
-        {false && (
+        {true && (
           <>
             <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
             {userRoutes}
           </>
         )}
-        {true && (
+        {false && (
           <>
             <DashboardNavbar onSidebarOpen={() => setOpen(true)} />
             <DashboardSidebar
