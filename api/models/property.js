@@ -41,4 +41,4 @@ const propertySchema = new Schema({
 
 propertySchema.set('toJSON', { getters: true });
 
-module.exports = mongoose.model('Propery', propertySchema);
+module.exports = mongoose.model('Property', propertySchema);
