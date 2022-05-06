@@ -33,9 +33,9 @@ import { Menu } from '../../../admin/icons/menu';
 
 import { styled } from '@mui/material/styles';
 
-import classes from './RightDrawer.module.css';
+import classes from './LeftDrawer.module.css';
 
-const RightDrawer = () => {
+const LeftDrawer = () => {
   const authCtx = useContext(AuthContext);
   const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
@@ -103,9 +103,9 @@ const RightDrawer = () => {
       <List>
         <ListItem style={{ margin: "auto", display: "inline-block" }} >
           <ListItemIcon />
-          <DeployAvatar type="sidebar" fname="Dear" lname="Guest" />
+          <DeployAvatar type="sidebar" fname={authCtx.user ? authCtx.user.firstName : "Dear"} lname={authCtx.user ? authCtx.user.lastName : "Guest"} />
         </ListItem>
-        {!authCtx.userId ? ( //change to state!!!!
+        {!authCtx.user ? ( //change to state!!!!
           <ListItem
             button
             component={Link}
@@ -203,4 +203,4 @@ const RightDrawer = () => {
   );
 };
 
-export default RightDrawer;
+export default LeftDrawer;

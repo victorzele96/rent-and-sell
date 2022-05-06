@@ -173,7 +173,7 @@ const PropertyItem = (props) => {
 
     actionIcons = (
       <>
-        {props.property.creator.toString() !== authCtx.userId && (
+        {props.property.creator.toString() !== authCtx.user.userId && (
           <IconButton aria-label="add to favorites" onClick={favoritesHandler}>
             <FavoriteIcon color={itemIsFavorite ? "error" : "action"} />
           </IconButton>
@@ -210,7 +210,7 @@ const PropertyItem = (props) => {
       </CardContent>
       <CardActions disableSpacing>
         {actionIcons}
-        {authCtx.userId === props.property.creator && (
+        {authCtx.user.userId === props.property.creator && (
           <Box spacing={2} className={classes.btnBox}>
             <Button
               className={classes.btn}

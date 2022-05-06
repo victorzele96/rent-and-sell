@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 //? User
@@ -27,7 +27,17 @@ import { CssBaseline } from '@mui/material';
 const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
   const [open, setOpen] = useState(false);
-  const { token, signin, signout, userId } = useAuth();
+  const { token, signin, signout, user } = useAuth();
+  const [isAdmin, setIdAdmin] = useState(false);
+
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      setIdAdmin(user.role ? user.role : false);
+    } else {
+      setIdAdmin('');
+    }
+  }, [user, isAdmin]);
 
   const userRoutes = (
     <>
@@ -54,33 +64,43 @@ const App = () => {
     </>
   );
 
+  const adminContent = (
+    <>
+      <DashboardNavbar onSidebarOpen={() => setOpen(true)} />
+      <DashboardSidebar
+        onClose={() => setOpen(false)}
+        open={open}
+      />
+      {adminRoutes}
+    </>
+  );
+
+  const userContent = (
+    <>
+      <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
+      {userRoutes}
+    </>
+  );
+
   return (
     <AuthContext.Provider
       value={{
         isSignedIn: !!token,
         token,
-        userId,
         signin,
-        signout
+        signout,
+        user
       }}
     >
       <div className="root">
         <CssBaseline />
-        {false && (
-          <>
-            <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-            {userRoutes}
-          </>
-        )}
-        {true && (
-          <>
-            <DashboardNavbar onSidebarOpen={() => setOpen(true)} />
-            <DashboardSidebar
-              onClose={() => setOpen(false)}
-              open={open}
-            />
-            {adminRoutes}
-          </>
+        {user ? (
+          user.isAdmin ? (
+            adminContent
+          ) : (
+            userContent
+          )) : (
+          userContent
         )}
       </div>
     </AuthContext.Provider>
