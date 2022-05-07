@@ -113,7 +113,7 @@ const PropertyItem = (props) => {
   const favoritesCtx = useContext(FavoritesContext);
   const authCtx = useContext(AuthContext);
 
-  const { isLoading, error, sendRequest } = useHttpClient();
+  const { isLoading, sendRequest } = useHttpClient();
   const navigate = useNavigate();
 
   const classes = useStyles();
@@ -133,6 +133,10 @@ const PropertyItem = (props) => {
   const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
 
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
+
+  const viewHandler = () => {
+    navigate(`/property/${props.propertyId}`);
+  };
 
   const editHandler = async () => {
     console.log("Edit");
@@ -197,47 +201,45 @@ const PropertyItem = (props) => {
 
     delAndEdit = showDelEdit ? (
       <>
-        <Box spacing={2} className={classes.btnBox}>
-          <Button
-            className={classes.btn}
-            variant="outlined"
-            onClick={editHandler}
+        <Button
+          className={classes.btn}
+          variant="outlined"
+          onClick={editHandler}
+        >
+          Edit
+        </Button>
+        <Button
+          className={classes.btn}
+          variant="contained"
+          onClick={toggleDeleteState}
+        >
+          Delete
+        </Button>
+        <Box>
+          <Dialog
+            open={deleteState}
+            onClose={toggleDeleteState}
+            aria-labelledby="delete-alert-dialog-title"
+            aria-describedby="delete-alert-dialog-description"
           >
-            Edit
-          </Button>
-          <Button
-            className={classes.btn}
-            variant="contained"
-            onClick={toggleDeleteState}
-          >
-            Delete
-          </Button>
-          <Box>
-            <Dialog
-              open={deleteState}
-              onClose={toggleDeleteState}
-              aria-labelledby="delete-alert-dialog-title"
-              aria-describedby="delete-alert-dialog-description"
-            >
-              <DialogTitle id="delete-alert-dialog-title">
-                Are you sure you want to delete this property?
-              </DialogTitle>
-              <DialogActions>
-                {isLoading && (
-                  <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                    open={isLoading}
-                  >
-                    <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
-                  </Backdrop>
-                )}
-                <Button onClick={toggleDeleteState}>Cancel</Button>
-                <Button onClick={deleteHandler} autoFocus>
-                  Confirm
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Box>
+            <DialogTitle id="delete-alert-dialog-title">
+              Are you sure you want to delete this property?
+            </DialogTitle>
+            <DialogActions>
+              {isLoading && (
+                <Backdrop
+                  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                  open={isLoading}
+                >
+                  <CircularProgress style={{ marginTop: "40px" }} size={50} thickness={2.5} />
+                </Backdrop>
+              )}
+              <Button onClick={toggleDeleteState}>Cancel</Button>
+              <Button onClick={deleteHandler} autoFocus>
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </>
     ) : null;
@@ -268,7 +270,16 @@ const PropertyItem = (props) => {
       </CardContent>
       <CardActions disableSpacing>
         {actionIcons}
-        {delAndEdit}
+        <Box spacing={2} className={classes.btnBox}>
+          <Button
+            className={classes.btn}
+            variant="outlined"
+            onClick={viewHandler}
+          >
+            View
+          </Button>
+          {delAndEdit}
+        </Box>
         <Dialog onClose={toggleShare} open={share}>
           <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
           <Divider />
