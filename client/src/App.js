@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 //? User
 import Navbar from './shared/components/Navigation/Navbar';
@@ -35,11 +35,16 @@ const App = () => {
         {/* User routes */}
         <Route exact path={"/"} element={<AllProperties toggle={toggleMapList} tagId="main-content" />} />
         <Route exact path={"/auth"} element={<Auth tagId="main-content" />} />
-        <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
-        <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
-        <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
-        <Route exact path={"/my-properties"} element={<MyProperties tagId="main-content" />} />
+        {user && (
+          <>
+            <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
+            <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
+            <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
+            <Route exact path={"/my-properties"} element={<MyProperties tagId="main-content" />} />
+          </>
+        )}
         <Route exact path={'/property/:propertyId'} element={<ShowProperty tagId="main-content" />} />
+        <Route path='*' element={<Navigate replace to='/' />} />
       </Routes>
     </>
   );
