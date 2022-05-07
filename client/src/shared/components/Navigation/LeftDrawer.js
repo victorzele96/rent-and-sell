@@ -126,37 +126,41 @@ const LeftDrawer = () => {
           </ListItem>
         )}
       </List>
-      <Divider />
-      <div onClick={toggleDrawer(anchor, false)}>
-        <List>
-          <ListItem button component={Link} to="/favorites">
-            <StyledBadge badgeContent={favoritesCtx.totalFavorites} color="primary">
-              <ListItemIcon>
-                <BookmarkAddIcon />
-              </ListItemIcon>
-              <ListItemText primary="Favorites" />
-            </StyledBadge>
-          </ListItem>
-          <ListItem button component={Link} to="/chats">
-            <ListItemIcon>
-              <ChatIcon />
-            </ListItemIcon>
-            <ListItemText primary="Chats" />
-          </ListItem>
-          <ListItem button component={Link} to="/add-property">
-            <ListItemIcon>
-              <AddBusinessIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Property" />
-          </ListItem>
-          <ListItem button component={Link} to="/my-properties">
-            <ListItemIcon>
-              <StoreIcon />
-            </ListItemIcon>
-            <ListItemText primary="My Properties" />
-          </ListItem>
-        </List>
-      </div>
+      {authCtx.user && (
+        <>
+          <Divider />
+          <div onClick={toggleDrawer(anchor, false)}>
+            <List>
+              <ListItem button component={Link} to="/favorites">
+                <StyledBadge badgeContent={favoritesCtx.totalFavorites} color="primary">
+                  <ListItemIcon>
+                    <BookmarkAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Favorites" />
+                </StyledBadge>
+              </ListItem>
+              <ListItem button component={Link} to="/chats">
+                <ListItemIcon>
+                  <ChatIcon />
+                </ListItemIcon>
+                <ListItemText primary="Chats" />
+              </ListItem>
+              <ListItem button component={Link} to="/add-property">
+                <ListItemIcon>
+                  <AddBusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Add Property" />
+              </ListItem>
+              <ListItem button component={Link} to="/my-properties">
+                <ListItemIcon>
+                  <StoreIcon />
+                </ListItemIcon>
+                <ListItemText primary="My Properties" />
+              </ListItem>
+            </List>
+          </div>
+        </>
+      )}
       <Divider />
       <List>
         <ListItem>
