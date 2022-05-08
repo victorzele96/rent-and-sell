@@ -16,6 +16,10 @@ body {
   margin-top: 50px;
 }
 
+#blur-on-select {
+  margin-left: 30px;
+}
+
 #list {
   height: 1080px;
 }
