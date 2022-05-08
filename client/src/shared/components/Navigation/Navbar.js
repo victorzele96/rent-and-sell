@@ -4,19 +4,16 @@ import { Link } from "react-router-dom";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
 import LeftDrawer from "./LeftDrawer";
-// import  Autocomplete  from '../../hooks/autocomplete-hook';
 
 import { styled, alpha } from "@mui/material/styles";
 import {
   AppBar,
   Box,
   Toolbar,
-  InputBase,
   IconButton,
   Tooltip,
   Autocomplete,
   TextField,
-  InputAdornment,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -48,26 +45,13 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   justifyContent: "center",
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "50ch",
-    },
-  },
-}));
-
 const Navbar = (props) => {
   const toggleMapListHanler = () => props.setMapList((prevState) => !prevState);
 
   const [selectedValue, setSelectedValue] = useState("");
 
   const {
+    // eslint-disable-next-line
     value,
     suggestions: { status, data },
     setValue,
@@ -91,8 +75,8 @@ const Navbar = (props) => {
     setSelectedValue(value);
   };
 
-  const flatProps = {
-    options: data.map(({ description }) => description),
+  const relevantDataSet = {
+    options: status === 'OK' ? data.map(({ description }) => description) : [],
   };
 
   useEffect(() => {
@@ -107,26 +91,35 @@ const Navbar = (props) => {
             {/* sdiebar */}
             <LeftDrawer />
           </Box>
-          <IconButton component={Link} to="/">
+          <IconButton
+            component={Link}
+            to="/"
+            sx={{
+              sm: { width: "42px", height: "21px" },
+              md: { width: "63px", height: "31.5px" },
+              lg: { width: "84px", height: "42px" }
+            }}
+          >
             <img src={rns_logo} alt="rns_logo" className={classes.logo} />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Search className={classes.search}>
-            {/* {showSearchIcon && (selectedValue === "" || !selectedValue) && ( */}
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            {/* )} */}
             <Autocomplete
               popupIcon={null}
               onChange={selectChangeHandler}
-              style={{ width: "300px" }}
-              {...flatProps}
+              sx={{ width: { xs: "80px", sm: "250px", md: "300px", lg: "600px" } }}
+              {...relevantDataSet}
               id="blur-on-select"
               blurOnSelect
               renderInput={(params) => (
                 <>
-                  <TextField onChange={autocompleteChangeHandler} {...params} />
+                  <TextField
+                    onChange={autocompleteChangeHandler}
+                    {...params}
+                  />
                 </>
               )}
             />
