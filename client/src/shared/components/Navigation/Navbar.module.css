@@ -1,12 +1,19 @@
+.logo {
+  width: 84px;
+  height: 42px;
+}
+
 @media screen and (max-width: 420px) {
-  .search {
-    width: 22ch;
+  .logo {
+    width: 40px;
+    height: 30px;
   }
 }
 
 @media screen and (max-width: 380px) {
-  .search {
-    width: 18ch;
+  .logo {
+    width: 40px;
+    height: 30px;
   }
 }
 

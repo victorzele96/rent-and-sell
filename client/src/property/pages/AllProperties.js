@@ -17,6 +17,7 @@ const AllProperties = (props) => {
       let data;
       let data_arr = [];
       let flag = false;
+      // eslint-disable-next-line
       for (const [key, value] of Object.entries(responseData)) {
         if (Array.isArray(value)) {
           data = value;
@@ -26,9 +27,6 @@ const AllProperties = (props) => {
             value.map(item => data_arr.push(item));
           } else {
             data_arr.push(value);
-          }
-          if (false) {
-            console.log(key);
           }
         }
       }
