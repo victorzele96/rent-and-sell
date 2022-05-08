@@ -18,6 +18,8 @@ body {
 
 #blur-on-select {
   margin-left: 30px;
+  max-height: 40px;
+  height: 10px;
 }
 
 #list {

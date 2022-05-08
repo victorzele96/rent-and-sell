@@ -11,11 +11,9 @@ const FileUpload = (props) => {
   const addImageHandler = (newImages) => {
     console.log('onAdd', newImages);
     let imagesPaths = [];
+    // eslint-disable-next-line
     for (const [key, value] of Object.entries(newImages)) {
       imagesPaths.push(value.file.path);
-      if (false) {
-        console.log(key);
-      }
     }
     setPaths([].concat(paths, imagesPaths));
     setImages([].concat(images, newImages));

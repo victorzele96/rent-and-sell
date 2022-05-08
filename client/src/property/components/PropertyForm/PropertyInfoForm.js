@@ -76,8 +76,10 @@ const PropertyInfoForm = (props) => {
   };
 
   const changeHandler = (event) => {
+    // eslint-disable-next-line
     for (const [key1, value1] of Object.entries(propertyState)) {
       if (key1 === 'details') {
+        // eslint-disable-next-line
         for (const [key2, value2] of Object.entries(propertyState.details)) {
           if (key2 === event.target.name) {
             if (event.target.name === event.target.value) {
@@ -92,9 +94,6 @@ const PropertyInfoForm = (props) => {
                   ...prevState[key1], [key2]: event.target.value
                 }
               }));
-            }
-            if (false) {
-              console.log(value1, value2);
             }
           }
         }
