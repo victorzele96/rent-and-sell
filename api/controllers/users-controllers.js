@@ -79,7 +79,7 @@ const signup = async (req, res, next) => {
         firstName: createdUser.firstName,
         lastName: createdUser.lastName,
       },
-      'supersecret_dont_share',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
   } catch (err) {
@@ -145,7 +145,7 @@ const signin = async (req, res, next) => {
         email: existingUser.email,
         isAdmin
       },
-      'supersecret_dont_share',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
   } catch (err) {

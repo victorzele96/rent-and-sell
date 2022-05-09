@@ -1,28 +1,42 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 //? User
 import Navbar from './shared/components/Navigation/Navbar';
-import Favorites from './property/pages/Favorites';
-import Chats from './chats/pages/Chats';
-import NewProperty from './property/pages/NewProperty';
-import MyProperties from './property/pages/MyProperties';
-import ShowProperty from './property/pages/ShowProperty';
+// import Favorites from './property/pages/Favorites';
+// import Chats from './chats/pages/Chats';
+// import NewProperty from './property/pages/NewProperty';
+// import MyProperties from './property/pages/MyProperties';
+// import ShowProperty from './property/pages/ShowProperty';
 import AllProperties from './property/pages/AllProperties';
-import Auth from './users/pages/Auth';
+// import Auth from './users/pages/Auth';
 //?
 //! Admin
-import Dashboard from './admin/pages/Dashboard';
-import Users from './admin/pages/Users';
+// import Dashboard from './admin/pages/Dashboard';
+// import Users from './admin/pages/Users';
 import { DashboardNavbar } from './admin/components/DashboardNavbar';
 import { DashboardSidebar } from './admin/components/DashboardSidebar';
 //!
+
+import { CircularProgress } from '@mui/material';
 
 import { AuthContext } from './shared/context/auth-context';
 
 import { useAuth } from './shared/hooks/auth-hook';
 
 import { CssBaseline } from '@mui/material';
+
+//? User
+const Favorites = lazy(() => import('./property/pages/Favorites'));
+const Chats = lazy(() => import('./chats/pages/Chats'));
+const NewProperty = lazy(() => import('./property/pages/NewProperty'));
+const MyProperties = lazy(() => import('./property/pages/MyProperties'));
+const ShowProperty = lazy(() => import('./property/pages/ShowProperty'));
+const Auth = lazy(() => import('./users/pages/Auth'));
+
+//! Admin
+const Dashboard = lazy(() => import('./admin/pages/Dashboard'));
+const Users = lazy(() => import('./admin/pages/Users'));
 
 const App = () => {
   const [toggleMapList, setToggleMapList] = useState(true);
@@ -66,14 +80,18 @@ const App = () => {
         onClose={() => setOpen(false)}
         open={open}
       />
-      {adminRoutes}
+      <Suspense fallback={<CircularProgress />}>
+        {adminRoutes}
+      </Suspense>
     </>
   );
 
   const userContent = (
     <>
       <Navbar mapList={toggleMapList} setMapList={setToggleMapList} />
-      {userRoutes}
+      <Suspense fallback={<CircularProgress />}>
+        {userRoutes}
+      </Suspense>
     </>
   );
 
