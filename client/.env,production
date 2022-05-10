@@ -1,0 +1,6 @@
+REACT_APP_MAPBOX_GL_API_KEY=pk.eyJ1IjoiamF5enBreiIsImEiOiJjbDE2bjEwaW4wdm9jM2lzZ2MycnpucTlvIn0.jKddlYK37E-_QZ09prgopQ
+REACT_APP_GOOGLE_API_KEY_GEOCODE=AIzaSyANEBCtPQ_-xtAjr0CY4KckRWdUX6dXDT0
+REACT_APP_GOOGLE_PLACES_API_KEY=AIzaSyB3bODoPDXk228BiNWSUX_1qMfGpbnub-0
+REACT_APP_FRONT_URL=https://rent-and-sell.netlify.app
+REACT_APP_BACK_URL=https://git.heroku.com/rent-and-sell.git/api
+REACT_APP_DEFAULT_BACK_URL=https://git.heroku.com/rent-and-sell.git
