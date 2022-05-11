@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -64,7 +66,7 @@ const Map = props => {
               </address>
               <p style={{ marginTop: "5px", marginBottom: "5px" }}>rooms: {property.details.rooms_num}</p>
               <p style={{ marginTop: "5px", marginBottom: "5px" }}>price: {property.details.price}</p>
-              <span>For more info <a href={process.env.REACT_APP_FRONT_URL + '/property/' + property.id}>click here!</a></span>
+              <span>For more info <Link to={'/property/' + property.id}>click here!</Link></span>
             </Popup>
           </Marker>
         );
