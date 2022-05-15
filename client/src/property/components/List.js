@@ -76,7 +76,12 @@ const List = (props) => {
   ) : (
     <Stack id={props.tagId || 'list-stack'} spacing="30px" className={classes.listContainerInner}>
       {props.properties.map(property => (
-        <PropertyItem key={property.id} property={property} propertyId={property.id} onDelete={props.onDelete} />
+        <PropertyItem
+          key={property.id}
+          property={property}
+          propertyId={property.id}
+          onDelete={props.onDelete}
+        />
       ))}
     </Stack>
   )

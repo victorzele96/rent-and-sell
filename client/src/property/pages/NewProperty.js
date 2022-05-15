@@ -1,16 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  Box,
   Container,
   Paper,
   Stepper,
   Step,
   StepLabel,
-  Button,
   Typography,
-  Alert,
   Backdrop,
   CircularProgress
 } from "@mui/material";
@@ -20,6 +17,7 @@ import FileUpload from "../components/PropertyForm/FileUpload";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import { useResponsive } from "../../shared/hooks/responsive-hook";
 
 import { AuthContext } from "../../shared/context/auth-context";
 
@@ -39,9 +37,11 @@ const useStyles = makeStyles((theme) => ({
 const NewProperty = (props) => {
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
-  const { isLoading, error, sendRequest } = useHttpClient();
+  const { isLoading, sendRequest } = useHttpClient();
   const [activeStep, setActiveStep] = useState(0);
   const [propertyData, setPropertyData] = useState({});
+
+  const { width } = useResponsive();
 
   const steps = ["Information", "Gallery", "Review"];
 
@@ -72,44 +72,55 @@ const NewProperty = (props) => {
     }
   };
 
-  const nextHandler = () => {
-    setActiveStep(activeStep + 1);
+  useEffect(() => {
+    const data = JSON.parse(sessionStorage.getItem('new-property-state'));
+    setPropertyData(data);
+  }, []);
 
-    // let images;
-    let paths;
-    try {
-      // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
-      paths = JSON.parse(window.sessionStorage.getItem("new-property-images-paths"));
-    } catch (e) {
-      console.log(e);
-    }
+  const nextHandler = (errors) => {
+    if (errors.length === 0) {
+      setActiveStep(activeStep + 1);
 
-    const property = {
-      ...JSON.parse(sessionStorage.getItem("new-property-state")),
-      images: paths
-    };
+      // let images;
+      let paths;
+      try {
+        // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
+        paths = JSON.parse(sessionStorage.getItem("new-property-images-paths"));
+      } catch (e) {
+        console.log(e);
+      }
 
-    setPropertyData(property);
+      const property = {
+        ...JSON.parse(sessionStorage.getItem("new-property-state")),
+        images: paths
+      };
 
-    if (activeStep === steps.length - 1) { // Submit
-      console.log(propertyData);
-      // TODO: send data to backend server
-      requestHandler();
+      setPropertyData(property);
+
+      if (activeStep === steps.length - 1) { // Submit
+        console.log(propertyData);
+        // TODO: send data to backend server
+        requestHandler();
+      }
     }
   };
 
   const backHandler = () => {
-    setActiveStep(activeStep - 1);
+    if (activeStep === 0) {
+      navigate(-1);
+    } else {
+      setActiveStep(activeStep - 1);
+    }
   };
 
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <PropertyInfoForm />;
+        return <PropertyInfoForm onBackClick={backHandler} onNextClick={nextHandler} />;
       case 1:
-        return <FileUpload />;
+        return <FileUpload onBackClick={backHandler} onNextClick={nextHandler} />;
       case 2:
-        return <PropertyReview property={propertyData} />;
+        return <PropertyReview onBackClick={backHandler} onNextClick={nextHandler} property={propertyData} />;
       default:
         throw new Error("Unknown step");
     }
@@ -136,7 +147,7 @@ const NewProperty = (props) => {
           <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
             {steps.map((label) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel>{width <= 375 ? '' : label}</StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -151,30 +162,10 @@ const NewProperty = (props) => {
             ) : (
               <>
                 {getStepContent(activeStep)}
-                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: "2rem" }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={backHandler} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="contained"
-                    onClick={nextHandler}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
-                  </Button>
-                </Box>
               </>
             )}
           </>
         </Paper>
-        {error && (
-          <Box id="error-container" sx={{ marginTop: '20px' }}>
-            <Alert severity="error">{error}</Alert>
-          </Box>
-        )}
       </Container>
     </>
   );

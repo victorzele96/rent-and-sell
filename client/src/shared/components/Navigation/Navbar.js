@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import usePlacesAutocomplete from "use-places-autocomplete";
 
@@ -31,7 +31,10 @@ const Search = styled("div")(({ theme }) => ({
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginRight: theme.spacing(2),
+  marginRight: {
+    sm: theme.spacing(2),
+    xs: 0
+  },
   marginLeft: 0,
 }));
 
@@ -46,6 +49,8 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 }));
 
 const Navbar = (props) => {
+  const location = useLocation();
+
   const toggleMapListHanler = () => props.setMapList((prevState) => !prevState);
 
   const [selectedValue, setSelectedValue] = useState("");
@@ -80,7 +85,7 @@ const Navbar = (props) => {
   };
 
   useEffect(() => {
-    window.sessionStorage.setItem("nav-search", JSON.stringify(selectedValue));
+    sessionStorage.setItem("nav-search", JSON.stringify(selectedValue));
   }, [selectedValue]);
 
   return (
@@ -96,6 +101,7 @@ const Navbar = (props) => {
             to="/"
             sx={{
               sm: { width: "42px", height: "21px" },
+              xs: { width: "52px", height: "26px" },
               md: { width: "63px", height: "31.5px" },
               lg: { width: "84px", height: "42px" }
             }}
@@ -110,7 +116,7 @@ const Navbar = (props) => {
             <Autocomplete
               popupIcon={null}
               onChange={selectChangeHandler}
-              sx={{ width: { xs: "80px", sm: "250px", md: "300px", lg: "600px" } }}
+              sx={{ width: { xs: "125px", sm: "400px", md: "500px", lg: "600px" } }}
               {...relevantDataSet}
               id="blur-on-select"
               blurOnSelect
@@ -128,7 +134,7 @@ const Navbar = (props) => {
           <Box sx={{ flexGrow: 1 }} />
           <Tooltip title={props.mapList ? "Show as List" : "Show on Map"}>
             <Box sx={{ display: { md: "flex" }, marginRight: "1rem" }}>
-              {toggleMapList}
+              {location.pathname === '/' && toggleMapList}
             </Box>
           </Tooltip>
         </Toolbar>

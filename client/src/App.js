@@ -30,6 +30,7 @@ import { CssBaseline } from '@mui/material';
 const Favorites = lazy(() => import('./property/pages/Favorites'));
 const Chats = lazy(() => import('./chats/pages/Chats'));
 const NewProperty = lazy(() => import('./property/pages/NewProperty'));
+const EditProperty = lazy(() => import('./property/pages/EditProperty'));
 const MyProperties = lazy(() => import('./property/pages/MyProperties'));
 const ShowProperty = lazy(() => import('./property/pages/ShowProperty'));
 const Auth = lazy(() => import('./users/pages/Auth'));
@@ -54,6 +55,7 @@ const App = () => {
             <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
             <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
             <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
+            <Route exact path={"/edit-property/:propertyId"} element={<EditProperty tagId="main-content" />} />
             <Route exact path={"/my-properties"} element={<MyProperties tagId="main-content" />} />
           </>
         )}

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { DropzoneAreaBase } from 'material-ui-dropzone';
 
+import { Box, Button } from '@mui/material';
+
 import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
@@ -31,8 +33,8 @@ const FileUpload = (props) => {
   };
 
   useEffect(() => {
-    window.sessionStorage.setItem("new-property-images", JSON.stringify(images));
-    window.sessionStorage.setItem("new-property-images-paths", JSON.stringify(paths));
+    sessionStorage.setItem("new-property-images", JSON.stringify(images));
+    sessionStorage.setItem("new-property-images-paths", JSON.stringify(paths));
   }, [images, paths]);
 
   return (
@@ -55,6 +57,18 @@ const FileUpload = (props) => {
           previewText="Selected files"
         />
       </div>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+        <Button onClick={props.onBackClick} sx={{ ml: 1 }}>
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          onClick={props.onNextClick}
+          sx={{ ml: 1 }}
+        >
+          Next
+        </Button>
+      </Box>
     </div>
   );
 };

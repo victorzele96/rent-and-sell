@@ -1,8 +1,11 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Paragraph from "./Paragraph";
 import DeployAvatar from "../../shared/components/UIElements/Avatar";
+
+import Paragraph from "./Paragraph";
+import Report from "./Report";
+
 
 import { styled } from "@mui/material/styles";
 
@@ -32,7 +35,9 @@ import {
   DialogActions,
   Divider,
   Button,
-  Box
+  Box,
+  MenuItem,
+  Menu
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
@@ -139,8 +144,8 @@ const PropertyItem = (props) => {
   };
 
   const editHandler = async () => {
-    console.log("Edit");
-    // navigate('/add-property', { state: { mode: 'edit', property: props.property } });
+    sessionStorage.setItem("edit-property", JSON.stringify(props.property));
+    navigate(`/edit-property/${props.propertyId}`);
   };
 
   const deleteHandler = async () => {
@@ -245,196 +250,258 @@ const PropertyItem = (props) => {
     ) : null;
   }
 
+  const options = [
+    'Report'
+  ];
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+  const [menuOption, setMenuOption] = useState();
+
+  const moreMenuSelectHandler = (event) => {
+    setMenuOption(event.target.value);
+  };
+
+  const moreMenuOpenHandler = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeMoreMenuHandler = () => {
+    setAnchorEl(null);
+  };
+
+  const closeModalHandler = () => {
+    setMenuOption(null);
+  };
+
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={props.property.address}
-        subheader="September 14, 2016" // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
-      />
-      <CardMedia //card image
-        component="img"
-        height="auto"
-        src={image}
-        alt="property image"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {props.property.description}
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        {actionIcons}
-        <Box spacing={2} className={classes.btnBox}>
-          <Button
-            className={classes.btn}
-            variant="outlined"
-            onClick={viewHandler}
-          >
-            View
-          </Button>
-          {delAndEdit}
-        </Box>
-        <Dialog onClose={toggleShare} open={share}>
-          <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
-          <Divider />
-          <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggleShare}>
-            <FacebookShareButton url={shareUrl}>
-              <FacebookIcon size={40} round={true} />
-            </FacebookShareButton>
-            <TelegramShareButton url={shareUrl}>
-              <TelegramIcon size={40} round={true} />
-            </TelegramShareButton>
-            <WhatsappShareButton url={shareUrl}>
-              <WhatsappIcon size={40} round={true} />
-            </WhatsappShareButton>
-          </DialogActions>
-        </Dialog>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent className={classes["advanced-info"]}>
-          <Stack spacing={3} className={classes.details}>
-            <Typography paragraph letterSpacing={1} fontWeight={"bold"}>
-              More Information:
-            </Typography>
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<SellIcon className={classes.leftIcon} />}
-              info="Listing Status:"
-              text={
-                "For " + props.property.details.listing_status
-              }
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<FmdGoodIcon className={classes.leftIcon} />}
-              info="Address:"
-              text={props.property.address}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<EventIcon className={classes.leftIcon} />}
-              info="Time on RNS:"
-              text={props.property.details["creation_date"]}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<AttachMoneyIcon className={classes.leftIcon} />}
-              info="Price:"
-              text={"₪ " + props.property.details.price}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<ConstructionIcon className={classes.leftIcon} />}
-              info="Renovated:"
-              text={props.property.details.renovated ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<HotelIcon className={classes.leftIcon} />}
-              info="Rooms Number:"
-              text={props.property.details["rooms_num"]}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<SquareFootIcon className={classes.leftIcon} />}
-              info="Rooms Size:"
-              text={props.property.details["room_size"] + " sq m"}
-            />
-            <Paragraph
-              show={props.property.details.stories ? true : false}
-              iconClassName={classes.rightIcon}
-              icon={<HeightIcon className={classes.leftIcon} />}
-              info="Stories:"
-              text={props.property.details.stories}
-            />
-            <Paragraph
-              show={props.property.details.floor ? true : false}
-              iconClassName={classes.rightIcon}
-              icon={<HeightIcon className={classes.leftIcon} />}
-              info="Floor:"
-              text={props.property.details.floor}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<LocalParkingIcon className={classes.leftIcon} />}
-              info="Parking:"
-              text={props.property.details.parking ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<AccessibleIcon className={classes.leftIcon} />}
-              info="Accessiblity:"
-              text={props.property.details.accessability ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<WbIncandescentIcon className={classes.leftIcon} />}
-              info="Natural Illumination:"
-              text={props.property.details["natural_illumination"] ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<PetsIcon className={classes.leftIcon} />}
-              info="Pets:"
-              text={props.property.details.pets ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<ParkIcon className={classes.leftIcon} />}
-              info="Park:"
-              text={props.property.details.park ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<CommuteIcon className={classes.leftIcon} />}
-              info="Public Transport:"
-              text={props.property.details["public_transport"] ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<DomainIcon className={classes.leftIcon} />}
-              info="Public Institutes:"
-              text={props.property.details["public_institutes"] ? "yes" : "no"}
-            />
-            <Paragraph
-              show
-              iconClassName={classes.rightIcon}
-              icon={<CallIcon className={classes.leftIcon} />}
-              info="Contact:"
-              text={props.property.details.contact}
-            />
-          </Stack>
+    <>
+      {menuOption === 0 && (
+        <>
+          <Report onClose={closeModalHandler} />
+        </>
+      )}
+      <Card className={classes.root}>
+        <CardHeader
+          avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
+          action={
+            <>
+              <IconButton
+                aria-label="more"
+                id="more-button"
+                aria-controls={openMenu ? 'more-menu' : undefined}
+                aria-expanded={openMenu ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={moreMenuOpenHandler}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="more-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'long-button',
+                }}
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={closeMoreMenuHandler}
+                PaperProps={{
+                  style: {
+                    width: '10ch',
+                  },
+                }}
+              >
+                {options.map((option) => (
+                  <MenuItem key={option} onClick={moreMenuSelectHandler}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          }
+          title={props.property.address}
+          subheader="September 14, 2016" // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
+        />
+        <CardMedia //card image
+          component="img"
+          height="auto"
+          src={image}
+          alt="property image"
+        />
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            {props.property.description}
+          </Typography>
         </CardContent>
-      </Collapse>
-    </Card>
+        <CardActions disableSpacing>
+          {actionIcons}
+          <Box spacing={2} className={classes.btnBox}>
+            {!props.preview && (
+              <Button
+                className={classes.btn}
+                variant="outlined"
+                onClick={viewHandler}
+              >
+                View
+              </Button>
+            )}
+            {delAndEdit}
+          </Box>
+          <Dialog onClose={toggleShare} open={share}>
+            <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
+            <Divider />
+            <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggleShare}>
+              <FacebookShareButton url={shareUrl}>
+                <FacebookIcon size={40} round={true} />
+              </FacebookShareButton>
+              <TelegramShareButton url={shareUrl}>
+                <TelegramIcon size={40} round={true} />
+              </TelegramShareButton>
+              <WhatsappShareButton url={shareUrl}>
+                <WhatsappIcon size={40} round={true} />
+              </WhatsappShareButton>
+            </DialogActions>
+          </Dialog>
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
+        </CardActions>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent className={classes["advanced-info"]}>
+            <Stack spacing={3} className={classes.details}>
+              <Typography paragraph letterSpacing={1} fontWeight={"bold"}>
+                More Information:
+              </Typography>
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<SellIcon className={classes.leftIcon} />}
+                info="Listing Status:"
+                text={
+                  "For " + props.property.details.listing_status
+                }
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<FmdGoodIcon className={classes.leftIcon} />}
+                info="Address:"
+                text={props.property.address}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<EventIcon className={classes.leftIcon} />}
+                info="Time on RNS:"
+                text={props.property.details["creation_date"]}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<AttachMoneyIcon className={classes.leftIcon} />}
+                info="Price:"
+                text={"₪ " + props.property.details.price}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<ConstructionIcon className={classes.leftIcon} />}
+                info="Renovated:"
+                text={props.property.details.renovated ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<HotelIcon className={classes.leftIcon} />}
+                info="Rooms Number:"
+                text={props.property.details["rooms_num"]}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<SquareFootIcon className={classes.leftIcon} />}
+                info="Rooms Size:"
+                text={props.property.details["room_size"] + " sq m"}
+              />
+              <Paragraph
+                show={props.property.details.stories ? true : false}
+                iconClassName={classes.rightIcon}
+                icon={<HeightIcon className={classes.leftIcon} />}
+                info="Stories:"
+                text={props.property.details.stories}
+              />
+              <Paragraph
+                show={props.property.details.floor ? true : false}
+                iconClassName={classes.rightIcon}
+                icon={<HeightIcon className={classes.leftIcon} />}
+                info="Floor:"
+                text={props.property.details.floor}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<LocalParkingIcon className={classes.leftIcon} />}
+                info="Parking:"
+                text={props.property.details.parking ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<AccessibleIcon className={classes.leftIcon} />}
+                info="Accessiblity:"
+                text={props.property.details.accessability ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<WbIncandescentIcon className={classes.leftIcon} />}
+                info="Natural Illumination:"
+                text={props.property.details["natural_illumination"] ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<PetsIcon className={classes.leftIcon} />}
+                info="Pets:"
+                text={props.property.details.pets ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<ParkIcon className={classes.leftIcon} />}
+                info="Park:"
+                text={props.property.details.park ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<CommuteIcon className={classes.leftIcon} />}
+                info="Public Transport:"
+                text={props.property.details["public_transport"] ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<DomainIcon className={classes.leftIcon} />}
+                info="Public Institutes:"
+                text={props.property.details["public_institutes"] ? "yes" : "no"}
+              />
+              <Paragraph
+                show
+                iconClassName={classes.rightIcon}
+                icon={<CallIcon className={classes.leftIcon} />}
+                info="Contact:"
+                text={props.property.details.contact}
+              />
+            </Stack>
+          </CardContent>
+        </Collapse>
+      </Card>
+    </>
   );
 };
 

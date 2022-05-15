@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-
-import usePlacesAutocomplete from "use-places-autocomplete";
+import { useEffect, useState } from "react";
 
 import {
   Grid,
@@ -12,10 +10,9 @@ import {
   Select,
   ToggleButton,
   ToggleButtonGroup,
-  Autocomplete,
-  Alert,
+  Button,
   Box,
-  Button
+  Alert
 } from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
@@ -26,56 +23,10 @@ import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 
-const initialPropertyState = {
-  description: '',
-  address: '',
-  images: [],
-  details: {
-    listing_status: "rent",
-    price: 0,
-    renovated: false,
-    rooms_num: 0,
-    room_size: 0,
-    property_type: "house",
-    stories: 0,
-    floor: 0,
-    parking: false,
-    accessiblity: false,
-    natural_illumination: false,
-    pets: false,
-    park: false,
-    public_transport: false,
-    public_institutes: false,
-    contact: ''
-  },
-  creator: ''
-};
-
-const PropertyInfoForm = (props) => {
-  const [propertyState, setPropertyState] = useState(initialPropertyState);
+const EditForm = (props) => {
+  const [propertyState, setPropertyState] = useState(JSON.parse(sessionStorage.getItem('edit-property')));
   const [selectedArray, setSelectedArray] = useState([]); // radio buttons
-  const [selectedValue, setSelectedValue] = useState(""); // address
   const [errors, setError] = useState([]);
-
-  const {
-    // eslint-disable-next-line
-    value,
-    suggestions: { status, data },
-    setValue,
-  } = usePlacesAutocomplete();
-
-  const autocompleteChangeHandler = (event) => {
-    setValue(event.target.value);
-  };
-
-  const selectChangeHandler = (event, value) => {
-    setSelectedValue(value);
-    changeHandler(event);
-  };
-
-  const relevantDataSet = {
-    options: status === 'OK' ? data.map(({ description }) => description) : [],
-  };
 
   const listingStatusChangeHandler = (event) => {
     setPropertyState(prevState => ({
@@ -129,13 +80,6 @@ const PropertyInfoForm = (props) => {
         // eslint-disable-next-line
         for (const [key2, value2] of Object.entries(propertyState.details)) {
           if (key2 === event.target.name) {
-            if (key2 === 'address') {
-              if (event.target.value === '' || relevantDataSet.includes(event.target.value)) {
-                createError(`${key2} must be legit address (google format)!`);
-              } else {
-                clearError(key2);
-              }
-            }
             if (key2 === 'contact') {
               if (event.target.value === '' || !/^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(event.target.value)) {
                 createError(`${key2} number must be legit Israeli number!`);
@@ -178,14 +122,11 @@ const PropertyInfoForm = (props) => {
         }
       }
     }
-    if (relevantDataSet.options.includes(selectedValue)) {
-      setPropertyState(prevState => ({ ...prevState, address: selectedValue }));
-    }
   };
 
   useEffect(() => {
-    sessionStorage.setItem("new-property-state", JSON.stringify(propertyState));
-  }, [propertyState, selectedValue]);
+    window.sessionStorage.setItem("new-edit-property", JSON.stringify(propertyState));
+  }, [propertyState]);
 
   return (
     <>
@@ -238,6 +179,7 @@ const PropertyInfoForm = (props) => {
               fullWidth
               variant="standard"
               onChange={changeHandler}
+              value={propertyState.details.stories || ''}
             />
           </Grid>
         )}
@@ -252,6 +194,7 @@ const PropertyInfoForm = (props) => {
               fullWidth
               variant="standard"
               onChange={changeHandler}
+              value={propertyState.details.floor || ''}
             />
           </Grid>
         )}
@@ -265,6 +208,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.price || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -277,6 +221,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.rooms_num || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -289,25 +234,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Autocomplete
-            popupIcon={null}
-            onChange={selectChangeHandler}
-            {...relevantDataSet}
-            id="address"
-            blurOnSelect
-            renderInput={(params) => (
-              <>
-                <TextField
-                  onChange={autocompleteChangeHandler}
-                  {...params}
-                  variant="standard"
-                  label="Address"
-                />
-              </>
-            )}
+            value={propertyState.details.room_size || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -319,18 +246,20 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.contact || ''}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="description"
             name="description"
-            label="description"
+            label="Description"
             multiline
             rows={3}
             fullWidth
             inputProps={{ maxLength: 500 }}
             onChange={changeHandler}
+            value={propertyState.description || ''}
           />
         </Grid>
         <Grid item xs={12} />
@@ -472,6 +401,5 @@ const PropertyInfoForm = (props) => {
       </Grid>
     </>
   );
-};
-
-export default PropertyInfoForm;
+}
+export default EditForm;
