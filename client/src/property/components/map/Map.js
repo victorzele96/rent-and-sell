@@ -51,9 +51,20 @@ const Map = (props) => {
     mapRef.current = map;
   }, []);
 
-  const panTo = useCallback(({ lat, lng }) => {
+  const panTo = useCallback(({ lat, lng }, street, city, country) => {
     mapRef.current.panTo({ lat, lng });
-    mapRef.current.setZoom(18);
+    if (street && street !== city) {
+      console.log(street, city, country);
+      mapRef.current.setZoom(17);
+    }
+    if (!city && country) {
+      console.log(street, city, country);
+      mapRef.current.setZoom(7);
+    }
+    if (!street && city) {
+      console.log(street, city, country);
+      mapRef.current.setZoom(10);
+    }
   }, []);
 
   const getIcon = useCallback((type) => {
@@ -86,7 +97,25 @@ const Map = (props) => {
 
   useEffect(() => {
     if (searchValue) {
-      setLoadedProperties(prevState => prevState.filter(property => property.address.includes(searchValue.address) || (property.location.lat === searchValue.location.lag && property.location.lng === searchValue.location.lng)));
+      setLoadedProperties(prevState => prevState.filter(property => {
+        if (searchValue.street && searchValue.city && searchValue.country) {
+          return (
+            property.address.includes(searchValue.street) &&
+            property.address.includes(searchValue.city) &&
+            property.address.includes(searchValue.country)
+          );
+        }
+        if (!searchValue.street && !searchValue.city && searchValue.country) {
+          return property.address.includes(searchValue.country);
+        }
+        if (!searchValue.street && searchValue.city && searchValue.country) {
+          return (
+            property.address.includes(searchValue.city) &&
+            property.address.includes(searchValue.country)
+          );
+        }
+        return null;
+      }));
     } else {
       console.log('its null');
     }
@@ -135,7 +164,6 @@ const Map = (props) => {
     }
   }, [filterValue]);
 
-
   const mapClickHandler = () => {
     setSelected(null);
   }
@@ -159,7 +187,10 @@ const Map = (props) => {
       />
       <LocateMe panTo={panTo} />
       <Legend />
-      <Filter onFilter={filterHandler} />
+      <Filter
+        onFilter={filterHandler}
+        onReset={resetSearch}
+      />
       <GoogleMap
         id="rns-map"
         onClick={mapClickHandler}

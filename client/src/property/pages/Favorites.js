@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
-import { Card, Container } from "@mui/material";
+import { Container } from "@mui/material";
 
-import List from '../components/List';
+import List from '../components/list/List';
 
 import FavoritesContext from '../../shared/context/favorites-context';
 
@@ -28,28 +28,14 @@ const Favorites = (props) => {
 
   const classes = useStyles();
 
-  const content = favoritesCtx.totalFavorites === 0 ? (
-    <Card className={classes.card}>
-      <h1>Favorites</h1>
-      <p>You got no favorites yet. Start adding some?</p>
-    </Card>
-  ) : (
-    <>
-      <h1 style={{ textAlign: "center" }}>Favorites</h1>
-      <div style={{ textAlign: "left" }}>
-        <List
-          load='favorites'
-          tagId={props.tagId}
-          onDelete={deletePropertyHandler}
-          properties={favoritesCtx.favorites}
-        />
-      </div>
-    </>
-  )
-
   return (
-    <Container style={favoritesCtx.totalFavorites === 0 ? { width: "fit-content", blockSize: "fit-content" } : null} id={props.tagId} className={classes.container}>
-      {content}
+    <Container sx={favoritesCtx.totalFavorites === 0 ? { width: "fit-content", blockSize: "fit-content" } : null} id={props.tagId} className={classes.container}>
+      <List
+        load='favorites'
+        tagId={props.tagId}
+        onDelete={deletePropertyHandler}
+        properties={favoritesCtx.favorites}
+      />
     </Container>
   );
 };

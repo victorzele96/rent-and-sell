@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import List from "../components/List";
+import List from "../components/list/List";
 import Map from "../components/map/Map";
 
 const AllProperties = (props) => {

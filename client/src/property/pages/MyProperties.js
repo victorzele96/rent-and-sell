@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, useCallback } from "react";
 
 import { Container } from "@mui/material";
 
-import List from '../../property/components/List';
+import List from '../../property/components/list/List';
 
 import { AuthContext } from "../../shared/context/auth-context";
 

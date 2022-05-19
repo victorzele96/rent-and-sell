@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import usePlacesAutocomplete from "use-places-autocomplete";
@@ -7,22 +7,17 @@ import { AuthContext } from "../../context/auth-context";
 
 import LeftDrawer from "./LeftDrawer";
 
-import { styled, alpha } from "@mui/material/styles";
 import {
   AppBar,
   Box,
   Toolbar,
   IconButton,
   Tooltip,
-  Autocomplete,
-  TextField,
   Badge,
   Menu,
   MenuItem,
-  Divider,
 } from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import { Bell as BellIcon } from "../../../admin/icons/bell";
@@ -31,43 +26,12 @@ import rns_logo from "../../../static/images/rns_logo.jpeg";
 import classes from "./Navbar.module.css";
 import Notifications from "./Notifications";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: {
-    sm: theme.spacing(2),
-    xs: 0
-  },
-  marginLeft: 0,
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
 const Navbar = (props) => {
   const location = useLocation();
   const authCtx = useContext(AuthContext);
   const toggleMapListHanler = () => props.setMapList((prevState) => !prevState);
 
-  const [selectedValue, setSelectedValue] = useState("");
-
-  const {
-    // eslint-disable-next-line
-    value,
-    suggestions: { status, data },
-    setValue,
-  } = usePlacesAutocomplete();
+  usePlacesAutocomplete(); //! for unknown reason when you delete this it shows error.
 
   const toggleMapList = props.mapList ? (
     <IconButton className={classes.toggleBtn} onClick={toggleMapListHanler}>
@@ -78,22 +42,6 @@ const Navbar = (props) => {
       <TravelExploreIcon fontSize="large" />
     </IconButton>
   );
-
-  const autocompleteChangeHandler = (event) => {
-    setValue(event.target.value);
-  };
-
-  const selectChangeHandler = (event, value) => {
-    setSelectedValue(value);
-  };
-
-  const relevantDataSet = {
-    options: status === 'OK' ? data.map(({ description }) => description) : [],
-  };
-
-  useEffect(() => {
-    sessionStorage.setItem("nav-search", JSON.stringify(selectedValue));
-  }, [selectedValue]);
 
   const options = [
     {
@@ -150,29 +98,6 @@ const Navbar = (props) => {
           >
             <img src={rns_logo} alt="rns_logo" className={classes.logo} />
           </IconButton>
-          <Box sx={{ flexGrow: 1 }} />
-          <Search className={classes.search}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <Autocomplete
-              popupIcon={null}
-              onChange={selectChangeHandler}
-              sx={{ width: { xs: "125px", sm: "400px", md: "500px", lg: "600px" } }}
-              {...relevantDataSet}
-              id="blur-on-select"
-              blurOnSelect
-              renderInput={(params) => (
-                <>
-                  <TextField
-                    onChange={autocompleteChangeHandler}
-                    {...params}
-                  />
-                </>
-              )}
-            />
-          </Search>
-
           <Box sx={{ flexGrow: 1 }} />
           <Tooltip title={props.mapList ? "Show as List" : "Show on Map"}>
             <Box sx={{ display: { md: "flex" }, marginRight: "1rem" }}>

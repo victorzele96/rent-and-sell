@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import usePlacesAutocomplete, { getGeocode, getLatLng, getDetails } from "use-places-autocomplete";
+import usePlacesAutocomplete, { getDetails } from "use-places-autocomplete";
 
 import { Autocomplete, IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px'
   },
   inputIcon: {
-    position: 'absolute'
+    position: 'absolute',
+    marginTop: 80
   },
   icon: {
     top: 10,
@@ -56,12 +57,7 @@ const Search = (props) => {
       status,
       data
     },
-  } = usePlacesAutocomplete({
-    requestOptions: {
-      location: { lat: () => props.initLocation.lat, lng: () => props.initLocation.lng },
-      radius: 800 * 1000,
-    }
-  });
+  } = usePlacesAutocomplete();
 
   const classes = useStyles();
 
@@ -74,8 +70,6 @@ const Search = (props) => {
       if (value) {
         const selectedData = data.filter(item => item.description === value);
         const detailsResults = await getDetails({ placeId: selectedData[0].place_id });
-        const geoCodeResults = await getGeocode({ address: value });
-        const { lat, lng } = getLatLng(geoCodeResults[0]);
         let street;
         if (detailsResults.address_components.length > 1) {
           if (detailsResults.address_components[1].long_name === detailsResults.vicinity) {
@@ -87,9 +81,8 @@ const Search = (props) => {
         }
         const city = detailsResults.vicinity;
         const country = detailsResults.address_components[detailsResults.address_components.length - 1].long_name;
-        props.panTo({ lat, lng }, street, city, country);
         setValue(value);
-        props.setValue({ street, city, country, location: { lat, lng } });
+        props.setValue({ street, city, country });
       }
     } catch (err) {
       console.log(err);
@@ -116,7 +109,7 @@ const Search = (props) => {
           <div className={classes.inputIconContainer}>
             <SearchIcon className={`${classes.inputIcon} ${classes.icon}`} />
             <TextField
-              placeholder="Search..."
+              placeholder={props.placeHolder ? props.placeHolder : "Search..."}
               className={classes.input}
               onChange={(event) => setValue(event.target.value)}
               {...params}

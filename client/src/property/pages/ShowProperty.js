@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { Container } from "@mui/material";
 
-import List from '../../property/components/List';
+import List from '../../property/components/list/List';
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 

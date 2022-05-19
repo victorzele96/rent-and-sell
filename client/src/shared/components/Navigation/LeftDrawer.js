@@ -16,19 +16,14 @@ import {
   Badge
 } from '@mui/material';
 
-import Filter from './Filter';
-
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import StoreIcon from '@mui/icons-material/Store';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Menu } from '../../../admin/icons/menu';
 
 import { styled } from '@mui/material/styles';
@@ -39,14 +34,11 @@ const LeftDrawer = () => {
   const authCtx = useContext(AuthContext);
   const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const signoutHandler = () => {
     authCtx.signout();
     setDrawerState(false);
   };
-
-  const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   const toggleDrawer = (anchor, open) => (event) => {
     /* 
@@ -73,17 +65,6 @@ const LeftDrawer = () => {
     }
     setDrawerState(prevState => !prevState);
   };
-
-  const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));
 
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -161,26 +142,6 @@ const LeftDrawer = () => {
           </div>
         </>
       )}
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemIcon>
-            <FilterAltIcon />
-          </ListItemIcon>
-          <ListItemText primary="Filter" />
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </ListItem>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Filter />
-        </Collapse>
-      </List>
     </Box>
   );
 

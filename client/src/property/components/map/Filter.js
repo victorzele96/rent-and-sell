@@ -123,14 +123,10 @@ const Filter = (props) => {
 
   const resetHandler = () => {
     setFilterState(initialFilterState);
-    // props.onReset();
+    props.onReset();
   };
 
   const filterHandler = () => {
-    // if (filterState.rooms_num === 0) {
-    //   delete filterState.rooms_num;
-    // }
-    // console.log(filterState);
     props.onFilter(filterState);
   };
 
@@ -323,7 +319,7 @@ const Filter = (props) => {
               </IconButton>
             </div>
           </DrawerHeader>
-          <Divider />
+          <Divider sx={{ my: 1 }} />
           {filterContent}
         </Drawer>
       </Box>
