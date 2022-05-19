@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
 import List from "../components/List";
-import Map from "../components/Map";
+import Map from "../components/map/Map";
 
 const AllProperties = (props) => {
   const [loadedProperties, setLoadedProperties] = useState([]);

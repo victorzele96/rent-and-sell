@@ -137,6 +137,7 @@ const PropertyInfoForm = (props) => {
               }
             }
             if (key2 === 'contact') {
+              // eslint-disable-next-line
               if (event.target.value === '' || !/^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(event.target.value)) {
                 createError(`${key2} number must be legit Israeli number!`);
               } else {
