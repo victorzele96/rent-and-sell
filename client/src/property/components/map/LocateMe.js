@@ -27,7 +27,11 @@ const LocateMe = (props) => {
       navigator.geolocation.getCurrentPosition((position) => {
         props.panTo({ lat: position.coords.latitude, lng: position.coords.longitude })
       },
-        () => null
+        (err) => {
+          setLocate(false)
+          console.log('Please enable location to use this feature.');
+          alert('Please enable location to use this feature.');
+        }
       )
     }
     setLocate(prevState => !prevState);

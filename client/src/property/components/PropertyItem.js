@@ -286,16 +286,18 @@ const PropertyItem = (props) => {
           avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
           action={
             <>
-              <IconButton
-                aria-label="more"
-                id="more-button"
-                aria-controls={openMenu ? 'more-menu' : undefined}
-                aria-expanded={openMenu ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={moreMenuOpenHandler}
-              >
-                <MoreVertIcon />
-              </IconButton>
+              {authCtx.user && (
+                <IconButton
+                  aria-label="more"
+                  id="more-button"
+                  aria-controls={openMenu ? 'more-menu' : undefined}
+                  aria-expanded={openMenu ? 'true' : undefined}
+                  aria-haspopup="true"
+                  onClick={moreMenuOpenHandler}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              )}
               <Menu
                 id="more-menu"
                 MenuListProps={{

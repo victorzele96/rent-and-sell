@@ -11,9 +11,7 @@ import {
   Button,
 } from '@mui/material';
 
-import { makeStyles } from '@mui/styles';
-
-import { styled, useTheme } from '@mui/material/styles';
+import { useResponsive } from '../../../shared/hooks/responsive-hook';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -26,6 +24,10 @@ import SellIcon from '@mui/icons-material/Sell';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+import { makeStyles } from '@mui/styles';
+
+import { styled, useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme) => ({
   filter: {
@@ -83,6 +85,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const Filter = (props) => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
+
+  const { width, height } = useResponsive();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -273,6 +277,25 @@ const Filter = (props) => {
     </>
   );
 
+  const getMaxHeight = () => {
+    if (height <= 667) {
+      return '240px';
+    }
+    if (height <= 750) {
+      return '270px';
+    }
+    if (height <= 800) {
+      return '350px';
+    }
+    if (height <= 900) {
+      return '400px';
+    }
+    if (height > 900) {
+      return '500px';
+    }
+
+  };
+
   return (
     <div className={`${classes.filter} ${!open ? classes.closedFilter : ''}`}>
       <div className={classes.filterBtnContainer}>
@@ -290,7 +313,7 @@ const Filter = (props) => {
         <Drawer
           sx={{
             width: open ? 240 : '58px',
-            height: open ? 240 : '100%',
+            height: open ? '100%' : '100%',
             flexShrink: 0,
             '& .MuiDrawer-paper': {
               width: 240,
@@ -300,7 +323,7 @@ const Filter = (props) => {
               borderRadius: '4px',
               padding: '1rem',
               overflowY: 'scroll',
-              maxHeight: open ? '300px' : '40px'
+              maxHeight: open ? getMaxHeight() : '40px'
             },
           }}
           variant="persistent"

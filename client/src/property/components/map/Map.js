@@ -174,6 +174,19 @@ const Map = (props) => {
     if (height >= 1050) return '94.7vh';
   };
 
+  const getMarginTop = () => {
+    if (height <= 650) {
+      return '43px';
+    }
+    if (height <= 800) {
+      return '54px';
+    }
+    if (height <= 900) {
+      return '56px';
+    }
+    return '64px';
+  };
+
   if (laodError) return "Error loading maps;"
   if (!isLoaded) return "loading maps;"
 
@@ -194,10 +207,10 @@ const Map = (props) => {
       <GoogleMap
         id="rns-map"
         onClick={mapClickHandler}
-        mapContainerClassName={classes.mapContainer}
+        // mapContainerClassName={classes.mapContainer}
         mapContainerStyle={{
           height: getHeight(),
-          marginTop: width <= 600 ? '56px' : '64px'
+          marginTop: getMarginTop()
         }}
         zoom={INITIAL_MAP_CONFIG.zoom}
         center={INITIAL_MAP_CONFIG.center}

@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useResponsive } from '../../hooks/responsive-hook';
+
 import { AuthContext } from '../../context/auth-context';
 import FavoritesContext from '../../context/favorites-context';
 
@@ -26,14 +28,22 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Menu } from '../../../admin/icons/menu';
 
-import { styled } from '@mui/material/styles';
+import { styled, makeStyles } from '@mui/styles';
 
-import classes from './LeftDrawer.module.css';
+const useStyles = makeStyles((theme) => ({
+  drawer: {
+    overflow: '-moz-hidden-unscrollable'
+  }
+}));
 
 const LeftDrawer = () => {
   const authCtx = useContext(AuthContext);
   const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
+
+  const { width } = useResponsive();
+
+  const classes = useStyles();
 
   const signoutHandler = () => {
     authCtx.signout();
@@ -70,16 +80,29 @@ const LeftDrawer = () => {
     '& .MuiBadge-badge': {
       right: -15,
       top: 13,
-      border: `2px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
     },
   }));
+
+  const getWidth = () => {
+    if (width <= 380) {
+      return '26ch'
+    }
+    if (width <= 425) {
+      return '30ch'
+    }
+    if (width <= 768) {
+      return '34ch'
+    }
+    return '50ch';
+  };
 
   const list = (anchor) => (
     <Box
       className={classes.drawer}
       role="presentation"
       onKeyDown={toggleDrawer(anchor, false)}
+      sx={{ width: getWidth() }}
     >
       <List>
         <ListItem style={{ margin: "auto", display: "inline-block" }} >
@@ -150,11 +173,8 @@ const LeftDrawer = () => {
       <React.Fragment key={'right'}>
         <IconButton
           onClick={toggleDrawer()}
-          className={classes.menueBtn}
         >
-          <Menu
-          // fontSize="large"
-          />
+          <Menu sx={{ fontSize: '2.3rem', color: 'white' }} />
         </IconButton>
         <Drawer
           anchor={'left'}

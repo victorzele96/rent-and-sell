@@ -2,9 +2,11 @@ import { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import usePlacesAutocomplete from "use-places-autocomplete";
+import { useResponsive } from '../../hooks/responsive-hook';
 
 import { AuthContext } from "../../context/auth-context";
 
+import Notifications from "./Notifications";
 import LeftDrawer from "./LeftDrawer";
 
 import {
@@ -23,23 +25,29 @@ import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import { Bell as BellIcon } from "../../../admin/icons/bell";
 import rns_logo from "../../../static/images/rns_logo.jpeg";
 
-import classes from "./Navbar.module.css";
-import Notifications from "./Notifications";
-
 const Navbar = (props) => {
   const location = useLocation();
   const authCtx = useContext(AuthContext);
+
+  const { width } = useResponsive();
+
   const toggleMapListHanler = () => props.setMapList((prevState) => !prevState);
 
   usePlacesAutocomplete(); //! for unknown reason when you delete this it shows error.
 
   const toggleMapList = props.mapList ? (
-    <IconButton className={classes.toggleBtn} onClick={toggleMapListHanler}>
-      <FormatListBulletedIcon fontSize="large" />
+    <IconButton onClick={toggleMapListHanler}>
+      <FormatListBulletedIcon
+        fontSize="large"
+        sx={{ color: 'white' }}
+      />
     </IconButton>
   ) : (
-    <IconButton className={classes.toggleBtn} onClick={toggleMapListHanler}>
-      <TravelExploreIcon fontSize="large" />
+    <IconButton onClick={toggleMapListHanler}>
+      <TravelExploreIcon
+        fontSize="large"
+        sx={{ color: 'white' }}
+      />
     </IconButton>
   );
 
@@ -78,6 +86,30 @@ const Navbar = (props) => {
     setMenuOption(null);
   };
 
+  const getHeight = () => {
+    if (width <= 370) {
+      return '21px';
+    }
+    if (width <= 420) {
+      return '23px';
+    }
+    if (width > 420) {
+      return '26px';
+    }
+  };
+
+  const getWidth = () => {
+    if (width <= 370) {
+      return '42px';
+    }
+    if (width <= 420) {
+      return '46px';
+    }
+    if (width > 420) {
+      return '52px';
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1, top: 0, display: "block", width: "100%" }}>
       <AppBar position="fixed">
@@ -89,14 +121,12 @@ const Navbar = (props) => {
           <IconButton
             component={Link}
             to="/"
-            sx={{
-              sm: { width: "42px", height: "21px" },
-              xs: { width: "52px", height: "26px" },
-              md: { width: "63px", height: "31.5px" },
-              lg: { width: "84px", height: "42px" }
-            }}
           >
-            <img src={rns_logo} alt="rns_logo" className={classes.logo} />
+            <img
+              src={rns_logo}
+              alt="rns_logo"
+              style={{ width: getWidth(), height: getHeight() }}
+            />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Tooltip title={props.mapList ? "Show as List" : "Show on Map"}>

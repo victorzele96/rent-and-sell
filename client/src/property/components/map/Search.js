@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute'
   },
   icon: {
-    top: 10,
+    top: 90,
     minWidth: '40px',
   },
   resetIcon: {
