@@ -29,7 +29,19 @@ const propertySchema = new Schema({
     public_institutes: { type: Boolean },
     contact: { type: String, required: true }
   },
-  creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
+  creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
+  reports: [
+    {
+      report: { type: String, required: true },
+      userId: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
+    }
+  ],
+  ratings: [
+    {
+      userRating: { type: Number, required: true },
+      userId: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
+    }
+  ]
 });
 
 propertySchema.set('toJSON', { getters: true });

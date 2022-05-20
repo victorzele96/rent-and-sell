@@ -10,15 +10,6 @@ import Report from "./Report";
 import { styled } from "@mui/material/styles";
 
 import {
-  FacebookShareButton,
-  FacebookIcon,
-  TelegramShareButton,
-  TelegramIcon,
-  WhatsappShareButton,
-  WhatsappIcon,
-} from "react-share";
-
-import {
   Stack,
   Card,
   CardHeader,
@@ -70,6 +61,7 @@ import ParkIcon from "@mui/icons-material/Park";
 import image from "../../static/images/types-of-homes-hero.png";
 
 import { makeStyles } from "@mui/styles";
+import ShareProperty from "./ShareProperty";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -274,6 +266,19 @@ const PropertyItem = (props) => {
     setMenuOption(null);
   };
 
+  let days = "";
+  const formatMovementDate = (date) => {
+    const calcDaysPassed = (date1, date2) =>
+      Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+    const daysPassed = calcDaysPassed(new Date(), date);
+
+    if (daysPassed === 0) return "Today";
+    if (daysPassed === 1) return "Yesterday";
+    if (daysPassed <= 7) return `${daysPassed} days ago`;
+    return new Intl.DateTimeFormat("he-IL").format(date);
+  };
+  days = formatMovementDate(new Date(props.property.details.creation_date));
+
   return (
     <>
       {menuOption === 0 && (
@@ -321,7 +326,7 @@ const PropertyItem = (props) => {
             </>
           }
           title={props.property.address}
-          subheader="September 14, 2016" // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
+          subheader={days} // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
         />
         <CardMedia //card image
           component="img"
@@ -351,17 +356,7 @@ const PropertyItem = (props) => {
           <Dialog onClose={toggleShare} open={share}>
             <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
             <Divider />
-            <DialogActions sx={{ width: "250px", justifyContent: "center", paddingTop: "14px" }} onClick={toggleShare}>
-              <FacebookShareButton url={shareUrl}>
-                <FacebookIcon size={40} round={true} />
-              </FacebookShareButton>
-              <TelegramShareButton url={shareUrl}>
-                <TelegramIcon size={40} round={true} />
-              </TelegramShareButton>
-              <WhatsappShareButton url={shareUrl}>
-                <WhatsappIcon size={40} round={true} />
-              </WhatsappShareButton>
-            </DialogActions>
+            <ShareProperty propertyId={props.property.id} />
           </Dialog>
           <ExpandMore
             expand={expanded}

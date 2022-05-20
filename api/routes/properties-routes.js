@@ -63,4 +63,14 @@ router.patch(
 
 router.delete('/:pid', propertiesControllers.deleteProperty);
 
+router.patch('/report/:pid/:uid', [
+  check('userReport').isIn(['Spam', 'Wrong Information', 'Offensive']),
+],
+  propertiesControllers.reportProperty);
+
+router.patch('/rate/:pid/:uid', [
+  check('userRating').isInt({ min: 1, max: 5 }),
+],
+  propertiesControllers.rateProperty);
+
 module.exports = router;

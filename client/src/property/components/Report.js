@@ -118,7 +118,7 @@ const Report = (props) => {
               • Similar post already exists.
             </Typography>
             <Typography variant="body2">
-              • Similar post already exists.
+              • Post author use chat spam.
             </Typography>
           </AccordionDetails>
         </Accordion>

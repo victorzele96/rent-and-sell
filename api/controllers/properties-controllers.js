@@ -88,6 +88,8 @@ const createProperty = async (req, res, next) => {
     creator: req.userData.userId,
     location: coordsAndAddress.coordinates,
     details,
+    reports: [],
+    ratings: [],
   });
 
   let user;
@@ -226,9 +228,113 @@ const deleteProperty = async (req, res, next) => {
   res.status(200).json({ message: 'The property was successfully deleted.', propertyId: propertyId });
 };
 
+const reportProperty = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const { userReport } = req.body;
+  const propertyId = req.params.pid;
+  const userId = req.params.uid;
+
+  let property;
+  try {
+    property = await Property.findById(propertyId);
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not report property.', 500)
+    );
+  }
+
+  if (property.creator.toString() === userId) {
+    return next(
+      new HttpError('You can not to report your own property.', 500)
+    );
+  }
+
+  const index = property.reports.findIndex(item => item.userId.toString() === userId);
+  let reports;
+  if (index === -1) {
+    reports = [...property.reports];
+    reports.push({ report: userReport, userId });
+  } else {
+    return next(
+      new HttpError('You have already reported this property.', 500)
+    );
+  }
+
+  property.reports = reports;
+
+  try {
+    await property.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not report property.', 500)
+    );
+  }
+
+  res.status(200).json({ property: property });
+};
+
+const rateProperty = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const { userRating } = req.body;
+  const propertyId = req.params.pid;
+  const userId = req.params.uid;
+
+  let property;
+  try {
+    property = await Property.findById(propertyId);
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not rate property.', 500)
+    );
+  }
+
+  if (property.creator.toString() === userId) {
+    return next(
+      new HttpError('You can not to rate your own property.', 500)
+    );
+  }
+
+  const index = property.ratings.findIndex(item => item.userId.toString() === userId);
+
+  let ratings;
+  ratings = [...property.ratings];
+  if (index !== -1) {
+    ratings.splice(index, 1);
+  }
+  ratings.push({ userRating, userId });
+
+  property.ratings = ratings;
+
+  try {
+    await property.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not rate property.', 500)
+    );
+  }
+
+  res.status(200).json({ property: property });
+};
+
 exports.getPropertyById = getPropertyById;
 exports.getPropertiesByUserId = getPropertiesByUserId;
 exports.getAllProperties = getAllProperties;
 exports.createProperty = createProperty;
 exports.updateProperty = updateProperty;
 exports.deleteProperty = deleteProperty;
+exports.reportProperty = reportProperty;
+exports.rateProperty = rateProperty;
