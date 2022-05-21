@@ -131,6 +131,7 @@ const List = (props) => {
           <PropertyItem
             property={property}
             propertyId={property.id}
+            propertyRate={property.ratings}
             onDelete={props.onDelete}
           />
         ))

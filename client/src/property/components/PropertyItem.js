@@ -1,11 +1,12 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DeployAvatar from "../../shared/components/UIElements/Avatar";
 
 import Paragraph from "./Paragraph";
 import Report from "./Report";
-
+import ShareProperty from "./ShareProperty";
+import HoverRating from "./HoverRating";
 
 import { styled } from "@mui/material/styles";
 
@@ -61,7 +62,6 @@ import ParkIcon from "@mui/icons-material/Park";
 import image from "../../static/images/types-of-homes-hero.png";
 
 import { makeStyles } from "@mui/styles";
-import ShareProperty from "./ShareProperty";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,6 +106,7 @@ const ExpandMore = styled((props) => {
 
 const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
+  const [currentValue, setCurrentValue] = useState(0);
 
   const favoritesCtx = useContext(FavoritesContext);
   const authCtx = useContext(AuthContext);
@@ -126,8 +127,6 @@ const PropertyItem = (props) => {
   const toggleDeleteState = () => {
     setDeleteState((prev) => !prev);
   };
-
-  const shareUrl = process.env.REACT_APP_FRONT_URL + '/property/' + props.propertyId; // TODO: need to be changed to url with specific item
 
   const handleExpandClick = () => setExpanded((prevState) => !prevState);
 
@@ -279,6 +278,25 @@ const PropertyItem = (props) => {
   };
   days = formatMovementDate(new Date(props.property.details.creation_date));
 
+  const round = (value, step = 1.0) => {
+    step || (step = 1.0);
+    var inv = 1.0 / step;
+    return Math.round(value * inv) / inv;
+  };
+
+  useEffect(() => {
+    let avg = 0;
+    if (props.propertyRate.length > 0) {
+      props.propertyRate.map((rate) => {
+        avg += rate.userRating;
+        return avg;
+      });
+      avg = avg / props.propertyRate.length;
+      setCurrentValue(round(avg - 0.01));
+    }
+  }, [props.propertyRate]);
+
+
   return (
     <>
       {menuOption === 0 && (
@@ -340,32 +358,46 @@ const PropertyItem = (props) => {
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          {actionIcons}
-          <Box spacing={2} className={classes.btnBox}>
-            {!props.preview && (
-              <Button
-                className={classes.btn}
-                variant="outlined"
-                onClick={viewHandler}
-              >
-                View
-              </Button>
-            )}
-            {delAndEdit}
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ ml: 1, mb: "0.5rem" }}>
+              <HoverRating
+                propertyId={props.propertyId}
+                currentValue={currentValue}
+              />
+            </Box>
+            <Box>
+              <Box sx={{ float: "left" }}>{actionIcons}</Box>
+              <Box sx={{ float: 'right' }}>
+                <Box sx={{ float: 'left' }} >
+                  {!props.preview && (
+                    <Button
+                      className={classes.btn}
+                      variant="outlined"
+                      onClick={viewHandler}
+                    >
+                      View
+                    </Button>
+                  )}
+                  {delAndEdit}
+                </Box>
+                <Box sx={{ float: 'right' }}>
+                  <Dialog onClose={toggleShare} open={share}>
+                    <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
+                    <Divider />
+                    <ShareProperty propertyId={props.property.id} />
+                  </Dialog>
+                  <ExpandMore
+                    expand={expanded}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+                  >
+                    <ExpandMoreIcon />
+                  </ExpandMore>
+                </Box>
+              </Box>
+            </Box>
           </Box>
-          <Dialog onClose={toggleShare} open={share}>
-            <DialogTitle style={{ paddingBottom: "10px" }}>Share</DialogTitle>
-            <Divider />
-            <ShareProperty propertyId={props.property.id} />
-          </Dialog>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent className={classes["advanced-info"]}>
