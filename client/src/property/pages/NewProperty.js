@@ -78,7 +78,7 @@ const NewProperty = (props) => {
   }, []);
 
   const nextHandler = (errors) => {
-    if (errors.length === 0) {
+    if (!errors || errors.length === 0) {
       setActiveStep(activeStep + 1);
 
       // let images;
@@ -99,9 +99,10 @@ const NewProperty = (props) => {
 
       if (activeStep === steps.length - 1) { // Submit
         console.log(propertyData);
-        // TODO: send data to backend server
         requestHandler();
       }
+    } else {
+      console.log(errors);
     }
   };
 
@@ -120,7 +121,7 @@ const NewProperty = (props) => {
       case 1:
         return <FileUpload onBackClick={backHandler} onNextClick={nextHandler} />;
       case 2:
-        return <PropertyReview onBackClick={backHandler} onNextClick={nextHandler} property={propertyData} />;
+        return <PropertyReview onBackClick={backHandler} onSubmitClick={nextHandler} property={propertyData} />;
       default:
         throw new Error("Unknown step");
     }

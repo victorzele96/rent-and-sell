@@ -127,7 +127,8 @@ const List = (props) => {
   ) : (
     <Stack id={props.tagId || 'list-stack'} spacing="30px" className={classes.listContainerInner}>
       {Children.toArray(
-        loadedProperties.map((property, key) => (
+        // load the properties in reverse (from new to old)
+        loadedProperties.slice(0).reverse().map((property, key) => (
           <PropertyItem
             property={property}
             propertyId={property.id}

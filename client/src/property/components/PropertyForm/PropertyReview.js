@@ -3,6 +3,11 @@ import { Box, Button } from '@mui/material';
 import PropertyItem from "../PropertyItem";
 
 const PropertyReview = (props) => {
+  console.log(props.property);
+  const submitHandler = () => {
+    props.onSubmitClick();
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -17,7 +22,7 @@ const PropertyReview = (props) => {
 
         <Button
           variant="contained"
-          onClick={props.onSubmitClick}
+          onClick={submitHandler}
           sx={{ ml: 1 }}
         >
           Submit

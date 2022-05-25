@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 
 import { DropzoneAreaBase } from 'material-ui-dropzone';
 
-import { Box, Button } from '@mui/material';
+import { Alert, Box, Button } from '@mui/material';
 
 import classes from './FileUpload.module.css';
 
 const FileUpload = (props) => {
   const [images, setImages] = useState([]);
   const [paths, setPaths] = useState([]);
+  const [error, setError] = useState(null);
 
   const addImageHandler = (newImages) => {
     console.log('onAdd', newImages);
@@ -31,6 +32,19 @@ const FileUpload = (props) => {
     setPaths(prevState => prevState.filter(path => paths.indexOf(path) !== indexToDelete));
     // TODO: add serverside formdata
   };
+
+  const nextHandler = () => {
+    if (images.length === 0) {
+      setError('You must upload at least one image.');
+    }
+    props.onNextClick(error ? [error] : []);
+  };
+
+  useEffect(() => {
+    if (images.length > 0) {
+      setError(null);
+    }
+  }, [images]);
 
   useEffect(() => {
     sessionStorage.setItem("new-property-images", JSON.stringify(images));
@@ -63,12 +77,19 @@ const FileUpload = (props) => {
         </Button>
         <Button
           variant="contained"
-          onClick={props.onNextClick}
+          onClick={nextHandler}
           sx={{ ml: 1 }}
         >
           Next
         </Button>
       </Box>
+      {error && (
+        <Box sx={{ marginTop: '10px' }}>
+          <Alert severity="error">
+            {error}
+          </Alert>
+        </Box>
+      )}
     </div>
   );
 };

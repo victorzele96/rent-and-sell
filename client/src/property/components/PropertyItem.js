@@ -265,18 +265,21 @@ const PropertyItem = (props) => {
     setMenuOption(null);
   };
 
-  let days = "";
+  const calcDaysPassed = (date1, date2) => {
+    return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  }
+
   const formatMovementDate = (date) => {
-    const calcDaysPassed = (date1, date2) =>
-      Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
     const daysPassed = calcDaysPassed(new Date(), date);
 
     if (daysPassed === 0) return "Today";
     if (daysPassed === 1) return "Yesterday";
     if (daysPassed <= 7) return `${daysPassed} days ago`;
+
     return new Intl.DateTimeFormat("he-IL").format(date);
   };
-  days = formatMovementDate(new Date(props.property.details.creation_date));
+  let creation_date = props.property.details.creation_date ? props.property.details.creation_date : new Date();
+  const days = formatMovementDate(new Date(creation_date));
 
   const round = (value, step = 1.0) => {
     step || (step = 1.0);
@@ -285,16 +288,18 @@ const PropertyItem = (props) => {
   };
 
   useEffect(() => {
-    let avg = 0;
-    if (props.propertyRate.length > 0) {
-      props.propertyRate.map((rate) => {
-        avg += rate.userRating;
-        return avg;
-      });
-      avg = avg / props.propertyRate.length;
-      setCurrentValue(round(avg - 0.01));
+    if (!props.preview) {
+      let avg = 0;
+      if (props.propertyRate.length > 0) {
+        props.propertyRate.map((rate) => {
+          avg += rate.userRating;
+          return avg;
+        });
+        avg = avg / props.propertyRate.length;
+        setCurrentValue(round(avg - 0.01));
+      }
     }
-  }, [props.propertyRate]);
+  }, [props.propertyRate, props.preview]);
 
 
   return (
@@ -359,12 +364,14 @@ const PropertyItem = (props) => {
         </CardContent>
         <CardActions disableSpacing>
           <Box sx={{ width: "100%" }}>
-            <Box sx={{ ml: 1, mb: "0.5rem" }}>
-              <HoverRating
-                propertyId={props.propertyId}
-                currentValue={currentValue}
-              />
-            </Box>
+            {!props.preview && (
+              <Box sx={{ ml: 1, mb: "0.5rem" }}>
+                <HoverRating
+                  propertyId={props.propertyId}
+                  currentValue={currentValue}
+                />
+              </Box>
+            )}
             <Box>
               <Box sx={{ float: "left" }}>{actionIcons}</Box>
               <Box sx={{ float: 'right' }}>

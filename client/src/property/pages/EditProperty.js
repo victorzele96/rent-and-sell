@@ -78,7 +78,7 @@ const EditProperty = (props) => {
   }, []);
 
   const nextHandler = (errors) => {
-    if (errors.length === 0) {
+    if (!errors || errors.length === 0) {
       setActiveStep(activeStep + 1);
 
       // let images;
@@ -101,6 +101,8 @@ const EditProperty = (props) => {
         console.log(propertyData);
         requestHandler();
       }
+    } else {
+      console.log(errors);
     }
   };
 
