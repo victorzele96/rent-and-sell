@@ -35,7 +35,7 @@ const HoverRating = (props) => {
     setValue(newValue ? newValue : Number(event.target.defaultValue));
     try {
       await sendRequest(
-        process.env.REACT_APP_BACK_URL + `/properties/rate/${props.propertyId}/${authCtx.user.userId}`,
+        process.env.REACT_APP_BACK_URL + `/properties/rate/${props.property.id}/${authCtx.user.userId}`,
         "PATCH",
         JSON.stringify({
           userId: authCtx.user.userId,
@@ -59,7 +59,8 @@ const HoverRating = (props) => {
       }}
     >
       <Rating
-        readOnly={!authCtx.user ? true : false}
+        // if guest or creator => rating is readOnly
+        readOnly={!authCtx.user || authCtx.user.userId.toString() === props.property.creator.toString() ? true : false}
         name="hover-feedback"
         value={value}
         precision={1}

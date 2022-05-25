@@ -301,7 +301,6 @@ const PropertyItem = (props) => {
     }
   }, [props.propertyRate, props.preview]);
 
-
   return (
     <>
       {menuOption === 0 && (
@@ -364,10 +363,10 @@ const PropertyItem = (props) => {
         </CardContent>
         <CardActions disableSpacing>
           <Box sx={{ width: "100%" }}>
-            {(!props.preview && authCtx.user.userId.toString() === props.property.creator.toString()) && (
+            {!props.preview && (
               <Box sx={{ ml: 1, mb: "0.5rem" }}>
                 <HoverRating
-                  propertyId={props.propertyId}
+                  property={props.property}
                   currentValue={currentValue}
                 />
               </Box>
