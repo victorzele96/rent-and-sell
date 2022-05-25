@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import {
   Box,
@@ -7,6 +7,9 @@ import {
   Button,
   Alert
 } from '@mui/material';
+
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
@@ -71,6 +74,9 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Report = (props) => {
   const [open, setOpen] = useState(true);
+  const authCtx = useContext(AuthContext);
+
+  const { sendRequest } = useHttpClient();
 
   const closeModalHandler = () => {
     setOpen(false)
@@ -78,20 +84,44 @@ const Report = (props) => {
   };
 
   const [expanded, setExpanded] = useState('');
-  const [selectedReport, setSelectedReport] = useState(false);
-  const [alert, setAlert] = useState(false);
+  const [selectedReport, setSelectedReport] = useState('');
+  const [error, setError] = useState();
 
   const panelChangeHandler = (panel) => (event, newExpanded) => {
+    setError(null);
     setExpanded(newExpanded ? panel : false);
-    setSelectedReport(newExpanded ? panel.split('Panel')[0] : false);
-    setAlert(false);
+    const str = panel.split('Panel')[0];
+    setSelectedReport(newExpanded ? str.charAt(0).toUpperCase() + str.slice(1) : '');
   };
 
   const submitHandler = (event) => {
-    if (selectedReport) {
+    if (selectedReport !== '') {
       console.log(selectedReport);
+      reportHandler();
     } else {
-      setAlert(true);
+      setError('Choose report reason before clicking submit.');
+    }
+  };
+
+  const reportHandler = async () => {
+    try {
+      await sendRequest(
+        process.env.REACT_APP_BACK_URL + `/properties/report/${props.propertyId}/${authCtx.user.userId}`,
+        "PATCH",
+        JSON.stringify({
+          userId: authCtx.user.userId,
+          userReport: selectedReport,
+        }),
+        {
+          Authorization: "Bearer " + authCtx.token,
+          "Content-Type": "application/json",
+        }
+      );
+      alert('Reported successfully!');
+      closeModalHandler();
+    } catch (err) {
+      console.log(err.message || "Something went wrong, please try again.");
+      setError(err.message);
     }
   };
 
@@ -157,8 +187,10 @@ const Report = (props) => {
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'right' }}>
           <Button disabled={!selectedReport} variant="contained" onClick={submitHandler}>Submit</Button>
         </Box>
-        {alert && (
-          <Alert variant='outlined'>Choose report reason before clicking submit.</Alert>
+        {error && (
+          <Box sx={{ mt: 1 }}>
+            <Alert severity="error">{error}</Alert>
+          </Box>
         )}
       </Box>
     </Modal>

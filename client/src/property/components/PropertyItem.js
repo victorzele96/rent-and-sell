@@ -306,7 +306,7 @@ const PropertyItem = (props) => {
     <>
       {menuOption === 0 && (
         <>
-          <Report onClose={closeModalHandler} />
+          <Report propertyId={props.propertyId} onClose={closeModalHandler} />
         </>
       )}
       <Card className={classes.root}>
