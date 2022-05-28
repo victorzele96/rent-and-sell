@@ -313,7 +313,7 @@ const PropertyItem = (props) => {
           avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
           action={
             <>
-              {authCtx.user && (
+              {authCtx.user && authCtx.user.userId.toString() !== props.property.creator.toString() && (
                 <IconButton
                   aria-label="more"
                   id="more-button"

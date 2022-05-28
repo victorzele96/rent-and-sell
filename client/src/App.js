@@ -71,6 +71,7 @@ const App = () => {
         {/* Admin routes */}
         <Route exact path={'/dashboard'} element={<Dashboard tagId="main-content" />} />
         <Route exact path={'/dashboard/users'} element={<Users tagId="main-content" />} />
+        <Route path='*' element={<Navigate replace to='/dashboard' />} />
       </Routes>
     </>
   );

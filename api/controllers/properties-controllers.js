@@ -330,11 +330,13 @@ const rateProperty = async (req, res, next) => {
   res.status(200).json({ property: property });
 };
 
-exports.getPropertyById = getPropertyById;
-exports.getPropertiesByUserId = getPropertiesByUserId;
-exports.getAllProperties = getAllProperties;
-exports.createProperty = createProperty;
-exports.updateProperty = updateProperty;
-exports.deleteProperty = deleteProperty;
-exports.reportProperty = reportProperty;
-exports.rateProperty = rateProperty;
+module.exports = {
+  getPropertyById,
+  getPropertiesByUserId,
+  getAllProperties,
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  reportProperty,
+  rateProperty,
+};

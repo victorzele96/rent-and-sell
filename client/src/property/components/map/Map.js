@@ -10,15 +10,6 @@ import LocateMe from './LocateMe';
 import Legend from './Legend';
 import Filter from './Filter';
 
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  mapContainer: {
-    height: '93.4vh',
-    marginTop: '64px'
-  }
-}));
-
 const INITIAL_MAP_CONFIG = {
   center: {
     lat: 31.6146791,
@@ -37,8 +28,6 @@ const Map = (props) => {
   const [searchValue, setSearchValue] = useState(null);
   const [filterValue, setFilterValue] = useState(null);
   const { width, height } = useResponsive();
-
-  const classes = useStyles();
 
   const { isLoaded, laodError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,

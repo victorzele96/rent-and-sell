@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import { Box } from '@mui/system';
 
 const stringToColor = (string) => {
   let hash = 0;
@@ -35,8 +36,18 @@ const sidebarAvatar = (fname, lname) => {
   return (
     <>
       <Avatar style={{ alignSelf: "center", width: 60, height: 60, fontSize: "30px" }} {...stringAvatar(fname + " " + lname)} />
-      <p style={{ marginBottom: 0, alignSelf: "center" }}><strong> {"Welcome, "}</strong></p>
-      <p style={{ margin: 0, alignSelf: "center" }}><strong> {fname + " " + lname}</strong></p>
+      <Box sx={{ textAlign: "center", mb: 1, mt: 1 }}>
+        <p style={{ margin: 0 }}><strong> {"Welcome, "}</strong></p>
+        {fname.length + lname.lenth >= 24 ? (
+          <>
+            <p style={{ margin: 0 }}><strong> {fname}</strong></p>
+            <p style={{ margin: 0 }}><strong> {lname}</strong></p>
+          </>
+        ) : (
+          <p style={{ margin: 0 }}><strong> {fname + " " + lname}</strong></p>
+        )}
+      </Box>
+
     </>
   );
 };
@@ -51,7 +62,7 @@ const listAvatar = (fname, lname) => {
 
 const DeployAvatar = (props) => {
   return (
-    <Stack>
+    <Stack sx={props.sx}>
       {props.type === 'sidebar' && sidebarAvatar(props.fname, props.lname)}
       {props.type === 'list' && listAvatar(props.fname, props.lname)}
     </Stack>

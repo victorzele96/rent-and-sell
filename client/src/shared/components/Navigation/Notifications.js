@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { Box, Modal, Typography } from '@mui/material';
 
 import MyAccordion from '../UIElements/MyAccordion';

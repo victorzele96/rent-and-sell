@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useResponsive } from '../../hooks/responsive-hook';
-
 import { AuthContext } from '../../context/auth-context';
 import FavoritesContext from '../../context/favorites-context';
 
@@ -40,8 +38,6 @@ const LeftDrawer = () => {
   const authCtx = useContext(AuthContext);
   const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
-
-  const { width } = useResponsive();
 
   const classes = useStyles();
 
@@ -84,30 +80,17 @@ const LeftDrawer = () => {
     },
   }));
 
-  const getWidth = () => {
-    if (width <= 380) {
-      return '26ch'
-    }
-    if (width <= 425) {
-      return '30ch'
-    }
-    if (width <= 768) {
-      return '34ch'
-    }
-    return '50ch';
-  };
-
   const list = (anchor) => (
     <Box
       className={classes.drawer}
       role="presentation"
       onKeyDown={toggleDrawer(anchor, false)}
-      sx={{ width: getWidth() }}
+      sx={{ width: "265px" }}
     >
       <List>
         <ListItem style={{ margin: "auto", display: "inline-block" }} >
           <ListItemIcon />
-          <DeployAvatar type="sidebar" fname={authCtx.user ? authCtx.user.firstName : "Dear"} lname={authCtx.user ? authCtx.user.lastName : "Guest"} />
+          <DeployAvatar type="sidebar" fname={authCtx.user ? authCtx.user.firstName.toUpperCase() : "Dear"} lname={authCtx.user ? authCtx.user.lastName.toUpperCase() : "Guest"} />
         </ListItem>
         {!authCtx.user ? ( //change to state!!!!
           <ListItem

@@ -12,6 +12,7 @@ import {
 import { DialogActions } from "@mui/material";
 
 const ShareProperty = (props) => {
+  // eslint-disable-next-line
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => {
     setIsOpen((prev) => !prev);

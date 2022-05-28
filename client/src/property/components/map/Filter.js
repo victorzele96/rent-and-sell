@@ -86,7 +86,7 @@ const Filter = (props) => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
 
-  const { width, height } = useResponsive();
+  const { height } = useResponsive();
 
   const handleDrawerOpen = () => {
     setOpen(true);

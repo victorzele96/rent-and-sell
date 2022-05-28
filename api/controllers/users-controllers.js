@@ -78,6 +78,7 @@ const signup = async (req, res, next) => {
         email: createdUser.email,
         firstName: createdUser.firstName,
         lastName: createdUser.lastName,
+        isAdmin: false
       },
       process.env.JWT_KEY,
       { expiresIn: '1h' }
@@ -163,8 +164,78 @@ const signin = async (req, res, next) => {
       isAdmin
     }, token
   });
-}
+};
 
-exports.getUsers = getUsers;
-exports.signup = signup;
-exports.signin = signin;
+const updateUser = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const { firstName, lastName, email } = req.body;
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId)
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not update user.', 500)
+    );
+  }
+
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.email = email;
+
+  try {
+    await user.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not update user.', 500)
+    );
+  }
+
+  res.status(200).json({ user: user });
+};
+
+const deleteUser = async (req, res, next) => {
+
+  const userId = req.params.uid;
+
+  let user;
+  try {
+    user = await User.findById(userId)
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not delete user.', 500)
+    );
+  }
+
+  if (!user) {
+    return next(
+      new HttpError('Could not find user for this id.', 404)
+    );
+  }
+
+  try {
+    await user.remove();
+  } catch (err) {
+    return (
+      new HttpError('Something went wrong, could not delete user.', 500)
+    );
+  }
+
+  res.status(200).json({ message: 'The user was successfully deleted.', userId: userId });
+};
+
+module.exports = {
+  getUsers,
+  signup,
+  signin,
+  updateUser,
+  deleteUser,
+};
