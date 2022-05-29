@@ -3,31 +3,41 @@ import { Box, Button, Card, CardContent, CardHeader, Divider, useTheme } from '@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
-export const Sales = (props) => {
+export const ReportsChart = (props) => {
   const theme = useTheme();
 
   const data = {
     datasets: [
       {
-        backgroundColor: '#3F51B5',
+        backgroundColor: '#324cc2',
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,
         categoryPercentage: 0.5,
-        data: [18, 5, 19, 27, 29, 19, 20],
-        label: 'This year',
+        data: [18, 10, 19, 9, 11, 9, 10],
+        label: 'Spam',
         maxBarThickness: 10
       },
       {
-        backgroundColor: '#EEEEEE',
+        backgroundColor: '#c28132',
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,
         categoryPercentage: 0.5,
-        data: [11, 20, 12, 29, 30, 25, 13],
-        label: 'Last year',
+        data: [1, 5, 3, 2, 8, 1, 3],
+        label: 'Offensive',
         maxBarThickness: 10
-      }
+      },
+      {
+        backgroundColor: '#c2bb32',
+        barPercentage: 0.5,
+        barThickness: 12,
+        borderRadius: 4,
+        categoryPercentage: 0.5,
+        data: [11, 8, 12, 9, 10, 5, 3],
+        label: 'Wrong Info',
+        maxBarThickness: 10
+      },
     ],
     labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 aug']
   };
@@ -92,7 +102,7 @@ export const Sales = (props) => {
             Last 7 days
           </Button>
         )}
-        title="Latest Sales"
+        title="Latest Reports"
       />
       <Divider />
       <CardContent>

@@ -28,6 +28,10 @@ export const UserListToolbar = (props) => {
   }
 
   const searchChangeHandler = (event) => {
+    if (event.target.value === '') {
+      resetHandler();
+      return;
+    }
     setSearchName(event.target.value);
   };
 
@@ -48,14 +52,6 @@ export const UserListToolbar = (props) => {
         >
           Users
         </Typography>
-        <Box sx={{ m: 1 }}>
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Add User
-          </Button>
-        </Box>
       </Box>
       <Box sx={{ mt: 3 }}>
         <Card>

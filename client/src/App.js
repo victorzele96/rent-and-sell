@@ -3,17 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 //? User
 import Navbar from './shared/components/Navigation/Navbar';
-// import Favorites from './property/pages/Favorites';
-// import Chats from './chats/pages/Chats';
-// import NewProperty from './property/pages/NewProperty';
-// import MyProperties from './property/pages/MyProperties';
-// import ShowProperty from './property/pages/ShowProperty';
 import AllProperties from './property/pages/AllProperties';
-// import Auth from './users/pages/Auth';
 //?
 //! Admin
-// import Dashboard from './admin/pages/Dashboard';
-// import Users from './admin/pages/Users';
 import { DashboardNavbar } from './admin/components/DashboardNavbar';
 import { DashboardSidebar } from './admin/components/DashboardSidebar';
 //!
