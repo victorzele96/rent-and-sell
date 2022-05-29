@@ -7,11 +7,14 @@ import { DashboardLayout } from '../components/DashboardLayout';
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from '../../shared/context/auth-context';
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
   const [loadedUsers, setLoadedUsers] = useState([]);
   const [changeableUsersList, setChangeableUsersList] = useState([]);
   const { isLoading, sendRequest } = useHttpClient();
+
+  const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
 
@@ -72,7 +75,25 @@ const Users = () => {
   };
 
   const editUserHandler = async (user) => {
-
+    console.log('Edit');
+    try {
+      await sendRequest(
+        process.env.REACT_APP_BACK_URL + `/users/${user.id}`,
+        'PATCH',
+        JSON.stringify({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        }),
+        {
+          'Authorization': 'Bearer ' + authCtx.token,
+          'Content-Type': 'application/json'
+        },
+      );
+      navigate('/dashboard');
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {

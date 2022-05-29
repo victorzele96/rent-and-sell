@@ -290,13 +290,15 @@ const PropertyItem = (props) => {
   useEffect(() => {
     if (!props.preview) {
       let avg = 0;
-      if (props.propertyRate.length > 0) {
-        props.propertyRate.map((rate) => {
-          avg += rate.userRating;
-          return avg;
-        });
-        avg = avg / props.propertyRate.length;
-        setCurrentValue(round(avg - 0.01));
+      if (props.propertyRate) {
+        if (props.propertyRate.length > 0) {
+          props.propertyRate.map((rate) => {
+            avg += rate.userRating;
+            return avg;
+          });
+          avg = avg / props.propertyRate.length;
+          setCurrentValue(round(avg - 0.01));
+        }
       }
     }
   }, [props.propertyRate, props.preview]);

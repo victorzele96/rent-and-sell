@@ -6,7 +6,6 @@ import {
   Box,
   Card,
   Checkbox,
-  CircularProgress,
   IconButton,
   Table,
   TableBody,
@@ -19,14 +18,17 @@ import {
 
 import DeployAvatar from "../../../shared/components/UIElements/Avatar";
 import ConfirmationModal from "../../../shared/components/UIElements/ConfirmationModal";
+import CircularProgressModal from "../../../shared/components/UIElements/CircularProgressModal";
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UserForm from '../../../shared/components/Forms/UserForm';
 
 export const UserListResults = ({ users, isLoading, onEdit, onDelete, ...rest }) => {
   const [selectedUsersIds, setSelectedUsersIds] = useState([]); // check boxes
   const [selectedUser, setSelectedUser] = useState(); // the user to be edited or deleted
-  const [open, setOpen] = useState(false); // to confirm delete / edit requests
+  const [openConfirm, setOpenConfirm] = useState(false); // to confirm delete
+  const [openEdit, setOpenEdit] = useState(false); // to confirm delete
   const [requestType, setRequestType] = useState();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -72,35 +74,42 @@ export const UserListResults = ({ users, isLoading, onEdit, onDelete, ...rest })
   };
 
   const editHandler = (user) => {
-    setOpen(true);
+    setOpenEdit(true);
     setSelectedUser(user);
-    setRequestType('edit');
   };
 
   const deleteHandler = (user) => {
-    setOpen(true);
+    setOpenConfirm(true);
     setSelectedUser(user);
     setRequestType('delete');
   };
 
-  const confirmHandler = (requestType) => {
-    if (requestType === 'edit') onEdit(selectedUser);
+  const confirmHandler = (requestType, updatedUser) => {
+    if (requestType === 'edit') onEdit(updatedUser);
     if (requestType === 'delete') onDelete(selectedUser);
-    setOpen(false);
+    setOpenConfirm(false);
   }
 
   const cancelHandler = () => {
-    setOpen(false);
+    setOpenEdit(false);
+    setOpenConfirm(false);
     setSelectedUser(null);
     setRequestType(null);
   };
 
   return (
     <>
+      <UserForm
+        onCancel={cancelHandler}
+        onSubmit={(updatedUser) => confirmHandler('edit', updatedUser)}
+        open={openEdit}
+        user={selectedUser}
+        isLoading={isLoading}
+      />
       <ConfirmationModal
         onCancel={cancelHandler}
         onConfirm={() => confirmHandler(requestType)}
-        open={open}
+        open={openConfirm}
         title={"Confirm User Delete Request"}
         text={"Are you sure you want to delete this user?"}
       />
@@ -139,7 +148,7 @@ export const UserListResults = ({ users, isLoading, onEdit, onDelete, ...rest })
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, limit).map((user) => (
+                {users.slice(page * limit, page * limit + limit).map((user) => (
                   <TableRow
                     hover
                     key={user.id}
@@ -211,8 +220,8 @@ export const UserListResults = ({ users, isLoading, onEdit, onDelete, ...rest })
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      {isLoading && (
-        <CircularProgress />
+      {isLoading && !openEdit && (
+        <CircularProgressModal />
       )}
     </>
   );
