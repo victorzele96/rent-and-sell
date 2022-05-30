@@ -16,7 +16,7 @@ export const ReportsChart = (props) => {
   const data = {
     datasets: [
       {
-        backgroundColor: '#324cc2',
+        backgroundColor: '#3F51B5',
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,
@@ -26,7 +26,7 @@ export const ReportsChart = (props) => {
         maxBarThickness: 10
       },
       {
-        backgroundColor: '#c28132',
+        backgroundColor: '#E53935',
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,
@@ -36,7 +36,7 @@ export const ReportsChart = (props) => {
         maxBarThickness: 10
       },
       {
-        backgroundColor: '#c2bb32',
+        backgroundColor: '#FB8C00',
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,
