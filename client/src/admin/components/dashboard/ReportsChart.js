@@ -4,6 +4,13 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 export const ReportsChart = (props) => {
+  const week = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    week.push(`${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}`);
+  }
+
   const theme = useTheme();
 
   const data = {
@@ -39,7 +46,7 @@ export const ReportsChart = (props) => {
         maxBarThickness: 10
       },
     ],
-    labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 aug']
+    labels: week
   };
 
   const options = {
