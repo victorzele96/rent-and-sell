@@ -151,6 +151,7 @@ const PropertyItem = (props) => {
         }
       );
       props.onDelete(props.propertyId);
+      setDeleteState(false);
     } catch (err) {
       console.log(err.message);
     }
