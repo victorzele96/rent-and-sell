@@ -1,7 +1,7 @@
 import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import SellIcon from '@mui/icons-material/Sell';
 
-export const TotalProfit = (props) => (
+export const TotalSale = (props) => (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -15,13 +15,13 @@ export const TotalProfit = (props) => (
             gutterBottom
             variant="overline"
           >
-            TOTAL PROFIT
+            TOTAL SALE PROPERTIES
           </Typography>
           <Typography
             color="textPrimary"
             variant="h4"
           >
-            ₪23k
+            {props.properties.length}
           </Typography>
         </Grid>
         <Grid item>
@@ -32,7 +32,7 @@ export const TotalProfit = (props) => (
               width: 56
             }}
           >
-            <AttachMoneyIcon />
+            <SellIcon fontSize='small' />
           </Avatar>
         </Grid>
       </Grid>

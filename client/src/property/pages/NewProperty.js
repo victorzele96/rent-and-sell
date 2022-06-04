@@ -1,27 +1,25 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  Box,
   Container,
   Paper,
   Stepper,
   Step,
   StepLabel,
-  Button,
   Typography,
-  Alert,
   Backdrop,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
 import FileUpload from "../components/PropertyForm/FileUpload";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
 
-import { useHttpClient } from "../../shared/hooks/http-hook";
+import { useResponsive } from "../../shared/hooks/responsive-hook";
 
 import { AuthContext } from "../../shared/context/auth-context";
+import PropertyContext from "../../shared/context/property-context";
 
 import { makeStyles } from '@mui/styles';
 
@@ -38,78 +36,57 @@ const useStyles = makeStyles((theme) => ({
 
 const NewProperty = (props) => {
   const authCtx = useContext(AuthContext);
+  const propertyCtx = useContext(PropertyContext);
   const navigate = useNavigate();
-  const { isLoading, error, sendRequest } = useHttpClient();
   const [activeStep, setActiveStep] = useState(0);
   const [propertyData, setPropertyData] = useState({});
+
+  const { width } = useResponsive();
 
   const steps = ["Information", "Gallery", "Review"];
 
   const classes = useStyles();
 
-  const requestHandler = async () => {
-    try {
-      await sendRequest(
-        process.env.REACT_APP_BACK_URL + '/properties',
-        'POST',
-        JSON.stringify({
-          description: propertyData.description,
-          address: propertyData.address,
-          images: propertyData.images,
-          details: propertyData.details
-        }),
-        {
-          'Authorization': 'Bearer ' + authCtx.token,
-          'Content-Type': 'application/json'
-        },
-      );
+  useEffect(() => {
+    const data = JSON.parse(sessionStorage.getItem('new-property-state'));
+    setPropertyData(data);
+  }, []);
 
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const nextHandler = (errors) => {
+    if (!errors || errors.length === 0) {
+      if (activeStep === steps.length - 1) { // Submit
+        propertyCtx.createProperty(authCtx.token);
+        if (!propertyCtx.isLoading) {
+          setTimeout(() => {
+            navigate('/');
+          }, 2500);
+        }
+      }
+      if (!propertyCtx.isLoading) {
+        setActiveStep(activeStep + 1);
+      }
 
-  const nextHandler = () => {
-    setActiveStep(activeStep + 1);
-
-    // let images;
-    let paths;
-    try {
-      // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
-      paths = JSON.parse(window.sessionStorage.getItem("new-property-images-paths"));
-    } catch (e) {
-      console.log(e);
-    }
-
-    const property = {
-      ...JSON.parse(sessionStorage.getItem("new-property-state")),
-      images: paths
-    };
-
-    setPropertyData(property);
-
-    if (activeStep === steps.length - 1) { // Submit
-      console.log(propertyData);
-      // TODO: send data to backend server
-      requestHandler();
+    } else {
+      console.log(errors);
     }
   };
 
   const backHandler = () => {
-    setActiveStep(activeStep - 1);
+    if (activeStep === 0) {
+      navigate(-1);
+    } else {
+      setActiveStep(activeStep - 1);
+    }
   };
 
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <PropertyInfoForm />;
+        return <PropertyInfoForm onBackClick={backHandler} onNextClick={nextHandler} />;
       case 1:
-        return <FileUpload />;
+        return <FileUpload onBackClick={backHandler} onNextClick={nextHandler} />;
       case 2:
-        return <PropertyReview property={propertyData} />;
+        return <PropertyReview onBackClick={backHandler} onSubmitClick={nextHandler} property={propertyData} />;
       default:
         throw new Error("Unknown step");
     }
@@ -117,10 +94,10 @@ const NewProperty = (props) => {
 
   return (
     <>
-      {isLoading && (
+      {propertyCtx.isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading}
+          open={propertyCtx.isLoading}
         >
           <CircularProgress size={85} thickness={2.5} />
         </Backdrop>
@@ -136,45 +113,26 @@ const NewProperty = (props) => {
           <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
             {steps.map((label) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel>{width <= 375 ? '' : label}</StepLabel>
               </Step>
             ))}
           </Stepper>
           <>
-            {activeStep === steps.length ? (
+            {activeStep === steps.length && (
               <>
                 <Typography variant="h5" gutterBottom>
-                  Your post was added successfully.
+                  Your post was edited successfully.
                 </Typography>
                 <Typography variant="subtitle1"></Typography>
               </>
-            ) : (
+            )}
+            {activeStep !== steps.length && (
               <>
                 {getStepContent(activeStep)}
-                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: "2rem" }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={backHandler} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="contained"
-                    onClick={nextHandler}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
-                  </Button>
-                </Box>
               </>
             )}
           </>
         </Paper>
-        {error && (
-          <Box id="error-container" sx={{ marginTop: '20px' }}>
-            <Alert severity="error">{error}</Alert>
-          </Box>
-        )}
       </Container>
     </>
   );

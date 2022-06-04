@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
-
-import usePlacesAutocomplete from "use-places-autocomplete";
+import { useContext, useEffect, useState } from "react";
 
 import {
   Grid,
@@ -12,10 +10,9 @@ import {
   Select,
   ToggleButton,
   ToggleButtonGroup,
-  Autocomplete,
-  Alert,
+  Button,
   Box,
-  Button
+  Alert
 } from '@mui/material';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
@@ -25,60 +22,14 @@ import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
 import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
-import PropertyContext from '../../../shared/context/property-context';
+import PropertyContext from "../../../shared/context/property-context";
 
-const initialPropertyState = {
-  description: '',
-  address: '',
-  images: [],
-  details: {
-    listing_status: "rent",
-    price: 0,
-    renovated: false,
-    rooms_num: 0,
-    room_size: 0,
-    property_type: "house",
-    stories: 0,
-    floor: 0,
-    parking: false,
-    accessiblity: false,
-    natural_illumination: false,
-    pets: false,
-    park: false,
-    public_transport: false,
-    public_institutes: false,
-    contact: ''
-  },
-  creator: ''
-};
-
-const PropertyInfoForm = (props) => {
+const EditForm = (props) => {
   const propertyCtx = useContext(PropertyContext);
-  const [propertyState, setPropertyState] = useState(initialPropertyState);
+  const [propertyState, setPropertyState] = useState(JSON.parse(sessionStorage.getItem('edit-property')));
   const [selectedArray, setSelectedArray] = useState([]); // radio buttons
-  const [selectedValue, setSelectedValue] = useState(""); // address
   const [errors, setError] = useState([]);
   const [isValid, setIsValid] = useState(false);
-
-  const {
-    // eslint-disable-next-line
-    value,
-    suggestions: { status, data },
-    setValue,
-  } = usePlacesAutocomplete();
-
-  const autocompleteChangeHandler = (event) => {
-    setValue(event.target.value);
-  };
-
-  const selectChangeHandler = (event, value) => {
-    setSelectedValue(value);
-    changeHandler(event);
-  };
-
-  const relevantDataSet = {
-    options: status === 'OK' ? data.map(({ description }) => description) : [],
-  };
 
   const listingStatusChangeHandler = (event) => {
     setPropertyState(prevState => ({
@@ -132,13 +83,6 @@ const PropertyInfoForm = (props) => {
         // eslint-disable-next-line
         for (const [key2, value2] of Object.entries(propertyState.details)) {
           if (key2 === event.target.name) {
-            if (key2 === 'address') {
-              if (event.target.value === '' || !relevantDataSet.options.includes(event.target.value)) {
-                createError(`${key2} must be legit address (google format)!`);
-              } else {
-                clearError(key2);
-              }
-            }
             if (key2 === 'contact') {
               // eslint-disable-next-line
               if (event.target.value === '' || !/^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(event.target.value)) {
@@ -148,8 +92,8 @@ const PropertyInfoForm = (props) => {
               }
             }
             if (key2 === 'stories' || key2 === 'floor' || key2 === 'price' || key2 === 'rooms_num' || key2 === 'room_size') {
-              if (event.target.value <= 0) {
-                createError(`${key2} can not be less than 1!`);
+              if (event.target.value === '0' || event.target.value === 0) {
+                createError(`${key2} can not be 0!`);
               } else {
                 clearError(key2);
               }
@@ -193,16 +137,12 @@ const PropertyInfoForm = (props) => {
         }
       }
     }
-    if (relevantDataSet.options.includes(selectedValue)) {
-      setPropertyState(prevState => ({ ...prevState, address: selectedValue }));
-      propertyCtx.setPropertyForm(prevState => ({ ...prevState, address: selectedValue }));
-    }
   };
 
   useEffect(() => {
-    sessionStorage.setItem("new-property-state", JSON.stringify(propertyState));
+    window.sessionStorage.setItem("new-edit-property", JSON.stringify(propertyState));
     propertyCtx.setPropertyForm(propertyState);
-  }, [propertyState, selectedValue]);
+  }, [propertyState]);
 
   useEffect(() => {
     setIsValid(
@@ -211,13 +151,12 @@ const PropertyInfoForm = (props) => {
       propertyState.details.room_size > 0 &&
       ((propertyState.details.property_type === 'house' && propertyState.details.stories > 0) ||
         (propertyState.details.property_type === 'apartment' && propertyState.details.floor > 0)) &&
-      selectedValue !== '' && relevantDataSet.options.includes(selectedValue) &&
       errors.length === 0 &&
       propertyState.description.length >= 5 &&
       /^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(propertyState.details.contact) &&
       propertyState.details.contact !== ''
     );
-  }, [propertyState, errors, relevantDataSet, selectedValue]);
+  }, [propertyState, errors]);
 
   return (
     <>
@@ -270,6 +209,7 @@ const PropertyInfoForm = (props) => {
               fullWidth
               variant="standard"
               onChange={changeHandler}
+              value={propertyState.details.stories || ''}
             />
           </Grid>
         )}
@@ -284,6 +224,7 @@ const PropertyInfoForm = (props) => {
               fullWidth
               variant="standard"
               onChange={changeHandler}
+              value={propertyState.details.floor || ''}
             />
           </Grid>
         )}
@@ -297,6 +238,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.price || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -309,6 +251,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.rooms_num || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -321,25 +264,7 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Autocomplete
-            popupIcon={null}
-            onChange={selectChangeHandler}
-            {...relevantDataSet}
-            id="address"
-            blurOnSelect
-            renderInput={(params) => (
-              <>
-                <TextField
-                  onChange={autocompleteChangeHandler}
-                  {...params}
-                  variant="standard"
-                  label="Address"
-                />
-              </>
-            )}
+            value={propertyState.details.room_size || 0}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -351,18 +276,20 @@ const PropertyInfoForm = (props) => {
             fullWidth
             variant="standard"
             onChange={changeHandler}
+            value={propertyState.details.contact || ''}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="description"
             name="description"
-            label="description"
+            label="Description"
             multiline
             rows={3}
             fullWidth
             inputProps={{ maxLength: 500 }}
             onChange={changeHandler}
+            value={propertyState.description || ''}
           />
         </Grid>
         <Grid item xs={12} />
@@ -504,6 +431,5 @@ const PropertyInfoForm = (props) => {
       </Grid>
     </>
   );
-};
-
-export default PropertyInfoForm;
+}
+export default EditForm;

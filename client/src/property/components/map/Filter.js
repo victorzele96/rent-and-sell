@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
-  Button,
-  Card,
-  CardContent,
-  Container,
+  IconButton,
+  Drawer,
   TextField,
-  ToggleButton
+  ToggleButton,
+  Box,
+  Divider,
+  Typography,
+  Button,
 } from '@mui/material';
+
+import { useResponsive } from '../../../shared/hooks/responsive-hook';
 
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -17,44 +21,50 @@ import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import SellIcon from '@mui/icons-material/Sell';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import { makeStyles } from '@mui/styles';
 
+import { styled, useTheme } from '@mui/material/styles';
+
 const useStyles = makeStyles((theme) => ({
-  container: {
-    "overflow-y": "scroll",
-    maxHeight: "350px",
-    paddingBottom: "15px"
+  filter: {
+    zIndex: 1,
+    position: 'fixed',
+    left: 0,
+    top: 0,
+    marginLeft: '0.5rem',
+    marginTop: '15rem',
   },
-  filterCard: {
-    alignItems: "center",
-    paddingBottom: "50px",
-    marginTop: "15px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)"
+  closedFilter: {
+    width: '58px',
+    height: '40px',
   },
-  filterCardContent: {
-    "overflow": "hidden",
-    textAlign: "center"
+  filterBtnContainer: {
+    position: 'absolute',
   },
   filterItem: {
     marginTop: "5px",
     marginBottom: "5px",
-    btn: {
-      "border-radius": "0%",
-      "justify-content": "start"
-    }
+  },
+  headerTitle: {
+    float: 'left',
+    marginTop: 5
+  },
+  headerBtn: {
+    float: 'right',
   },
   reset: {
     marginTop: "15px",
     paddingLeft: "15%",
     paddingRight: "15%",
+    width: "100px",
   }
 }));
 
 const initialFilterState = {
-  address: "",
-  street: "",
-  city: "",
   rooms_num: 0,
   listing_status: 'sale',
   renovated: false,
@@ -67,11 +77,26 @@ const initialFilterState = {
   public_institutes: false,
 };
 
-const Filter = (porps) => {
-  const classes = useStyles();
+const DrawerHeader = styled('div')(({ theme }) => ({
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+}));
 
-  // const [query, setQuery] = useState("");
-  // const [searchParam] = useState(["title", "address"]);
+const Filter = (props) => {
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+
+  const { height } = useResponsive();
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const classes = useStyles();
 
   const [filterState, setFilterState] = useState(initialFilterState);
 
@@ -91,7 +116,6 @@ const Filter = (porps) => {
         if (typeof value === "boolean") {
           newFilterState[key] = !value;
         } else {
-          console.log(event.target.name)
           newFilterState[key] = event.target.value;
         }
       };
@@ -101,46 +125,17 @@ const Filter = (porps) => {
     }
   };
 
-  useEffect(() => {
-    console.log(filterState);
-  }, [filterState]);
-
   const resetHandler = () => {
     setFilterState(initialFilterState);
+    props.onReset();
   };
 
-  const content = (
+  const filterHandler = () => {
+    props.onFilter(filterState);
+  };
+
+  const filterContent = (
     <>
-      <TextField
-        id="address"
-        name="address"
-        label="Address"
-        fullWidth
-        variant="standard"
-        onChange={changeHandler}
-        className={classes.filterItem}
-        value={filterState.address}
-      />
-      <TextField
-        id="street"
-        name="street"
-        label="Street"
-        fullWidth
-        variant="standard"
-        onChange={changeHandler}
-        className={classes.filterItem}
-        value={filterState.street}
-      />
-      <TextField
-        id="city"
-        name="city"
-        label="City"
-        fullWidth
-        variant="standard"
-        onChange={changeHandler}
-        className={classes.filterItem}
-        value={filterState.city}
-      />
       <TextField
         id="rooms_num"
         name="rooms_num"
@@ -148,9 +143,10 @@ const Filter = (porps) => {
         fullWidth
         variant="standard"
         onChange={changeHandler}
-        className={classes.filterItem}
+        className={`disableInputArrows ${classes.filterItem}`}
         value={filterState.rooms_num}
         type="number"
+        onWheel={(event) => { event.target.blur() }}
       />
       <ToggleButton
         color="primary"
@@ -260,25 +256,97 @@ const Filter = (porps) => {
         <ConstructionIcon sx={{ mr: 2 }} />
         Renovated
       </ToggleButton>
+      <Box sx={{ textAlign: 'center' }}>
+        <Button
+          variant="contained"
+          onClick={resetHandler}
+          className={classes.reset}
+        >
+          Reset
+        </Button>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <Button
+          variant="contained"
+          onClick={filterHandler}
+          className={classes.reset}
+        >
+          Filter
+        </Button>
+      </Box>
     </>
   );
 
-  return (
-    <Container maxWidth={false} className={classes.container}>
-      <Card className={classes.filterCard}>
-        <CardContent className={classes.filterCardContent}>
-          {content}
-          <Button
-            variant="contained"
-            onClick={resetHandler}
-            className={classes.reset}
-          >
-            Reset
-          </Button>
-        </CardContent>
-      </Card>
-    </Container>
-  );
-};
+  const getMaxHeight = () => {
+    if (height <= 667) {
+      return '240px';
+    }
+    if (height <= 750) {
+      return '270px';
+    }
+    if (height <= 800) {
+      return '350px';
+    }
+    if (height <= 900) {
+      return '400px';
+    }
+    if (height > 900) {
+      return '500px';
+    }
 
+  };
+
+  return (
+    <div className={`${classes.filter} ${!open ? classes.closedFilter : ''}`}>
+      <div className={classes.filterBtnContainer}>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          edge="start"
+          sx={{ ml: 0.25, mr: 2, ...(open && { display: 'none' }) }}
+        >
+          <ArrowForwardIosIcon />
+        </IconButton>
+      </div>
+      <Box>
+        <Drawer
+          sx={{
+            width: open ? 240 : '58px',
+            height: open ? '100%' : '100%',
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: 240,
+              boxSizing: 'border-box',
+              position: 'unset',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              borderRadius: '4px',
+              padding: '1rem',
+              overflowY: 'scroll',
+              maxHeight: open ? getMaxHeight() : '40px'
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <div className={classes.headerTitle}>
+              <Typography variant="h6">
+                Filter
+              </Typography>
+            </div>
+            <div className={classes.headerBtn}>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            </div>
+          </DrawerHeader>
+          <Divider sx={{ my: 1 }} />
+          {filterContent}
+        </Drawer>
+      </Box>
+    </div>
+  );
+}
 export default Filter;

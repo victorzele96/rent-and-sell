@@ -3,17 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 //? User
 import Navbar from './shared/components/Navigation/Navbar';
-// import Favorites from './property/pages/Favorites';
-// import Chats from './chats/pages/Chats';
-// import NewProperty from './property/pages/NewProperty';
-// import MyProperties from './property/pages/MyProperties';
-// import ShowProperty from './property/pages/ShowProperty';
 import AllProperties from './property/pages/AllProperties';
-// import Auth from './users/pages/Auth';
 //?
 //! Admin
-// import Dashboard from './admin/pages/Dashboard';
-// import Users from './admin/pages/Users';
 import { DashboardNavbar } from './admin/components/DashboardNavbar';
 import { DashboardSidebar } from './admin/components/DashboardSidebar';
 //!
@@ -30,6 +22,7 @@ import { CssBaseline } from '@mui/material';
 const Favorites = lazy(() => import('./property/pages/Favorites'));
 const Chats = lazy(() => import('./chats/pages/Chats'));
 const NewProperty = lazy(() => import('./property/pages/NewProperty'));
+const EditProperty = lazy(() => import('./property/pages/EditProperty'));
 const MyProperties = lazy(() => import('./property/pages/MyProperties'));
 const ShowProperty = lazy(() => import('./property/pages/ShowProperty'));
 const Auth = lazy(() => import('./users/pages/Auth'));
@@ -54,6 +47,7 @@ const App = () => {
             <Route exact path={"/favorites"} element={<Favorites tagId="main-content" />} />
             <Route exact path={"/chats"} element={<Chats tagId="main-content" />} />
             <Route exact path={"/add-property"} element={<NewProperty tagId="main-content" />} />
+            <Route exact path={"/edit-property/:propertyId"} element={<EditProperty tagId="main-content" />} />
             <Route exact path={"/my-properties"} element={<MyProperties tagId="main-content" />} />
           </>
         )}
@@ -69,6 +63,7 @@ const App = () => {
         {/* Admin routes */}
         <Route exact path={'/dashboard'} element={<Dashboard tagId="main-content" />} />
         <Route exact path={'/dashboard/users'} element={<Users tagId="main-content" />} />
+        <Route path='*' element={<Navigate replace to='/dashboard' />} />
       </Routes>
     </>
   );

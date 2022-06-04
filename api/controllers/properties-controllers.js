@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const { validationResult } = require("express-validator");
 
-const HttpError = require("../models/http-error");
+const cloudinary = require("../util/cloudinary");
 const getCoordsForAddress = require('../util/location');
+const getPublicIds = require('../util/public-id');
+
+const HttpError = require("../models/http-error");
 const Property = require('../models/property');
 const User = require('../models/user');
 
@@ -76,7 +79,6 @@ const createProperty = async (req, res, next) => {
   let coordsAndAddress;
   try {
     coordsAndAddress = await getCoordsForAddress(address);
-    console.log(coordsAndAddress)
   } catch (err) {
     return next(err);
   }
@@ -88,6 +90,8 @@ const createProperty = async (req, res, next) => {
     creator: req.userData.userId,
     location: coordsAndAddress.coordinates,
     details,
+    reports: [],
+    ratings: [],
   });
 
   let user;
@@ -133,7 +137,7 @@ const updateProperty = async (req, res, next) => {
     );
   }
 
-  const { description, images, details } = req.body;
+  const { description, images, details, imgsToDelete } = req.body;
   const {
     listing_status, price, rooms_num, room_size,
     floor, stories, renovated, parking, accessiblity,
@@ -151,10 +155,18 @@ const updateProperty = async (req, res, next) => {
     );
   }
 
-  if (property.creator.id.toString() !== req.userData.userId) {
+  if (property.creator.toString() !== req.userData.userId) {
     return next(
       new HttpError('You are not allowed to edit this property.', 401)
     );
+  }
+
+  const public_ids = getPublicIds(imgsToDelete);
+
+  try {
+    public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+  } catch (err) {
+    console.log(err);
   }
 
   property.description = description;
@@ -193,7 +205,7 @@ const deleteProperty = async (req, res, next) => {
   try {
     property = await Property.findById(propertyId).populate('creator');
   } catch (err) {
-    return (
+    return next(
       new HttpError('Something went wrong, could not delete property.', 500)
     );
   }
@@ -210,7 +222,11 @@ const deleteProperty = async (req, res, next) => {
     );
   }
 
+  const public_ids = getPublicIds(property.images);
+
   try {
+    public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await property.remove({ session: sess });
@@ -218,7 +234,7 @@ const deleteProperty = async (req, res, next) => {
     await property.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    return (
+    return next(
       new HttpError('Something went wrong, could not delete property.', 500)
     );
   }
@@ -226,9 +242,115 @@ const deleteProperty = async (req, res, next) => {
   res.status(200).json({ message: 'The property was successfully deleted.', propertyId: propertyId });
 };
 
-exports.getPropertyById = getPropertyById;
-exports.getPropertiesByUserId = getPropertiesByUserId;
-exports.getAllProperties = getAllProperties;
-exports.createProperty = createProperty;
-exports.updateProperty = updateProperty;
-exports.deleteProperty = deleteProperty;
+const reportProperty = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const { userReport } = req.body;
+  const propertyId = req.params.pid;
+  const userId = req.params.uid;
+
+  let property;
+  try {
+    property = await Property.findById(propertyId);
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not report property.', 500)
+    );
+  }
+
+  if (property.creator.toString() === userId) {
+    return next(
+      new HttpError('You can not to report your own property.', 500)
+    );
+  }
+
+  const index = property.reports.findIndex(item => item.userId.toString() === userId);
+  let reports;
+  if (index === -1) {
+    reports = [...property.reports];
+    reports.push({ report: userReport, userId });
+  } else {
+    return next(
+      new HttpError('You have already reported this property.', 500)
+    );
+  }
+
+  property.reports = reports;
+
+  try {
+    await property.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not report property.', 500)
+    );
+  }
+
+  res.status(200).json({ property: property });
+};
+
+const rateProperty = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const { userRating } = req.body;
+  const propertyId = req.params.pid;
+  const userId = req.params.uid;
+
+  let property;
+  try {
+    property = await Property.findById(propertyId);
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not rate property.', 500)
+    );
+  }
+
+  if (property.creator.toString() === userId) {
+    return next(
+      new HttpError('You can not to rate your own property.', 500)
+    );
+  }
+
+  const index = property.ratings.findIndex(item => item.userId.toString() === userId);
+
+  let ratings;
+  ratings = [...property.ratings];
+  if (index !== -1) {
+    ratings.splice(index, 1);
+  }
+  ratings.push({ userRating, userId });
+
+  property.ratings = ratings;
+
+  try {
+    await property.save();
+  } catch (err) {
+    return next(
+      new HttpError('Something went wrong, could not rate property.', 500)
+    );
+  }
+
+  res.status(200).json({ property: property });
+};
+
+module.exports = {
+  getPropertyById,
+  getPropertiesByUserId,
+  getAllProperties,
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  reportProperty,
+  rateProperty,
+};
