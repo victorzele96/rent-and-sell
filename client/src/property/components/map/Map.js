@@ -79,6 +79,7 @@ const Map = (props) => {
     setLoadedProperties(props.properties);
     mapRef.current.panTo(INITIAL_MAP_CONFIG.center);
     mapRef.current.setZoom(INITIAL_MAP_CONFIG.zoom);
+    setSearchValue(null);
   };
 
   useEffect(() => {
