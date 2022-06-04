@@ -61,8 +61,6 @@ import SellIcon from "@mui/icons-material/Sell"; //מחירה
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ParkIcon from "@mui/icons-material/Park";
 
-import image from "../../static/images/types-of-homes-hero.png";
-
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -83,9 +81,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "1rem",
   },
   btn: {
-    width: "80px",
-    marginLeft: 10,
-    marginRight: 10
+    width: "70px",
+    marginLeft: 5,
+    marginRight: 5,
+    paddingRight: '8px',
+    paddingLeft: '8px'
   },
   btnBox: {
     width: "100%",

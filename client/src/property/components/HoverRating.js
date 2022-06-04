@@ -8,6 +8,7 @@ import { Rating, Box } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
 const labels = {
+  0: "Not Rated",
   1: "Not recommended",
   2: "Disappointing",
   3: "Ok",
