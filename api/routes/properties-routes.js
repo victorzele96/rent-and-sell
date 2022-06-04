@@ -5,7 +5,7 @@ const router = express.Router();
 
 const propertiesControllers = require('../controllers/properties-controllers');
 
-const checkAuth = require('../middleware/check-auth');
+const { userAuth } = require('../middleware/check-auth');
 
 router.get('/user/:uid', propertiesControllers.getPropertiesByUserId);
 
@@ -13,7 +13,7 @@ router.get('/:pid', propertiesControllers.getPropertyById);
 
 router.get('/', propertiesControllers.getAllProperties);
 
-router.use(checkAuth);
+router.use(userAuth);
 
 router.post(
   '/',
@@ -62,5 +62,15 @@ router.patch(
 );
 
 router.delete('/:pid', propertiesControllers.deleteProperty);
+
+router.patch('/report/:pid/:uid', [
+  check('userReport').isIn(['Spam', 'Wrong Information', 'Offensive']),
+],
+  propertiesControllers.reportProperty);
+
+router.patch('/rate/:pid/:uid', [
+  check('userRating').isInt({ min: 1, max: 5 }),
+],
+  propertiesControllers.rateProperty);
 
 module.exports = router;

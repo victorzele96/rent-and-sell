@@ -1,0 +1,18 @@
+import { useState, useEffect } from "react";
+
+export const useResponsive = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    }
+
+    window.addEventListener("resize", handleWindowResize);
+    return () => window.removeEventListener("resize", handleWindowResize);
+  }, []);
+
+  return { width, height };
+};

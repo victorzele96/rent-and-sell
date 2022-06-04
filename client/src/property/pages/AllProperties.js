@@ -1,13 +1,16 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
+
+import PropertyContext from "../../shared/context/property-context";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import List from "../components/List";
-import Map from "../components/Map";
+import List from "../components/list/List";
+import Map from "../components/map/Map";
 
 const AllProperties = (props) => {
   const [loadedProperties, setLoadedProperties] = useState([]);
   const { isLoading, sendRequest } = useHttpClient();
+  const propertyCtx = useContext(PropertyContext);
 
   const loadProperties = useCallback(async () => {
     let url = process.env.REACT_APP_BACK_URL + '/properties';
@@ -43,6 +46,10 @@ const AllProperties = (props) => {
   useEffect(() => {
     loadProperties();
   }, [loadProperties]);
+
+  useEffect(() => {
+    propertyCtx.addProperty(loadedProperties);
+  }, [loadedProperties]);
 
   return (
     <>

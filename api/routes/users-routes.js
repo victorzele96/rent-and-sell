@@ -5,6 +5,8 @@ const router = express.Router();
 
 const usersControllers = require('../controllers/users-controllers');
 
+const { adminAuth } = require('../middleware/check-auth');
+
 router.get('/', usersControllers.getUsers);
 
 router.post(
@@ -25,5 +27,17 @@ router.post(
 );
 
 router.post('/signin', usersControllers.signin);
+
+router.use(adminAuth);
+
+router.patch('/:uid',
+  [
+    check('firstName').notEmpty(),
+    check('lastName').notEmpty(),
+    check('email').normalizeEmail().isEmail(),
+  ],
+  usersControllers.updateUser);
+
+router.delete('/:uid', usersControllers.deleteUser);
 
 module.exports = router;

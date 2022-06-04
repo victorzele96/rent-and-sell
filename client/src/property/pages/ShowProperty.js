@@ -1,22 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { Container } from "@mui/material";
-
-import List from '../../property/components/List';
+import List from '../../property/components/list/List';
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
-
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    width: "fit-content",
-    blockSize: "fit-content",
-    marginTop: "5vh",
-    textAlign: "left",
-  }
-}));
 
 const ShowProperty = (props) => {
   const { propertyId } = useParams();
@@ -59,18 +46,14 @@ const ShowProperty = (props) => {
     loadProperties();
   }, [loadProperties]);
 
-  const classes = useStyles();
-
   return (
-    <Container id={props.tagId} className={classes.container}>
-      <List
-        load='by-property-id'
-        tagId={props.tagId}
-        onDelete={deletePropertyHandler}
-        isLoading={isLoading}
-        properties={loadedProperties}
-      />
-    </Container>
+    <List
+      load='by-property-id'
+      tagId={props.tagId}
+      onDelete={deletePropertyHandler}
+      isLoading={isLoading}
+      properties={loadedProperties}
+    />
   )
 }
 

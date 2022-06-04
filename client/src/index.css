@@ -7,7 +7,7 @@ body {
 }
 
 #main-content {
-  margin-top: 100px;
+  margin-top: 160px;
 }
 
 .list-div {
@@ -30,20 +30,36 @@ body {
   height: 1040px;
 }
 
-/* @media screen and (min-width: 800px) {
-  ::-webkit-scrollbar {
-    width: 20px;
-  }
+::-webkit-scrollbar {
+  width: 5px;
+}
 
-  ::-webkit-scrollbar-track {
-    background-color: #e4e4e4;
-    border-radius: 100px;
-  }
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
 
-  ::-webkit-scrollbar-thumb {
-    border-radius: 100px;
-    border: 4.5px solid transparent;
-    background-clip: content-box;
-    background-color: #1976d2b9;
-  }
-} */
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.disableInputArrows input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.disableInputArrows input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.disableInputArrows input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

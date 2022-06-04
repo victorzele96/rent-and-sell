@@ -16,37 +16,35 @@ import {
   Badge
 } from '@mui/material';
 
-import Filter from './Filter';
-
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import StoreIcon from '@mui/icons-material/Store';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Menu } from '../../../admin/icons/menu';
 
-import { styled } from '@mui/material/styles';
+import { styled, makeStyles } from '@mui/styles';
 
-import classes from './LeftDrawer.module.css';
+const useStyles = makeStyles((theme) => ({
+  drawer: {
+    overflow: '-moz-hidden-unscrollable'
+  }
+}));
 
 const LeftDrawer = () => {
   const authCtx = useContext(AuthContext);
   const favoritesCtx = useContext(FavoritesContext);
   const [drawerstate, setDrawerState] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+
+  const classes = useStyles();
 
   const signoutHandler = () => {
     authCtx.signout();
     setDrawerState(false);
   };
-
-  const handleExpandClick = () => setExpanded(prevState => !prevState);
 
   const toggleDrawer = (anchor, open) => (event) => {
     /* 
@@ -74,22 +72,10 @@ const LeftDrawer = () => {
     setDrawerState(prevState => !prevState);
   };
 
-  const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));
-
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -15,
       top: 13,
-      border: `2px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
     },
   }));
@@ -99,11 +85,12 @@ const LeftDrawer = () => {
       className={classes.drawer}
       role="presentation"
       onKeyDown={toggleDrawer(anchor, false)}
+      sx={{ width: "265px" }}
     >
       <List>
         <ListItem style={{ margin: "auto", display: "inline-block" }} >
           <ListItemIcon />
-          <DeployAvatar type="sidebar" fname={authCtx.user ? authCtx.user.firstName : "Dear"} lname={authCtx.user ? authCtx.user.lastName : "Guest"} />
+          <DeployAvatar type="sidebar" fname={authCtx.user ? authCtx.user.firstName.toUpperCase() : "Dear"} lname={authCtx.user ? authCtx.user.lastName.toUpperCase() : "Guest"} />
         </ListItem>
         {!authCtx.user ? ( //change to state!!!!
           <ListItem
@@ -161,26 +148,6 @@ const LeftDrawer = () => {
           </div>
         </>
       )}
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemIcon>
-            <FilterAltIcon />
-          </ListItemIcon>
-          <ListItemText primary="Filter" />
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </ListItem>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Filter />
-        </Collapse>
-      </List>
     </Box>
   );
 
@@ -189,11 +156,8 @@ const LeftDrawer = () => {
       <React.Fragment key={'right'}>
         <IconButton
           onClick={toggleDrawer()}
-          className={classes.menueBtn}
         >
-          <Menu
-          // fontSize="large"
-          />
+          <Menu sx={{ fontSize: '2.3rem', color: 'white' }} />
         </IconButton>
         <Drawer
           anchor={'left'}
