@@ -36,6 +36,7 @@ import FavoritesContext from "../../shared/context/favorites-context";
 import { AuthContext } from "../../shared/context/auth-context";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import { useResponsive } from "../../shared/hooks/responsive-hook";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -65,7 +66,6 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 700,
     marginBottom: "40px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)",
   },
@@ -113,6 +113,7 @@ const PropertyItem = (props) => {
 
   const { isLoading, sendRequest } = useHttpClient();
   const navigate = useNavigate();
+  const { width } = useResponsive();
 
   const classes = useStyles();
 
@@ -304,6 +305,18 @@ const PropertyItem = (props) => {
     }
   }, [props.propertyRate, props.preview]);
 
+  const getWidth = () => {
+    if (width <= 425) {
+      return width * 0.97;
+    }
+    if (width > 425 && width <= 768) {
+      return width * 0.8;
+    }
+    if (width > 768) {
+      return 700;
+    }
+  };
+
   return (
     <>
       {menuOption === 0 && (
@@ -311,12 +324,12 @@ const PropertyItem = (props) => {
           <Report propertyId={props.propertyId} onClose={closeModalHandler} />
         </>
       )}
-      <Card className={classes.root}>
+      <Card className={classes.root} sx={{ width: getWidth() }}>
         <CardHeader
           avatar={<DeployAvatar type="list" fname="arie" lname="fishman" />}
           action={
             <>
-              {authCtx.user && authCtx.user.userId.toString() !== props.property.creator.toString() && (
+              {(authCtx.user && authCtx.user.userId.toString() !== props.property.creator.toString() && !props.preview) && (
                 <IconButton
                   aria-label="more"
                   id="more-button"
@@ -355,8 +368,9 @@ const PropertyItem = (props) => {
         />
         <CardMedia //card image
           component="img"
-          height="auto"
-          src={image}
+          height='250px'
+          sx={{ objectFit: 'cover' }}
+          src={props.property.images[0]}
           alt="property image"
         />
         <CardContent>

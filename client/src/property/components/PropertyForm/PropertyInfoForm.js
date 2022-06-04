@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import usePlacesAutocomplete from "use-places-autocomplete";
 
@@ -25,6 +25,7 @@ import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
 import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
+import PropertyContext from '../../../shared/context/property-context';
 
 const initialPropertyState = {
   description: '',
@@ -52,10 +53,12 @@ const initialPropertyState = {
 };
 
 const PropertyInfoForm = (props) => {
+  const propertyCtx = useContext(PropertyContext);
   const [propertyState, setPropertyState] = useState(initialPropertyState);
   const [selectedArray, setSelectedArray] = useState([]); // radio buttons
   const [selectedValue, setSelectedValue] = useState(""); // address
   const [errors, setError] = useState([]);
+  const [isValid, setIsValid] = useState(false);
 
   const {
     // eslint-disable-next-line
@@ -130,7 +133,7 @@ const PropertyInfoForm = (props) => {
         for (const [key2, value2] of Object.entries(propertyState.details)) {
           if (key2 === event.target.name) {
             if (key2 === 'address') {
-              if (event.target.value === '' || relevantDataSet.includes(event.target.value)) {
+              if (event.target.value === '' || !relevantDataSet.options.includes(event.target.value)) {
                 createError(`${key2} must be legit address (google format)!`);
               } else {
                 clearError(key2);
@@ -145,8 +148,8 @@ const PropertyInfoForm = (props) => {
               }
             }
             if (key2 === 'stories' || key2 === 'floor' || key2 === 'price' || key2 === 'rooms_num' || key2 === 'room_size') {
-              if (event.target.value === '0' || event.target.value === 0) {
-                createError(`${key2} can not be 0!`);
+              if (event.target.value <= 0) {
+                createError(`${key2} can not be less than 1!`);
               } else {
                 clearError(key2);
               }
@@ -157,8 +160,18 @@ const PropertyInfoForm = (props) => {
                   ...prevState[key1], [key2]: !prevState[key1][key2]
                 }
               }));
+              propertyCtx.setPropertyForm(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: !prevState[key1][key2]
+                }
+              }));
             } else {
               setPropertyState(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: event.target.value
+                }
+              }));
+              propertyCtx.setPropertyForm(prevState => ({
                 ...prevState, [key1]: {
                   ...prevState[key1], [key2]: event.target.value
                 }
@@ -176,17 +189,35 @@ const PropertyInfoForm = (props) => {
             }
           }
           setPropertyState(prevState => ({ ...prevState, [key1]: event.target.value }));
+          propertyCtx.setPropertyForm(prevState => ({ ...prevState, [key1]: event.target.value }));
         }
       }
     }
     if (relevantDataSet.options.includes(selectedValue)) {
       setPropertyState(prevState => ({ ...prevState, address: selectedValue }));
+      propertyCtx.setPropertyForm(prevState => ({ ...prevState, address: selectedValue }));
     }
   };
 
   useEffect(() => {
     sessionStorage.setItem("new-property-state", JSON.stringify(propertyState));
+    propertyCtx.setPropertyForm(propertyState);
   }, [propertyState, selectedValue]);
+
+  useEffect(() => {
+    setIsValid(
+      propertyState.details.price > 0 &&
+      propertyState.details.rooms_num > 0 &&
+      propertyState.details.room_size > 0 &&
+      ((propertyState.details.property_type === 'house' && propertyState.details.stories > 0) ||
+        (propertyState.details.property_type === 'apartment' && propertyState.details.floor > 0)) &&
+      selectedValue !== '' && relevantDataSet.options.includes(selectedValue) &&
+      errors.length === 0 &&
+      propertyState.description.length >= 5 &&
+      /^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(propertyState.details.contact) &&
+      propertyState.details.contact !== ''
+    );
+  }, [propertyState, errors, relevantDataSet, selectedValue]);
 
   return (
     <>
@@ -453,7 +484,7 @@ const PropertyInfoForm = (props) => {
               variant="contained"
               onClick={nextHandler}
               sx={{ ml: 1 }}
-              disabled={errors.length > 0}
+              disabled={!isValid}
             >
               Next
             </Button>

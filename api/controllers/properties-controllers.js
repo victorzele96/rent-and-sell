@@ -76,7 +76,6 @@ const createProperty = async (req, res, next) => {
   let coordsAndAddress;
   try {
     coordsAndAddress = await getCoordsForAddress(address);
-    console.log(coordsAndAddress)
   } catch (err) {
     return next(err);
   }
