@@ -9,17 +9,17 @@ import {
   StepLabel,
   Typography,
   Backdrop,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import PropertyInfoForm from "../components/PropertyForm/PropertyInfoForm";
 import FileUpload from "../components/PropertyForm/FileUpload";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
 
-import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useResponsive } from "../../shared/hooks/responsive-hook";
 
 import { AuthContext } from "../../shared/context/auth-context";
+import PropertyContext from "../../shared/context/property-context";
 
 import { makeStyles } from '@mui/styles';
 
@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
 
 const NewProperty = (props) => {
   const authCtx = useContext(AuthContext);
+  const propertyCtx = useContext(PropertyContext);
   const navigate = useNavigate();
-  const { isLoading, sendRequest } = useHttpClient();
   const [activeStep, setActiveStep] = useState(0);
   const [propertyData, setPropertyData] = useState({});
 
@@ -47,31 +47,6 @@ const NewProperty = (props) => {
 
   const classes = useStyles();
 
-  const requestHandler = async () => {
-    try {
-      await sendRequest(
-        process.env.REACT_APP_BACK_URL + '/properties',
-        'POST',
-        JSON.stringify({
-          description: propertyData.description,
-          address: propertyData.address,
-          images: propertyData.images,
-          details: propertyData.details
-        }),
-        {
-          'Authorization': 'Bearer ' + authCtx.token,
-          'Content-Type': 'application/json'
-        },
-      );
-
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
     const data = JSON.parse(sessionStorage.getItem('new-property-state'));
     setPropertyData(data);
@@ -79,28 +54,18 @@ const NewProperty = (props) => {
 
   const nextHandler = (errors) => {
     if (!errors || errors.length === 0) {
-      setActiveStep(activeStep + 1);
-
-      // let images;
-      let paths;
-      try {
-        // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
-        paths = JSON.parse(sessionStorage.getItem("new-property-images-paths"));
-      } catch (e) {
-        console.log(e);
-      }
-
-      const property = {
-        ...JSON.parse(sessionStorage.getItem("new-property-state")),
-        images: paths
-      };
-
-      setPropertyData(property);
-
       if (activeStep === steps.length - 1) { // Submit
-        console.log(propertyData);
-        requestHandler();
+        propertyCtx.createProperty(authCtx.token);
+        if (!propertyCtx.isLoading) {
+          setTimeout(() => {
+            navigate('/');
+          }, 2500);
+        }
       }
+      if (!propertyCtx.isLoading) {
+        setActiveStep(activeStep + 1);
+      }
+
     } else {
       console.log(errors);
     }
@@ -129,10 +94,10 @@ const NewProperty = (props) => {
 
   return (
     <>
-      {isLoading && (
+      {propertyCtx.isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading}
+          open={propertyCtx.isLoading}
         >
           <CircularProgress size={85} thickness={2.5} />
         </Backdrop>
@@ -153,14 +118,15 @@ const NewProperty = (props) => {
             ))}
           </Stepper>
           <>
-            {activeStep === steps.length ? (
+            {activeStep === steps.length && (
               <>
                 <Typography variant="h5" gutterBottom>
-                  Your post was added successfully.
+                  Your post was edited successfully.
                 </Typography>
                 <Typography variant="subtitle1"></Typography>
               </>
-            ) : (
+            )}
+            {activeStep !== steps.length && (
               <>
                 {getStepContent(activeStep)}
               </>

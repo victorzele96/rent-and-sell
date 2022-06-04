@@ -9,6 +9,7 @@ import Search from './Search';
 import LocateMe from './LocateMe';
 import Legend from './Legend';
 import Filter from './Filter';
+import { getHumanPath } from '../../../admin/icons/human';
 
 const INITIAL_MAP_CONFIG = {
   center: {
@@ -209,27 +210,39 @@ const Map = (props) => {
         }}
         onLoad={onMapLoad}
       >
-        {Children.toArray(
-          loadedProperties.map((property, key) => (
+        <>
+          {Children.toArray(
+            loadedProperties.map((property, key) => (
+              <>
+                <Marker
+                  position={property.location}
+                  icon={{
+                    url: getIcon(property.details.listing_status),
+                    scaledSize: new window.google.maps.Size(24, 42),
+                  }}
+                  onClick={() => {
+                    setSelected({ ...property })
+                  }}
+                />
+              </>
+            ))
+          )}
+          {selected ? (
             <>
-              <Marker
-                position={property.location}
-                icon={{
-                  url: getIcon(property.details.listing_status),
-                  scaledSize: new window.google.maps.Size(24, 42),
-                }}
-                onClick={() => {
-                  setSelected({ ...property })
-                }}
-              />
+              <PinInfo selected={selected} onClose={() => { setSelected(null) }} />
             </>
-          ))
-        )}
-        {selected ? (
-          <>
-            <PinInfo selected={selected} onClose={() => { setSelected(null) }} />
-          </>
-        ) : null}
+          ) : null}
+          {searchValue && (
+            <Marker
+              position={searchValue.location}
+              icon={{
+                path: getHumanPath(),
+                fillColor: '#231F20',
+                fillOpacity: 0.8,
+              }}
+            />
+          )}
+        </>
       </GoogleMap>
     </>
   );

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Container,
@@ -9,19 +9,19 @@ import {
   StepLabel,
   Typography,
   Backdrop,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import EditForm from "../components/PropertyForm/EditForm";
 import FileUpload from "../components/PropertyForm/FileUpload";
 import PropertyReview from "../components/PropertyForm/PropertyReview";
 
-import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useResponsive } from "../../shared/hooks/responsive-hook";
 
 import { AuthContext } from "../../shared/context/auth-context";
 
 import { makeStyles } from '@mui/styles';
+import PropertyContext from "../../shared/context/property-context";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -36,41 +36,17 @@ const useStyles = makeStyles((theme) => ({
 
 const EditProperty = (props) => {
   const authCtx = useContext(AuthContext);
+  const propertyCtx = useContext(PropertyContext);
   const navigate = useNavigate();
-  const { isLoading, sendRequest } = useHttpClient();
   const [activeStep, setActiveStep] = useState(0);
   const [propertyData, setPropertyData] = useState({});
+  const params = useParams();
 
   const { width } = useResponsive();
 
   const steps = ["Information", "Gallery", "Review"];
 
   const classes = useStyles();
-
-  const requestHandler = async () => {
-    try {
-      await sendRequest(
-        process.env.REACT_APP_BACK_URL + `/properties/${propertyData.id}`,
-        'PATCH',
-        JSON.stringify({
-          description: propertyData.description,
-          address: propertyData.address,
-          images: propertyData.images,
-          details: propertyData.details
-        }),
-        {
-          'Authorization': 'Bearer ' + authCtx.token,
-          'Content-Type': 'application/json'
-        },
-      );
-
-      setTimeout(() => {
-        navigate(`/property/${propertyData.id}`);
-      }, 2000);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
     const data = JSON.parse(sessionStorage.getItem('edit-property'));
@@ -79,28 +55,18 @@ const EditProperty = (props) => {
 
   const nextHandler = (errors) => {
     if (!errors || errors.length === 0) {
-      setActiveStep(activeStep + 1);
-
-      // let images;
-      let paths;
-      try {
-        // images = JSON.parse(window.sessionStorage.getItem("new-property-images"));
-        paths = JSON.parse(sessionStorage.getItem("new-property-images-paths"));
-      } catch (e) {
-        console.log(e);
-      }
-
-      const property = {
-        ...JSON.parse(sessionStorage.getItem("new-edit-property")),
-        images: paths
-      };
-
-      setPropertyData(property);
-
       if (activeStep === steps.length - 1) { // Submit
-        console.log(propertyData);
-        requestHandler();
+        propertyCtx.editProperty(params.propertyId, authCtx.token);
+        if (!propertyCtx.isLoading) {
+          setTimeout(() => {
+            navigate('/');
+          }, 2500);
+        }
       }
+      if (!propertyCtx.isLoading) {
+        setActiveStep(activeStep + 1);
+      }
+
     } else {
       console.log(errors);
     }
@@ -129,10 +95,10 @@ const EditProperty = (props) => {
 
   return (
     <>
-      {isLoading && (
+      {propertyCtx.isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading}
+          open={propertyCtx.isLoading}
         >
           <CircularProgress size={85} thickness={2.5} />
         </Backdrop>
@@ -153,14 +119,15 @@ const EditProperty = (props) => {
             ))}
           </Stepper>
           <>
-            {activeStep === steps.length ? (
+            {activeStep === steps.length && (
               <>
                 <Typography variant="h5" gutterBottom>
                   Your post was edited successfully.
                 </Typography>
                 <Typography variant="subtitle1"></Typography>
               </>
-            ) : (
+            )}
+            {activeStep !== steps.length && (
               <>
                 {getStepContent(activeStep)}
               </>

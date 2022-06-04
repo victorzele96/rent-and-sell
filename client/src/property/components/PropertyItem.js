@@ -7,6 +7,7 @@ import Paragraph from "./Paragraph";
 import Report from "./Report";
 import ShareProperty from "./ShareProperty";
 import HoverRating from "./HoverRating";
+import ImageGallery from "./carousel/ImageGallery";
 
 import { styled } from "@mui/material/styles";
 
@@ -29,7 +30,7 @@ import {
   Button,
   Box,
   MenuItem,
-  Menu
+  Menu,
 } from "@mui/material";
 
 import FavoritesContext from "../../shared/context/favorites-context";
@@ -107,6 +108,7 @@ const ExpandMore = styled((props) => {
 const PropertyItem = (props) => {
   const [expanded, setExpanded] = useState(false);
   const [currentValue, setCurrentValue] = useState(0);
+  const [openGallery, setOpenGallery] = useState(false);
 
   const favoritesCtx = useContext(FavoritesContext);
   const authCtx = useContext(AuthContext);
@@ -267,6 +269,10 @@ const PropertyItem = (props) => {
     setMenuOption(null);
   };
 
+  const closeModalGalleryHandler = () => {
+    setOpenGallery(false);
+  };
+
   const calcDaysPassed = (date1, date2) => {
     return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
   }
@@ -319,6 +325,11 @@ const PropertyItem = (props) => {
 
   return (
     <>
+      <ImageGallery
+        open={openGallery}
+        onClose={closeModalGalleryHandler}
+        images={props.property.images}
+      />
       {menuOption === 0 && (
         <>
           <Report propertyId={props.propertyId} onClose={closeModalHandler} />
@@ -364,12 +375,13 @@ const PropertyItem = (props) => {
             </>
           }
           title={props.property.address}
-          subheader={days} // צריך למשוך תאריך יצירה ולעדכן תאריך ביחס לתאריך הנוכחי
+          subheader={days}
         />
         <CardMedia //card image
+          onClick={() => setOpenGallery(true)}
           component="img"
           height='250px'
-          sx={{ objectFit: 'cover' }}
+          sx={{ objectFit: 'cover', cursor: 'pointer' }}
           src={props.property.images[0]}
           alt="property image"
         />

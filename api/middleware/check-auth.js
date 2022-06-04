@@ -33,7 +33,7 @@ module.exports.adminAuth = (req, res, next) => {
       throw new HttpError('Access Denied!');
     }
 
-    req.userData = { userId: decodedToken.userId };
+    req.userData = { userId: decodedToken.userId, isAdmin: decodedToken.isAdmin };
     next();
   } catch (err) {
     return next(

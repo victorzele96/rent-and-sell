@@ -134,6 +134,7 @@ const List = (props) => {
             propertyId={property.id}
             propertyRate={property.ratings}
             onDelete={props.onDelete}
+            img={property.images[0]}
           />
         ))
       )}

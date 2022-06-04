@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const { validationResult } = require("express-validator");
 
-const HttpError = require("../models/http-error");
+const cloudinary = require("../util/cloudinary");
 const getCoordsForAddress = require('../util/location');
+const getPublicIds = require('../util/public-id');
+
+const HttpError = require("../models/http-error");
 const Property = require('../models/property');
 const User = require('../models/user');
 
@@ -134,7 +137,7 @@ const updateProperty = async (req, res, next) => {
     );
   }
 
-  const { description, images, details } = req.body;
+  const { description, images, details, imgsToDelete } = req.body;
   const {
     listing_status, price, rooms_num, room_size,
     floor, stories, renovated, parking, accessiblity,
@@ -156,6 +159,14 @@ const updateProperty = async (req, res, next) => {
     return next(
       new HttpError('You are not allowed to edit this property.', 401)
     );
+  }
+
+  const public_ids = getPublicIds(imgsToDelete);
+
+  try {
+    public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+  } catch (err) {
+    console.log(err);
   }
 
   property.description = description;
@@ -194,7 +205,7 @@ const deleteProperty = async (req, res, next) => {
   try {
     property = await Property.findById(propertyId).populate('creator');
   } catch (err) {
-    return (
+    return next(
       new HttpError('Something went wrong, could not delete property.', 500)
     );
   }
@@ -211,7 +222,11 @@ const deleteProperty = async (req, res, next) => {
     );
   }
 
+  const public_ids = getPublicIds(property.images);
+
   try {
+    public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await property.remove({ session: sess });
@@ -219,7 +234,7 @@ const deleteProperty = async (req, res, next) => {
     await property.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    return (
+    return next(
       new HttpError('Something went wrong, could not delete property.', 500)
     );
   }

@@ -1,4 +1,4 @@
-// import "./Legend.css";
+import { Human } from '../../../admin/icons/human';
 
 import { makeStyles } from '@mui/styles';
 
@@ -35,6 +35,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: '12px',
     backgroundColor: 'rgba(255, 255, 255, 1)'
   },
+  human: {
+    width: '16px',
+    height: '18px',
+    float: 'left',
+    margin: '0 4px 0 0',
+    opacity: 0.7,
+    backgroundSize: '12px',
+    backgroundColor: 'rgba(255, 255, 255, 1)'
+  },
   greenIcon: {
     backgroundImage: 'url(https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png)',
     backgroundRepeat: 'no-repeat'
@@ -53,6 +62,7 @@ const Legend = (props) => {
       <h4 className={classes.title}>Legend</h4>
       <i className={`${classes.i} ${classes.greenIcon}`}></i><span className={classes.span}>For rent</span><br></br>
       <i className={`${classes.i} ${classes.blueIcon}`}></i><span className={classes.span}>For sale</span><br></br>
+      <Human className={`${classes.human}`} /><span className={classes.span}>Search</span><br></br>
     </div >
   );
 };

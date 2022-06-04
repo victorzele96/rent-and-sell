@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   Grid,
@@ -22,11 +22,14 @@ import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
 import DomainIcon from '@mui/icons-material/Domain';
 import CommuteIcon from '@mui/icons-material/Commute';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
+import PropertyContext from "../../../shared/context/property-context";
 
 const EditForm = (props) => {
+  const propertyCtx = useContext(PropertyContext);
   const [propertyState, setPropertyState] = useState(JSON.parse(sessionStorage.getItem('edit-property')));
   const [selectedArray, setSelectedArray] = useState([]); // radio buttons
   const [errors, setError] = useState([]);
+  const [isValid, setIsValid] = useState(false);
 
   const listingStatusChangeHandler = (event) => {
     setPropertyState(prevState => ({
@@ -101,8 +104,18 @@ const EditForm = (props) => {
                   ...prevState[key1], [key2]: !prevState[key1][key2]
                 }
               }));
+              propertyCtx.setPropertyForm(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: !prevState[key1][key2]
+                }
+              }));
             } else {
               setPropertyState(prevState => ({
+                ...prevState, [key1]: {
+                  ...prevState[key1], [key2]: event.target.value
+                }
+              }));
+              propertyCtx.setPropertyForm(prevState => ({
                 ...prevState, [key1]: {
                   ...prevState[key1], [key2]: event.target.value
                 }
@@ -120,6 +133,7 @@ const EditForm = (props) => {
             }
           }
           setPropertyState(prevState => ({ ...prevState, [key1]: event.target.value }));
+          propertyCtx.setPropertyForm(prevState => ({ ...prevState, [key1]: event.target.value }));
         }
       }
     }
@@ -127,7 +141,22 @@ const EditForm = (props) => {
 
   useEffect(() => {
     window.sessionStorage.setItem("new-edit-property", JSON.stringify(propertyState));
+    propertyCtx.setPropertyForm(propertyState);
   }, [propertyState]);
+
+  useEffect(() => {
+    setIsValid(
+      propertyState.details.price > 0 &&
+      propertyState.details.rooms_num > 0 &&
+      propertyState.details.room_size > 0 &&
+      ((propertyState.details.property_type === 'house' && propertyState.details.stories > 0) ||
+        (propertyState.details.property_type === 'apartment' && propertyState.details.floor > 0)) &&
+      errors.length === 0 &&
+      propertyState.description.length >= 5 &&
+      /^\+?(972|0)(\-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(propertyState.details.contact) &&
+      propertyState.details.contact !== ''
+    );
+  }, [propertyState, errors]);
 
   return (
     <>
@@ -382,7 +411,7 @@ const EditForm = (props) => {
               variant="contained"
               onClick={nextHandler}
               sx={{ ml: 1 }}
-              disabled={errors.length > 0}
+              disabled={!isValid}
             >
               Next
             </Button>
