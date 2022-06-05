@@ -234,45 +234,37 @@ const deleteUser = async (req, res, next) => {
   }
 
 
-  // let deletePropertiesByUserId = user.properties.map(async propertyId => {
-  //   let property;
-  //   try {
-  //     property = await Property.findById(propertyId).populate('creator');
-  //   } catch (err) {
-  //     return (
-  //       new HttpError('Something went wrong, could not delete user.', 500)
-  //     );
-  //   }
+  let deletePropertiesByUserId = user.properties.map(async propertyId => {
+    let property;
+    try {
+      property = await Property.findById(propertyId).populate('creator');
+    } catch (err) {
+      return (
+        new HttpError('Something went wrong, could not delete user.', 500)
+      );
+    }
 
-  //   if (!property) {
-  //     return next(
-  //       new HttpError('Could not find property for this id.', 404)
-  //     );
-  //   }
+    if (!property) {
+      return next(
+        new HttpError('Could not find property for this id.', 404)
+      );
+    }
 
-  //   return property;
-  // });
+    return property;
+  });
 
-  // deletePropertiesByUserId.map(promise => promise.then(async property => {
-  //   const public_ids = getPublicIds(property.images);
-  //   public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+  console.log(deletePropertiesByUserId);
 
-  //   await user.populate('properties');
+  deletePropertiesByUserId.map(promise => promise.then(async property => {
+    try {
+      const public_ids = getPublicIds(property.images);
+      public_ids.map(public_id => cloudinary.uploader.destroy(public_id).then(console.log('destroyed')));
+      await property.remove();
+    } catch (err) {
+      console.log(err);
+    }
+  }));
 
-  //   try {
-  //     const sess = await mongoose.startSession();
-  //     sess.startTransaction();
-  //     await property.remove({ session: sess });
-  //     property.creator.properties.pull(property);
-  //     await property.creator.save({ session: sess });
-  //     await sess.commitTransaction();
-  //   } catch (err) {
-  //     console.log(err);
-  //     return next(
-  //       new HttpError('Something went wrong, could not delete property.', 500)
-  //     );
-  //   }
-  // }));
 
   try {
     await user.remove();
